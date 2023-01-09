@@ -1,8 +1,9 @@
 
 namespace Entity.Context;
-
 using Entity.Models;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore;
+
 public class HelloBachakContext : DbContext
 {
     public HelloBachakContext(DbContextOptions options) : base(options)
@@ -18,22 +19,28 @@ public class HelloBachakContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
         modelBuilder.Entity<Sex>(entity => {
+            entity.ToTable("Sex");
+
             entity.HasKey(a=> a.Id);
             entity.HasMany(a=> a.Users).WithOne(a=> a.Sex).HasForeignKey(a=> a.SexId).IsRequired();
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(50);
         });
         modelBuilder.Entity<Grade>(entity=>{
+            entity.ToTable("Grade");
+
             entity.HasKey(a=>a.Id);
             entity.HasMany(a=>a.Users).WithOne(a=>a.Grade).HasForeignKey(a=> a.GradeId).IsRequired();
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(50);
         });
         modelBuilder.Entity<Lesson>(entity=>{
+            entity.ToTable("Lesson");
             entity.HasKey(a=>a.Id);
             entity.HasMany(a=>a.Tasks).WithOne(a=>a.Lesson).HasForeignKey(a=> a.LessonId).IsRequired();
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(50);
         });
         
         modelBuilder.Entity<User>(entity=> {
+            entity.ToTable("User");
             entity.HasKey(a=> a.Id);
             entity.HasOne(a=> a.Grade).WithMany(a=> a.Users).HasForeignKey(a=> a.GradeId).IsRequired();
             entity.HasOne(a=> a.Sex).WithMany(a=> a.Users).HasForeignKey(a=> a.SexId).IsRequired();
@@ -44,6 +51,8 @@ public class HelloBachakContext : DbContext
             entity.Property(a=> a.Description).IsRequired(false);
         });
         modelBuilder.Entity<Task>(entity=> {
+            entity.ToTable("Task");
+
             entity.HasKey(a=> a.Id);
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(200);
             entity.HasOne(a=> a.Lesson).WithMany(a=>a.Tasks).HasForeignKey(a=> a.LessonId).IsRequired();
@@ -51,6 +60,8 @@ public class HelloBachakContext : DbContext
             entity.HasOne(a=> a.TaskReply).WithOne(a=> a.Task).HasForeignKey<TaskReply>(a=> a.TaskId).IsRequired(false);
         });
         modelBuilder.Entity<TaskReply>(entity => {
+            entity.ToTable("TaskReply");
+
             entity.HasKey(a=> a.TaskId);
 
         });

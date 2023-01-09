@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-var connectionString = builder.Configuration.GetConnectionString("HelloBachackDbConnectionString") 
+var connectionString = builder.Configuration.GetConnectionString("HelloBachakDbConnectionString") 
 ?? throw new InvalidOperationException("Connection String \" HelloBachackDbConnectionString \" not found");
 
 builder.Services.AddDbContext<HelloBachakContext>(opt=>opt.UseNpgsql(connectionString));
