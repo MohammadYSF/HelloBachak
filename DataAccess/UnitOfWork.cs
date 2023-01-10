@@ -1,15 +1,17 @@
 using DataAccess.Repositories;
 using DataAccess.Services;
+using Entity.Context;
 namespace DataAccess;
 
-public class UnitOfWork
+public class UnitOfWork:IDisposable
 {
-    private UserRepository _userRepository;
-
-    public UnitOfWork(UserRepository userRepository)
+    private HelloBachakContext _context;
+    public UnitOfWork( HelloBachakContext context)
     {
-        _userRepository = userRepository;
+        _context = context;
     }
+
+    private UserRepository _userRepository;
 
     public IUserRepository UserRepository
     {
@@ -17,11 +19,15 @@ public class UnitOfWork
         {
             if (_userRepository == null)
             {
-                _userRepository = new UserRepository();
+                _userRepository = new UserRepository(_context);
             }
             return _userRepository;
         }
         
     }
 
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
 }

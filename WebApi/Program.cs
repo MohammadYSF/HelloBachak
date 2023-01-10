@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-
+using DataAccess;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

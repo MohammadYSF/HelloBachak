@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Entity.Models;
 using Entity.Context;
+using DataAccess;
+using Business;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers;
 
@@ -8,18 +11,20 @@ namespace WebApi.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
+    private readonly UnitOfWork _db;
     private readonly ILogger<UserController> _logger;
-    private readonly HelloBachakContext _db;
-    public UserController(ILogger<UserController> logger , HelloBachakContext db)
+    private readonly UserBusiness _userBusiness;
+    public UserController(ILogger<UserController> logger , HelloBachakContext context)
     {
-        _db = db;
+        _userBusiness = new UserBusiness();
+         _db = new UnitOfWork(context);
         _logger = logger;
     }
     [Route("ShowUsers")]
     [HttpGet]
-    public IEnumerable<User> ShowUsers(){
-        
-        var data = _db.Users.ToList();
+    public async Task< IEnumerable<User>> ShowUsers(){
+        var data  = await _db.UserRepository.Get().ToListAsync();
+        _db.Dispose();
         return data;
     }
     [Route("SayHello")]
