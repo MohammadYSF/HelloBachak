@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -8,6 +8,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dto", "Dto\Dto.csproj", "{D54C7700-4EF0-4D05-B4E2-06E194AE8367}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{E91F8056-1EEA-46BD-9E45-7326A431FEA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business.csproj", "{51D9E6C7-05D4-4C8F-8866-7647A9A37DCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{EE898058-070F-425E-8205-AABAB1C049CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +34,13 @@ Global
 		{E91F8056-1EEA-46BD-9E45-7326A431FEA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E91F8056-1EEA-46BD-9E45-7326A431FEA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E91F8056-1EEA-46BD-9E45-7326A431FEA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51D9E6C7-05D4-4C8F-8866-7647A9A37DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51D9E6C7-05D4-4C8F-8866-7647A9A37DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51D9E6C7-05D4-4C8F-8866-7647A9A37DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51D9E6C7-05D4-4C8F-8866-7647A9A37DCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE898058-070F-425E-8205-AABAB1C049CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE898058-070F-425E-8205-AABAB1C049CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE898058-070F-425E-8205-AABAB1C049CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE898058-070F-425E-8205-AABAB1C049CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
