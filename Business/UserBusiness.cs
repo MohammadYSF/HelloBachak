@@ -13,8 +13,8 @@ public class UserBusiness
         _userRepository = userRepository;
     }
 
-    public object RegisterUser(RegisterUserDto userDto)
+    public string RegisterUser(RegisterUserDto userDto)
     {
-        throw new NotImplementedException();
+        return "error";
     }
 }

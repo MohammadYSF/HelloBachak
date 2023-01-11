@@ -26,6 +26,16 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
+    public Grade FindGrade(int gradeId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Sex FindSex(int sexId)
+    {
+        throw new NotImplementedException();
+    }
+
     public IQueryable<User> Get()
     {
         throw new NotImplementedException();

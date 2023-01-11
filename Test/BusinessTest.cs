@@ -20,10 +20,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Password = "1234",
                 SexId = 1,
                 Age=20,
-                GradeId = 21,
+                GradeId = 1,
                 Email = "ashk1@gmail.com"
-            },
-            false
+            }
             //because password is so simple or is repeated
         };
         yield return new object[]{
@@ -32,10 +31,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Password = "ashk*&^1234A",
                 SexId = 1,
                 Age=20,
-                GradeId = 21,
+                GradeId = 1,
                 Email = "asdsa"
-            },
-            false
+            }
             //because email is not valid or repeated
         };
         yield return new object[]{
@@ -44,10 +42,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Password = "ashk*&^1234A",
                 SexId = 1,
                 Age=0,
-                GradeId = 21,
+                GradeId = 1,
                 Email = "asdsa"
-            },
-            false
+            }
             //because age is not valid
         };
         yield return new object[]{
@@ -56,11 +53,43 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Password = "ashk*&^1234A",
                 SexId = 1,
                 Age=-10,
-                GradeId = 21,
+                GradeId = 1,
                 Email = "asdsa"
-            },
-            false
+            }
             //because age is not valid
+        };
+        yield return new object[]{
+            new RegisterUserDto{
+                Username="Mohammad",
+                Password = "ashk*&^1234A",
+                SexId = 1,
+                Age=20,
+                GradeId = 1,
+                Email = "aa.yosefiyan7@gmail.com"
+            }
+            //because username is not valid or it is repeadted
+        };
+        yield return new object[]{
+            new RegisterUserDto{
+                Username="darkArmy123",
+                Password = "ashk*&^1234A",
+                SexId = 100,
+                Age=20,
+                GradeId = 1,
+                Email = "aa.yosefiyan7@gmail.com"
+            }
+            //because sex id is not valid
+        };
+        yield return new object[]{
+            new RegisterUserDto{
+                Username="darkArmy123",
+                Password = "ashk*&^1234A",
+                SexId = 1,
+                Age=20,
+                GradeId = 100,
+                Email = "aa.yosefiyan7@gmail.com"
+            }
+            //because grade id is not valid
         };
 
     }
@@ -73,6 +102,16 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
 public class BusinessTest
 {
     private UserBusiness _userBusiness;
+    private Sex _sex = new Sex
+    {
+        Id = 1,
+        Title = "Male"
+    };
+    private Grade _grade = new Grade
+    {
+        Id = 1,
+        Title = "12th"
+    };
     private User _user = new User
     {
         Id = 1,
@@ -103,11 +142,15 @@ public class BusinessTest
             Username = "Fateme"
         }
         };
+
+
         _userRepositoryServiceMock = new Mock<IUserRepository>();
         _userRepositoryServiceMock.Setup(a => a.Get()).Returns(users.AsQueryable<User>);
         _userRepositoryServiceMock.Setup(a => a.Find(_user.Id)).Returns(_user);
         _userRepositoryServiceMock.Setup(a => a.Create(_newUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.Update(_updatedUser)).Returns("");
+        _userRepositoryServiceMock.Setup(a => a.FindSex(_sex.Id)).Returns(_sex);
+        _userRepositoryServiceMock.Setup(a => a.FindGrade(_grade.Id)).Returns(_grade);
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
     }
     [Fact]
@@ -120,7 +163,7 @@ public class BusinessTest
             Email = "jamil@yahoo.com",
             Password = "jamil1234@",
             SexId = 1,
-            GradeId = 3,
+            GradeId = 1,
         };
         var result = _userBusiness.RegisterUser(userDto);
         var expected = "";
@@ -128,9 +171,12 @@ public class BusinessTest
 
     }
     [Theory]
-    
-    public void Should_Not_Register_Invalid_User_Dto(RegisterUserDto dto)
+    [ClassData(typeof(RegisterUserDtoParameters))]
+    public void Should_Not_Register_Invalid_User_Dto( RegisterUserDto dto)
     {
-
+        var result = _userBusiness.RegisterUser(dto);
+        var unExpected = "";
+        result.Should().NotBe(unExpected);
+        
     }
 }
