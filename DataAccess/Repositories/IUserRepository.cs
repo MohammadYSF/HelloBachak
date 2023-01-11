@@ -9,5 +9,5 @@ public interface IUserRepository
     string Create(User user);
     string Update(User user);
     string Delete(User user);
-    User Find (User user);
+    User Find (int id);
 }

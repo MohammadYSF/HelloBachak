@@ -16,7 +16,7 @@ public class UserController : ControllerBase
     private readonly UserBusiness _userBusiness;
     public UserController(ILogger<UserController> logger , HelloBachakContext context)
     {
-        _userBusiness = new UserBusiness();
+        // _userBusiness = new UserBusiness(new UserServiceE);
          _db = new UnitOfWork(context);
         _logger = logger;
     }

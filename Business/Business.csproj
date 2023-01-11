@@ -7,4 +7,9 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.4.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Entity\Entity.csproj" />
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
+    <ProjectReference Include="..\Dto\Dto.csproj" />
+  </ItemGroup>
 </Project>

@@ -21,7 +21,7 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public User Find(User user)
+    public User Find(int id)
     {
         throw new NotImplementedException();
     }
