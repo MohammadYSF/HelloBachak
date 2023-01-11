@@ -78,9 +78,10 @@ public class BusinessTest
         Id = 1,
         Username = "Mohammad"
     };
-    private User _updatedUser = new User{
-        Id=1,
-        Username="Asma"
+    private User _updatedUser = new User
+    {
+        Id = 1,
+        Username = "Asma"
     };
     private User _newUser = new User
     {
@@ -90,17 +91,18 @@ public class BusinessTest
     private Mock<IUserRepository> _userRepositoryServiceMock;
     public BusinessTest()
     {
-        var users = new List<User>();
-        users.Add(new User
+        var users = new List<User>(){
+            new User
         {
             Id = 1,
             Username = "Mohammad"
-        });
-        users.Add(new User
+        },
+        new User
         {
             Id = 2,
             Username = "Fateme"
-        });
+        }
+        };
         _userRepositoryServiceMock = new Mock<IUserRepository>();
         _userRepositoryServiceMock.Setup(a => a.Get()).Returns(users.AsQueryable<User>);
         _userRepositoryServiceMock.Setup(a => a.Find(_user.Id)).Returns(_user);
@@ -109,12 +111,14 @@ public class BusinessTest
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
     }
     [Fact]
-    public void Should_Register_Valid_User_Dto(){
-        var userDto = new RegisterUserDto{
+    public void Should_Register_Valid_User_Dto()
+    {
+        var userDto = new RegisterUserDto
+        {
             Username = "Jamil",
             Age = 22,
             Email = "jamil@yahoo.com",
-            Password="jamil1234@",
+            Password = "jamil1234@",
             SexId = 1,
             GradeId = 3,
         };
@@ -124,15 +128,9 @@ public class BusinessTest
 
     }
     [Theory]
-    [InlineData(new RegisterUserDto{
-        Username = "Mohammad",
-        Age=10,
-        Email="aa.yosefiyan7@gmail.com",
-        Password="1234",
-        SexId=1,
-        GradeId=4,
-    })]
-    public void Should_Not_Register_Invalid_User_Dto(RegisterUserDto dto){
-        
-    }   
+    
+    public void Should_Not_Register_Invalid_User_Dto(RegisterUserDto dto)
+    {
+
+    }
 }
