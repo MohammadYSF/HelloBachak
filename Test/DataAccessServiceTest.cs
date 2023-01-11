@@ -10,7 +10,6 @@ namespace Test;
 
 public class DataAccessServiceTest
 {
-    private UserBusiness _userBusiness;
     private User _user = new User
     {
         Id = 1,

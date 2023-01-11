@@ -1,6 +1,7 @@
 using Entity.Models;
 using DataAccess;
 using DataAccess.Repositories;
+using Dto.Models;
 
 namespace Business;
 
@@ -11,8 +12,9 @@ public class UserBusiness
     {
         _userRepository = userRepository;
     }
-    public List<User> GetAllUsers()
+
+    public object RegisterUser(RegisterUserDto userDto)
     {
-        return _userRepository.Get().ToList();
+        throw new NotImplementedException();
     }
 }
