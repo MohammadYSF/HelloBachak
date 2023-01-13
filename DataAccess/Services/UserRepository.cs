@@ -41,6 +41,36 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
+    public List<int> GetGradeIds()
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<int> GetSexIds()
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<string> GetUsersEmails()
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<string> GetUsersPasswords()
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<string> GetUsersPhoneNumbers()
+    {
+        throw new NotImplementedException();
+    }
+
+    public int Save()
+    {
+        throw new NotImplementedException();
+    }
+
     public string Update(User user)
     {
         throw new NotImplementedException();

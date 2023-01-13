@@ -12,4 +12,10 @@ public interface IUserRepository
     User Find (int id);
     Sex FindSex(int sexId);
     Grade FindGrade(int gradeId);
+    List<int>GetSexIds();
+    List<int> GetGradeIds();
+    List<string> GetUsersEmails();
+    List<string> GetUsersPasswords();
+    List<string> GetUsersPhoneNumbers();
+    int Save();
 }
