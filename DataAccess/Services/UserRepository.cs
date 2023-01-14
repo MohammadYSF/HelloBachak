@@ -85,4 +85,9 @@ public class UserRepository : IUserRepository
     {
         throw new NotImplementedException();
     }
+
+    public List<string> GetUsersUsernames()
+    {
+        throw new NotImplementedException();
+    }
 }

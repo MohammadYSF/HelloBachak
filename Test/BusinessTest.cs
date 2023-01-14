@@ -8,7 +8,7 @@ using Entity.Models;
 using FluentAssertions;
 using Dto.Models;
 using System.Collections;
-
+using Business.Results;
 namespace Test;
 class RegisterUserDtoParameters : IEnumerable<object[]>
 {
@@ -30,7 +30,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
         */
         yield return new object[]{
             new RegisterUserDto{
-                Username="Askhan Mogadas",
+                Username="AskhanMogadas",
                 Password = "1234",
                 SexId = 1,
                 Age=20,
@@ -38,10 +38,10 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "ashk1@gmail.com",
             }
             //because password is so simple
-        };
+        ,"invalid-password"};
         yield return new object[]{
             new RegisterUserDto{
-                Username="Askhan Mogadas",
+                Username="AskhanMogadas",
                 Password = "Mm#12345",
                 SexId = 1,
                 Age=20,
@@ -49,18 +49,18 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "ashk1@gmail.com"
             }
             //because password is duplicate
-        };
+        ,"duplicate-password"};
         yield return new object[]{
             new RegisterUserDto{
-                Username="Askhan Mogadas",
+                Username="AskhanMogadas",
                 Password = "ashk*&^1234A",
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
                 Email = "asdsa"
             }
-            //because email is not valid or repeated
-        };
+            //because email is not valid
+        ,"invalid-email"};
         yield return new object[]{
             new RegisterUserDto{
                 Username="AskhanMogadas",
@@ -71,10 +71,10 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "aa.yosefiyan7@gmail.com"
             }
             //because email is duplicate
-        };
+        ,"duplicate-email"};
         yield return new object[]{
             new RegisterUserDto{
-                Username="Askhan Mogadas",
+                Username="AskhanMogadas",
                 Password = "ashk*&^1234A",
                 SexId = 1,
                 Age=0,
@@ -82,10 +82,10 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because age is not valid
-        };
+        ,"invalid-age"};
         yield return new object[]{
             new RegisterUserDto{
-                Username="Askhan Mogadas",
+                Username="AskhanMogadas",
                 Password = "ashk*&^1234A",
                 SexId = 1,
                 Age=200,
@@ -93,10 +93,10 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because age is not valid
-        };
+        ,"invalid-age"};
         yield return new object[]{
             new RegisterUserDto{
-                Username="Askhan Mogadas",
+                Username="AskhanMogadas",
                 Password = "ashk*&^1234A",
                 SexId = 1,
                 Age=-10,
@@ -104,7 +104,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because age is not valid
-        };
+        ,"invalid-age"};
         yield return new object[]{
             new RegisterUserDto{
                 Username="m",
@@ -115,7 +115,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because username is not valid (because it is too short,it should be at least 3 character)
-        };  
+        ,"invalid-username"};
         yield return new object[]{
             new RegisterUserDto{
                 Username="محمد",
@@ -126,7 +126,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because username is not valid . because it is farsi
-        };
+        ,"persian-username"};
         yield return new object[]{
             new RegisterUserDto{
                 Username="mohyou",
@@ -137,7 +137,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because username is not valid . because it is duplicate
-        };  
+        ,"duplicate-username"};
         yield return new object[]{
             new RegisterUserDto{
                 Username="darkArmy123",
@@ -148,7 +148,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because sex id is not valid
-        };
+        ,"invalid-sexId"};
         yield return new object[]{
             new RegisterUserDto{
                 Username="darkArmy123",
@@ -159,8 +159,8 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Email = "newaccout7@gmail.com"
             }
             //because grade id is not valid
-        };
-    
+        ,"invalid-gradeId"};
+
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -196,7 +196,7 @@ public class BusinessTest
         Username = "Zahra"
 
     };
-    
+
     private Mock<IUserRepository> _userRepositoryServiceMock;
     public BusinessTest()
     {
@@ -221,14 +221,21 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.Update(_updatedUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.FindSex(_sex.Id)).Returns(_sex);
         _userRepositoryServiceMock.Setup(a => a.FindGrade(_grade.Id)).Returns(_grade);
-        _userRepositoryServiceMock.Setup(a=> a.GetSexIds()).Returns(new List<int>(){1,2});
-        _userRepositoryServiceMock.Setup(a=> a.GetGradeIds()).Returns(new List<int>() {1});
-        _userRepositoryServiceMock.Setup(a=> a.GetRoleIds()).Returns(new List<int>(){1,2});
-        _userRepositoryServiceMock.Setup(a=> a.FindRoleByTitle("student"))
-        .Returns(new Role{
+        _userRepositoryServiceMock.Setup(a => a.GetSexIds()).Returns(new List<int>() { 1, 2 });
+        _userRepositoryServiceMock.Setup(a => a.GetGradeIds()).Returns(new List<int>() { 1 });
+        _userRepositoryServiceMock.Setup(a => a.GetRoleIds()).Returns(new List<int>() { 1, 2 });
+        _userRepositoryServiceMock.Setup(a => a.GetUsersEmails()).
+        Returns(new List<string>() { "aa.yosefiyan7@gmail.com" });
+        _userRepositoryServiceMock.Setup(a => a.GetHashedUsersPasswords()).
+        Returns(new List<string>() { "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460" });
+        _userRepositoryServiceMock.Setup(a => a.GetUsersUsernames()).
+        Returns(new List<string>() { "mohyou" });
+        _userRepositoryServiceMock.Setup(a => a.FindRoleByTitle("student"))
+        .Returns(new Role
+        {
             Id = 2,
-            Title="student",
-            CreationDate =  new DateTime(2022,02,02)
+            Title = "student",
+            CreationDate = new DateTime(2022, 02, 02)
         });
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
     }
@@ -240,22 +247,34 @@ public class BusinessTest
             Username = "Jamil",
             Age = 22,
             Email = "jamil@yahoo.com",
-            Password = "jamil1234@",
+            Password = "Jamil1234@",
             SexId = 1,
             GradeId = 1,
         };
         var result = _userBusiness.RegisterUser(userDto);
-        var expected = "";
-        result.Should().Be(expected);
+        
+        result.Success.Should().BeTrue();
 
     }
     [Theory]
     [ClassData(typeof(RegisterUserDtoParameters))]
-    public void Should_Not_Register_Invalid_User_Dto( RegisterUserDto dto)
+    public void Should_Not_Register_Invalid_User_Dto(RegisterUserDto dto, string reason)
     {
         var result = _userBusiness.RegisterUser(dto);
-        var unExpected = "";
-        result.Should().NotBe(unExpected);
-        
+        // var unExpected = "";
+        result.Success.Should().BeFalse();
+        switch (reason)
+        {
+            case "invalid-password":result.PasswordErrorMessage.Should().Be(reason);break;
+            case "duplicate-password":result.PasswordErrorMessage.Should().Be(reason);break;
+            case "invalid-email":result.EmailErrorMessage.Should().Be(reason);break;
+            case "duplicate-email":result.EmailErrorMessage.Should().Be(reason);break;
+            case "invalid-username":result.UsernameErrorMessage.Should().Be(reason);break;
+            case "duplicate-username":result.UsernameErrorMessage.Should().Be(reason);break;
+            case "invalid-gradeId":result.GradeIdErrorMessage.Should().Be(reason);break;
+            case "invalid-sexId":result.SexIdErrorMessage.Should().Be(reason);break;
+            
+        }
+
     }
 }

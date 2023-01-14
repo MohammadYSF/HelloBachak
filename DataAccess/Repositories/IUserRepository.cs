@@ -14,6 +14,7 @@ public interface IUserRepository
     Grade FindGrade(int gradeId);
     List<int>GetSexIds();
     List<int> GetGradeIds();
+    List<String>GetUsersUsernames();
     List<string> GetUsersEmails();
     List<string> GetHashedUsersPasswords();
     List<string> GetUsersPhoneNumbers();

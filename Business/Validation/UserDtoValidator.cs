@@ -7,17 +7,18 @@ using Business.Helpers;
 namespace Business.Validation;
 public class UserDtoValidator : AbstractValidator<RegisterUserDto>
 {
-    public UserDtoValidator(List<string> emails, List<string> hashedPasswords, List<int> sexIds, List<int> gradeIds)
+    public UserDtoValidator(List<string> emails, List<string> hashedPasswords, List<int> sexIds, List<int> gradeIds,List<string> usernames)
     {
 
-        RuleFor(x => x.Username).NotEmpty().MaximumLength(50).MinimumLength(3).Must(IsUsernameValid).WithMessage("invalid");
-        RuleFor(x => x.Age).GreaterThan(0).LessThan(130).WithMessage("invalid");
-        RuleFor(x => x.Email).Must(IsEmailValid).WithMessage("invalid-syntax");
-        RuleFor(x => x.Email).Must((a) => IsEmailDuplicate(a, emails)).WithMessage("duplicate");
-        RuleFor(x => x.Password).Must(IsPasswordValid).WithMessage("weak");
-        RuleFor(x => x.Password).Must((a) => IsPasswordDuplicate(a, hashedPasswords)).WithMessage("duplicate");
-        RuleFor(x => x.SexId).Must(((a) => IsSexIdValid(a, sexIds))).WithMessage("invalid");
-        RuleFor(x => x.GradeId).Must((a) => IsGradeIdValid(a, gradeIds)).WithMessage("invalid");
+        RuleFor(x => x.Username).NotEmpty().Must(IsUsernameValid).WithMessage("invalid-username");
+        RuleFor(x=> x.Username).Must((a) => !IsUsernameDuplicate(a,usernames)).WithMessage("duplicate-username");
+        RuleFor(x => (int)x.Age).GreaterThan(0).LessThan(130).WithMessage("invalid-age");
+        RuleFor(x => x.Email).Must(IsEmailValid).WithMessage("invalid-email");
+        RuleFor(x => x.Email).Must((a) => !IsEmailDuplicate(a, emails)).WithMessage("duplicate-email");
+        RuleFor(x => x.Password).Must(IsPasswordValid).WithMessage("invalid-password");
+        RuleFor(x => x.Password).Must((a) => !IsPasswordDuplicate(a, hashedPasswords)).WithMessage("duplicate-password");
+        RuleFor(x => x.SexId).Must(((a) => IsSexIdValid(a, sexIds))).WithMessage("invalid-sexId");
+        RuleFor(x => x.GradeId).Must((a) => IsGradeIdValid(a, gradeIds)).WithMessage("invalid-gradeId");
     }
     private bool IsGradeIdValid(int gradeId, List<int> gradeIds)
     {
@@ -35,7 +36,11 @@ public class UserDtoValidator : AbstractValidator<RegisterUserDto>
     private bool IsUsernameValid(string username)
     {
         var validUsernameRegex = new Regex("^[A-Za-z][A-Za-z0-9]*$");
-        return validUsernameRegex.IsMatch(username) && username.Length > 3;
+        return validUsernameRegex.IsMatch(username) && username.Length > 3 && username.Length <= 50;
+    }
+    private bool IsUsernameDuplicate(string username, List<string> usernames)
+    {
+        return usernames.Any(a=> a == username);
     }
     private bool IsPasswordValid(string password)
     {
