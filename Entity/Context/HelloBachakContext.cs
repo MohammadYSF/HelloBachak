@@ -11,6 +11,7 @@ public class HelloBachakContext : DbContext
     }
 
     public virtual DbSet<Sex> Sexes { get; set; }
+    public virtual DbSet<Role>Roles { get; set; }
     public virtual DbSet<Grade> Grades { get; set; }
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Lesson> Lessons{ get; set; }
@@ -38,7 +39,12 @@ public class HelloBachakContext : DbContext
             entity.HasMany(a=>a.Tasks).WithOne(a=>a.Lesson).HasForeignKey(a=> a.LessonId).IsRequired();
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(50);
         });
-        
+        modelBuilder.Entity<Role>(entity => {
+            entity.ToTable("Role");
+            entity.HasKey(a=> a.Id);
+            entity.HasMany(a=> a.Users).WithOne(a=> a.Role).HasForeignKey(a=> a.RoleId).IsRequired();
+            entity.Property(a=> a.Title).IsRequired().HasMaxLength(50);
+        });
         modelBuilder.Entity<User>(entity=> {
             entity.ToTable("User");
             entity.HasKey(a=> a.Id);
