@@ -8,5 +8,6 @@ public class RegisterUserDto
     public int SexId { get; set; }
     public Int16 Age { get; set; }
     public int GradeId { get; set; }
+    public string PhoneNumber { get; set; }
     
 }

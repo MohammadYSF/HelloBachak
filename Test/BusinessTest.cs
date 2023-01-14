@@ -36,6 +36,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 Age=20,
                 GradeId = 1,
                 Email = "ashk1@gmail.com",
+                PhoneNumber = "09372898644"
             }
             //because password is so simple
         ,"invalid-password"};
@@ -46,7 +47,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
-                Email = "ashk1@gmail.com"
+                Email = "ashk1@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because password is duplicate
         ,"duplicate-password"};
@@ -57,7 +60,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
-                Email = "asdsa"
+                Email = "asdsa",
+                PhoneNumber = "09372898644"
+
             }
             //because email is not valid
         ,"invalid-email"};
@@ -68,7 +73,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
-                Email = "aa.yosefiyan7@gmail.com"
+                Email = "aa.yosefiyan7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because email is duplicate
         ,"duplicate-email"};
@@ -79,7 +86,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=0,
                 GradeId = 1,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because age is not valid
         ,"invalid-age"};
@@ -90,7 +99,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=200,
                 GradeId = 1,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because age is not valid
         ,"invalid-age"};
@@ -101,7 +112,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=-10,
                 GradeId = 1,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because age is not valid
         ,"invalid-age"};
@@ -112,7 +125,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because username is not valid (because it is too short,it should be at least 3 character)
         ,"invalid-username"};
@@ -123,7 +138,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because username is not valid . because it is farsi
         ,"persian-username"};
@@ -134,7 +151,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because username is not valid . because it is duplicate
         ,"duplicate-username"};
@@ -145,7 +164,9 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 100,
                 Age=20,
                 GradeId = 1,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because sex id is not valid
         ,"invalid-sexId"};
@@ -156,10 +177,38 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 100,
-                Email = "newaccout7@gmail.com"
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09372898644"
+
             }
             //because grade id is not valid
         ,"invalid-gradeId"};
+        yield return new object[]{
+            new RegisterUserDto{
+                Username="darkArmy123",
+                Password = "ashk*&^1234A",
+                SexId = 1,
+                Age=20,
+                GradeId = 100,
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "0914245"
+
+            }
+            //because phone number is invalid
+        ,"invalid-phoneNumber"};
+        yield return new object[]{
+            new RegisterUserDto{
+                Username="darkArmy123",
+                Password = "ashk*&^1234A",
+                SexId = 1,
+                Age=20,
+                GradeId = 100,
+                Email = "newaccout7@gmail.com",
+                PhoneNumber = "09924300159"
+
+            }
+            //because phone number is duplicate
+        ,"duplicate-phoneNumber"};
 
     }
 
@@ -230,6 +279,8 @@ public class BusinessTest
         Returns(new List<string>() { "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460" });
         _userRepositoryServiceMock.Setup(a => a.GetUsersUsernames()).
         Returns(new List<string>() { "mohyou" });
+        _userRepositoryServiceMock.Setup(a => a.GetUsersPhoneNumbers()).
+        Returns(new List<string>() { "09924300159" });
         _userRepositoryServiceMock.Setup(a => a.FindRoleByTitle("student"))
         .Returns(new Role
         {
@@ -250,9 +301,10 @@ public class BusinessTest
             Password = "Jamil1234@",
             SexId = 1,
             GradeId = 1,
+            PhoneNumber = "09372898644"
         };
         var result = _userBusiness.RegisterUser(userDto);
-        
+
         result.Success.Should().BeTrue();
 
     }
@@ -265,15 +317,18 @@ public class BusinessTest
         result.Success.Should().BeFalse();
         switch (reason)
         {
-            case "invalid-password":result.PasswordErrorMessage.Should().Be(reason);break;
-            case "duplicate-password":result.PasswordErrorMessage.Should().Be(reason);break;
-            case "invalid-email":result.EmailErrorMessage.Should().Be(reason);break;
-            case "duplicate-email":result.EmailErrorMessage.Should().Be(reason);break;
-            case "invalid-username":result.UsernameErrorMessage.Should().Be(reason);break;
-            case "duplicate-username":result.UsernameErrorMessage.Should().Be(reason);break;
-            case "invalid-gradeId":result.GradeIdErrorMessage.Should().Be(reason);break;
-            case "invalid-sexId":result.SexIdErrorMessage.Should().Be(reason);break;
-            
+            case "invalid-password": result.PasswordErrorMessage.Should().Be(reason); break;
+            case "duplicate-password": result.PasswordErrorMessage.Should().Be(reason); break;
+            case "invalid-email": result.EmailErrorMessage.Should().Be(reason); break;
+            case "duplicate-email": result.EmailErrorMessage.Should().Be(reason); break;
+            case "invalid-username": result.UsernameErrorMessage.Should().Be(reason); break;
+            case "duplicate-username": result.UsernameErrorMessage.Should().Be(reason); break;
+            case "invalid-gradeId": result.GradeIdErrorMessage.Should().Be(reason); break;
+            case "invalid-sexId": result.SexIdErrorMessage.Should().Be(reason); break;
+            case "invalid-phoneNumber": result.PhoneNumberErrorMessage.Should().Be(reason); break;
+            case "duplicate-phoneNumber": result.PhoneNumberErrorMessage.Should().Be(reason); break;
+
+
         }
 
     }

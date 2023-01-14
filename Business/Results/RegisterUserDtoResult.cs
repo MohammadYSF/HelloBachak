@@ -38,6 +38,10 @@ public class RegisterUserDtoResult
             {
                 this.GradeIdErrorMessage = validationFailures.Find(a => a.PropertyName == "GradeId").ErrorMessage;
             }
+            if (validationFailures.Any(a => a.PropertyName == "PhoneNumber"))
+            {
+                this.PhoneNumberErrorMessage = validationFailures.Find(a=> a.PropertyName == "PhoneNumber").ErrorMessage;
+            }
         }
     }
     public bool Success { get; set; }
@@ -46,4 +50,5 @@ public class RegisterUserDtoResult
     public string PasswordErrorMessage { get; set; }
     public string SexIdErrorMessage { get; set; }
     public string GradeIdErrorMessage { get; set; }
+    public string PhoneNumberErrorMessage { get; set; }
 }

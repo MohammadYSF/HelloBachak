@@ -22,18 +22,12 @@ public class UserBusiness
     {
         var userDtoValidator = new UserDtoValidator(_userRepository.GetUsersEmails(),
         _userRepository.GetHashedUsersPasswords(), _userRepository.GetSexIds(),
-         _userRepository.GetGradeIds(), _userRepository.GetUsersUsernames());
+         _userRepository.GetGradeIds(), _userRepository.GetUsersUsernames()
+         , _userRepository.GetUsersPhoneNumbers());
         ValidationResult result = userDtoValidator.Validate(userDto);
         var isValid = result.IsValid;
         var validationResult = new RegisterUserDtoResult(result);
-//         var configuration = new MapperConfiguration(cfg =>
-//         {
-//             cfg.CreateMap<RegisterUserDto, User>();
-//         });
-// #if DEBUG
-//         configuration.AssertConfigurationIsValid();
-// #endif
-//         var mapper = configuration.CreateMapper();
+
         User user = new User{
             Age = userDto.Age,
             Email = userDto.Email,
@@ -42,7 +36,9 @@ public class UserBusiness
             GradeId = userDto.GradeId,
             SexId = userDto.SexId,
             RoleId = _userRepository.FindRoleByTitle("student").Id,
-            CreationDate = DateTime.Now
+            CreationDate = DateTime.Now,
+            PhoneNumber = userDto.PhoneNumber,
+            IsActive = false
         };
         _userRepository.Create(user);
         _userRepository.Save();

@@ -7,7 +7,7 @@ using Business.Helpers;
 namespace Business.Validation;
 public class UserDtoValidator : AbstractValidator<RegisterUserDto>
 {
-    public UserDtoValidator(List<string> emails, List<string> hashedPasswords, List<int> sexIds, List<int> gradeIds,List<string> usernames)
+    public UserDtoValidator(List<string> emails, List<string> hashedPasswords, List<int> sexIds, List<int> gradeIds,List<string> usernames , List<string> phoneNumbers)
     {
 
         RuleFor(x => x.Username).NotEmpty().Must(IsUsernameValid).WithMessage("invalid-username");
@@ -19,6 +19,8 @@ public class UserDtoValidator : AbstractValidator<RegisterUserDto>
         RuleFor(x => x.Password).Must((a) => !IsPasswordDuplicate(a, hashedPasswords)).WithMessage("duplicate-password");
         RuleFor(x => x.SexId).Must(((a) => IsSexIdValid(a, sexIds))).WithMessage("invalid-sexId");
         RuleFor(x => x.GradeId).Must((a) => IsGradeIdValid(a, gradeIds)).WithMessage("invalid-gradeId");
+        RuleFor(x=> x.PhoneNumber).Must(IsPhoneNumberValid).WithMessage("invalid-phoneNumber");
+        RuleFor(x=> x.PhoneNumber).Must((a) => ! IsPhoneNumberDuplicate(a , phoneNumbers)).WithMessage("duplicate-phoneNumber");
     }
     private bool IsGradeIdValid(int gradeId, List<int> gradeIds)
     {
@@ -55,6 +57,14 @@ public class UserDtoValidator : AbstractValidator<RegisterUserDto>
         //at least 1 digit
         // in the database  , the max size of password is 100 . so we add the condition : 
         // password.lenght <= 100
+    }
+    private bool IsPhoneNumberValid(string phoneNumber){
+        var validPhoneNumberRegex = new Regex("[0][9][0-9][0-9]{8,8}");
+        return validPhoneNumberRegex.IsMatch(phoneNumber) && phoneNumber.Length == 11;
+        //like 09924300159 (must start with zero)
+    }
+    private bool IsPhoneNumberDuplicate(string phoneNumber , List<string> phoneNumbers){
+        return phoneNumbers.Any(a=> a== phoneNumber);
     }
     private bool IsEmailValid(string email)
     {
