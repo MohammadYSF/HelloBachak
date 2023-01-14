@@ -35,7 +35,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
                 SexId = 1,
                 Age=20,
                 GradeId = 1,
-                Email = "ashk1@gmail.com"
+                Email = "ashk1@gmail.com",
             }
             //because password is so simple
         };
@@ -160,7 +160,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
             }
             //because grade id is not valid
         };
-
+    
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -196,6 +196,7 @@ public class BusinessTest
         Username = "Zahra"
 
     };
+    
     private Mock<IUserRepository> _userRepositoryServiceMock;
     public BusinessTest()
     {
@@ -222,6 +223,13 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.FindGrade(_grade.Id)).Returns(_grade);
         _userRepositoryServiceMock.Setup(a=> a.GetSexIds()).Returns(new List<int>(){1,2});
         _userRepositoryServiceMock.Setup(a=> a.GetGradeIds()).Returns(new List<int>() {1});
+        _userRepositoryServiceMock.Setup(a=> a.GetRoleIds()).Returns(new List<int>(){1,2});
+        _userRepositoryServiceMock.Setup(a=> a.FindRoleByTitle("student"))
+        .Returns(new Role{
+            Id = 2,
+            Title="student",
+            CreationDate =  new DateTime(2022,02,02)
+        });
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
     }
     [Fact]

@@ -17,5 +17,7 @@ public interface IUserRepository
     List<string> GetUsersEmails();
     List<string> GetHashedUsersPasswords();
     List<string> GetUsersPhoneNumbers();
+    List<int>GetRoleIds();
+    Role FindRoleByTitle(string title);
     int Save();
 }

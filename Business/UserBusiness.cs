@@ -57,6 +57,7 @@ public class UserBusiness
 #endif
         var mapper = configuration.CreateMapper();
         User user = mapper.Map<User>(userDto);
+        user.RoleId = _userRepository.FindRoleByTitle("student").Id;
         user.CreationDate = DateTime.Now;
         user.Password = Helper.ComputeSHA256Hash(userDto.Password);
         _userRepository.Create(user);

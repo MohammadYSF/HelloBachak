@@ -75,4 +75,14 @@ public class UserRepository : IUserRepository
     {
         throw new NotImplementedException();
     }
+
+    public List<int> GetRoleIds()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Role FindRoleByTitle(string title)
+    {
+        throw new NotImplementedException();
+    }
 }
