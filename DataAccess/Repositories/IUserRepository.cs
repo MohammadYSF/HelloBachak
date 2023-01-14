@@ -15,7 +15,7 @@ public interface IUserRepository
     List<int>GetSexIds();
     List<int> GetGradeIds();
     List<string> GetUsersEmails();
-    List<string> GetUsersPasswords();
+    List<string> GetHashedUsersPasswords();
     List<string> GetUsersPhoneNumbers();
     int Save();
 }

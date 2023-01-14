@@ -56,7 +56,7 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public List<string> GetUsersPasswords()
+    public List<string> GetHashedUsersPasswords()
     {
         throw new NotImplementedException();
     }

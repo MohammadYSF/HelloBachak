@@ -43,17 +43,18 @@ public class UserBusiness
 
     public RegisterUserDtoResult RegisterUser(RegisterUserDto userDto)
     {
-        var userDtoValidator = new UserDtoValidator(null, null, null, null);
+        var userDtoValidator = new UserDtoValidator(_userRepository.GetUsersEmails(),
+        _userRepository.GetHashedUsersPasswords(), _userRepository.GetSexIds(), _userRepository.GetGradeIds());
         ValidationResult result = userDtoValidator.Validate(userDto);
         var isValid = result.IsValid;
         var validationResult = new RegisterUserDtoResult(result);
         var configuration = new MapperConfiguration(cfg =>
         {
-            cfg.CreateMap<User , RegisterUserDto>();
+            cfg.CreateMap<User, RegisterUserDto>();
         });
-        #if DEBUG
+#if DEBUG
         configuration.AssertConfigurationIsValid();
-        #endif
+#endif
         var mapper = configuration.CreateMapper();
         User user = mapper.Map<User>(userDto);
         user.CreationDate = DateTime.Now;
