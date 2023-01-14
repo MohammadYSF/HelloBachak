@@ -10,16 +10,16 @@ public class UserDtoValidator : AbstractValidator<RegisterUserDto>
     public UserDtoValidator(List<string> emails, List<string> hashedPasswords, List<int> sexIds, List<int> gradeIds,List<string> usernames , List<string> phoneNumbers)
     {
 
-        RuleFor(x => x.Username).NotEmpty().Must(IsUsernameValid).WithMessage("invalid-username");
+        RuleFor(x => x.Username).NotEmpty().Must(Helper.IsUsernameValid).WithMessage("invalid-username");
         RuleFor(x=> x.Username).Must((a) => !IsUsernameDuplicate(a,usernames)).WithMessage("duplicate-username");
         RuleFor(x => (int)x.Age).GreaterThan(0).LessThan(130).WithMessage("invalid-age");
-        RuleFor(x => x.Email).Must(IsEmailValid).WithMessage("invalid-email");
+        RuleFor(x => x.Email).Must(Helper.IsEmailValid).WithMessage("invalid-email");
         RuleFor(x => x.Email).Must((a) => !IsEmailDuplicate(a, emails)).WithMessage("duplicate-email");
-        RuleFor(x => x.Password).Must(IsPasswordValid).WithMessage("invalid-password");
+        RuleFor(x => x.Password).Must(Helper.IsPasswordValid).WithMessage("invalid-password");
         RuleFor(x => x.Password).Must((a) => !IsPasswordDuplicate(a, hashedPasswords)).WithMessage("duplicate-password");
         RuleFor(x => x.SexId).Must(((a) => IsSexIdValid(a, sexIds))).WithMessage("invalid-sexId");
         RuleFor(x => x.GradeId).Must((a) => IsGradeIdValid(a, gradeIds)).WithMessage("invalid-gradeId");
-        RuleFor(x=> x.PhoneNumber).Must(IsPhoneNumberValid).WithMessage("invalid-phoneNumber");
+        RuleFor(x=> x.PhoneNumber).Must(Helper.IsPhoneNumberValid).WithMessage("invalid-phoneNumber");
         RuleFor(x=> x.PhoneNumber).Must((a) => ! IsPhoneNumberDuplicate(a , phoneNumbers)).WithMessage("duplicate-phoneNumber");
     }
     private bool IsGradeIdValid(int gradeId, List<int> gradeIds)
@@ -35,42 +35,17 @@ public class UserDtoValidator : AbstractValidator<RegisterUserDto>
     {
         return hashedPasswords.Any(a => a == Helper.ComputeSHA256Hash(password));
     }
-    private bool IsUsernameValid(string username)
-    {
-        var validUsernameRegex = new Regex("^[A-Za-z][A-Za-z0-9]*$");
-        return validUsernameRegex.IsMatch(username) && username.Length > 3 && username.Length <= 50;
-    }
+    
     private bool IsUsernameDuplicate(string username, List<string> usernames)
     {
         return usernames.Any(a=> a == username);
     }
-    private bool IsPasswordValid(string password)
-    {
-
-        var validPasswordRegex = new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
-        return validPasswordRegex.IsMatch(password) && password.Length <= 100;
-        //password conditions : 
-        //at least 8 character
-        //at least 1 upper
-        // at least 1 lower
-        // at least 1 special
-        //at least 1 digit
-        // in the database  , the max size of password is 100 . so we add the condition : 
-        // password.lenght <= 100
-    }
-    private bool IsPhoneNumberValid(string phoneNumber){
-        var validPhoneNumberRegex = new Regex("[0][9][0-9][0-9]{8,8}");
-        return validPhoneNumberRegex.IsMatch(phoneNumber) && phoneNumber.Length == 11;
-        //like 09924300159 (must start with zero)
-    }
+    
+    
     private bool IsPhoneNumberDuplicate(string phoneNumber , List<string> phoneNumbers){
         return phoneNumbers.Any(a=> a== phoneNumber);
     }
-    private bool IsEmailValid(string email)
-    {
-        var validEmailRegex = new Regex("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
-        return validEmailRegex.IsMatch(email);
-    }
+    
     private bool IsEmailDuplicate(string email, List<string> emails)
     {
         return emails.Any(a => a == email);
