@@ -317,16 +317,16 @@ public class BusinessTest
         result.Success.Should().BeFalse();
         switch (reason)
         {
-            case "invalid-password": result.PasswordErrorMessage.Should().Be(reason); break;
-            case "duplicate-password": result.PasswordErrorMessage.Should().Be(reason); break;
-            case "invalid-email": result.EmailErrorMessage.Should().Be(reason); break;
-            case "duplicate-email": result.EmailErrorMessage.Should().Be(reason); break;
-            case "invalid-username": result.UsernameErrorMessage.Should().Be(reason); break;
-            case "duplicate-username": result.UsernameErrorMessage.Should().Be(reason); break;
-            case "invalid-gradeId": result.GradeIdErrorMessage.Should().Be(reason); break;
-            case "invalid-sexId": result.SexIdErrorMessage.Should().Be(reason); break;
-            case "invalid-phoneNumber": result.PhoneNumberErrorMessage.Should().Be(reason); break;
-            case "duplicate-phoneNumber": result.PhoneNumberErrorMessage.Should().Be(reason); break;
+            case "invalid-password": result.PasswordErrorMessages.Should().Contain(reason); break;
+            case "duplicate-password": result.PasswordErrorMessages.Should().Contain(reason); break;
+            case "invalid-email": result.EmailErrorMessages.Should().Contain(reason); break;
+            case "duplicate-email": result.EmailErrorMessages.Should().Contain(reason); break;
+            case "invalid-username": result.UsernameErrorMessages.Should().Contain(reason); break;
+            case "duplicate-username": result.UsernameErrorMessages.Should().Contain(reason); break;
+            case "invalid-gradeId": result.GradeIdErrorMessages.Should().Contain(reason); break;
+            case "invalid-sexId": result.SexIdErrorMessages.Should().Contain(reason); break;
+            case "invalid-phoneNumber": result.PhoneNumberErrorMessages.Should().Contain(reason); break;
+            case "duplicate-phoneNumber": result.PhoneNumberErrorMessages.Should().Contain(reason); break;
 
 
         }
