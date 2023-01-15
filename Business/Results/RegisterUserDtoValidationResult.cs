@@ -8,13 +8,10 @@ using Business.Validation;
 using AutoMapper;
 using Business.Helpers;
 namespace Business.Results;
-public class RegisterUserDtoResult
+public class RegisterUserDtoValidationResult
 {
-    public RegisterUserDtoResult()
-    {
-
-    }
-    public RegisterUserDtoResult(ValidationResult validationResult)
+    
+    public RegisterUserDtoValidationResult(ValidationResult validationResult)
     {
         var validationFailures = validationResult.Errors;
         this.Success = validationResult.IsValid;

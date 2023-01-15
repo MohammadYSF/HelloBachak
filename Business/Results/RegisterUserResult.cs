@@ -4,10 +4,11 @@ public enum Language
     Persian,
     English
 }
-public class UserDtoErrorMessageGenerator
+public class RegisterUserResult
 {
-    public UserDtoErrorMessageGenerator(RegisterUserDtoResult validationResult, Language lang)
+    public RegisterUserResult(RegisterUserDtoValidationResult validationResult, Language lang)
     {
+        this.Success = validationResult.Success;
         if (lang == Language.English)
         {
             //username
@@ -164,6 +165,7 @@ public class UserDtoErrorMessageGenerator
             }
         }
     }
+    public bool Success { get; set; }
     public string UsernameErrorMessage { get; set; } = "";
     public string PasswordErrorMessage { get; set; } = "";
     public string PhoneNumberErrorMessage { get; set; } = "";

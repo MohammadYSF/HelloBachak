@@ -8,6 +8,7 @@ public class HelloBachakContext : DbContext
 {
     public HelloBachakContext(DbContextOptions options) : base(options)
     {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior" , true);
     }
 
     public virtual DbSet<Sex> Sexes { get; set; }

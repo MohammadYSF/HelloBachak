@@ -13,62 +13,104 @@ public class UserRepository : IUserRepository
     }
     public string Create(User user)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _db.Users.Add(user);
+            return "";
+        }
+        catch (System.Exception e)
+        {
+
+            throw e;
+        }
     }
 
     public string Delete(User user)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _db.Users.Remove(user);
+            return "";
+        }
+        catch (System.Exception e)
+        {
+
+            throw e;
+        }
     }
 
     public User Find(int id)
     {
-        throw new NotImplementedException();
+        var user = _db.Users.Find(id);
+        if (user == null)
+        {
+            throw new NullReferenceException();
+        }
+        else
+        {
+            return user;
+        }
     }
 
     public Grade FindGrade(int gradeId)
     {
-        throw new NotImplementedException();
+        var grade = _db.Grades.Find(gradeId);
+        if (grade == null)
+        {
+            throw new NullReferenceException();
+        }
+        else
+        {
+            return grade;
+        }
     }
 
     public Sex FindSex(int sexId)
     {
-        throw new NotImplementedException();
+        var sex = _db.Sexes.Find(sexId);
+        if (sex == null)
+        {
+            throw new NullReferenceException();
+        }
+        else
+        {
+            return sex;
+        }
     }
 
     public IQueryable<User> Get()
     {
-        throw new NotImplementedException();
+        return _db.Users;
     }
 
     public List<int> GetGradeIds()
     {
-        throw new NotImplementedException();
+        return _db.Grades.Select(a => a.Id).ToList();
     }
 
     public List<int> GetSexIds()
     {
-        throw new NotImplementedException();
+        return _db.Sexes.Select(a => a.Id).ToList();
     }
 
     public List<string> GetUsersEmails()
     {
-        throw new NotImplementedException();
+        return _db.Users.Select(a => a.Email).ToList();
     }
 
     public List<string> GetHashedUsersPasswords()
     {
-        throw new NotImplementedException();
+        return _db.Users.Select(a => a.Password).ToList();
     }
 
     public List<string> GetUsersPhoneNumbers()
     {
-        throw new NotImplementedException();
+        return _db.Users.Select(a => a.Username).ToList();
     }
 
     public int Save()
     {
-        throw new NotImplementedException();
+        return _db.SaveChanges();
     }
 
     public string Update(User user)
@@ -78,16 +120,21 @@ public class UserRepository : IUserRepository
 
     public List<int> GetRoleIds()
     {
-        throw new NotImplementedException();
+        return _db.Users.Select(a => a.Id).ToList();
     }
 
     public Role FindRoleByTitle(string title)
     {
-        throw new NotImplementedException();
+        var role = _db.Roles.First(a => a.Title == title);
+        if (role == null)
+        {
+            throw new NullReferenceException();
+        }
+        return role;
     }
 
     public List<string> GetUsersUsernames()
     {
-        throw new NotImplementedException();
+        return _db.Users.Select(a => a.Username).ToList();
     }
 }
