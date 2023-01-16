@@ -21,4 +21,5 @@ public interface IUserRepository
     List<int>GetRoleIds();
     Role FindRoleByTitle(string title);
     int Save();
+    string ChangeUserPassword(int userId, string newHashedPassword);
 }

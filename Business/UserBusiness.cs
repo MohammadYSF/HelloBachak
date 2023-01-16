@@ -18,6 +18,19 @@ public class UserBusiness
         _userRepository = userRepository;
     }
 
+    public ChangePasswordDtoValidationResult ChangePassword(ChangePasswordDto changePasswordDto)
+    {
+        var ChangePasswordDtoValidator = new ChangePasswordDtoValidator(_userRepository.Find(changePasswordDto.UserId) , _userRepository.GetHashedUsersPasswords());
+        ValidationResult result = ChangePasswordDtoValidator.Validate(changePasswordDto);
+        var isValid = result.IsValid;
+        var validationResult = new ChangePasswordDtoValidationResult(result);
+        if (isValid){
+             _userRepository.ChangeUserPassword(changePasswordDto.UserId , Helper.ComputeSHA256Hash(changePasswordDto.NewPassword));
+            _userRepository.Save();
+        }
+        return validationResult;
+    }
+
     public RegisterUserDtoValidationResult RegisterUser(RegisterUserDto userDto)
     {
         var userDtoValidator = new UserDtoValidator(_userRepository.GetUsersEmails(),

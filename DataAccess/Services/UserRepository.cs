@@ -137,4 +137,23 @@ public class UserRepository : IUserRepository
     {
         return _db.Users.Select(a => a.Username).ToList();
     }
+
+    public string ChangeUserPassword(int userId, string newHashedPassword)
+    {
+        try
+        {
+            var user = _db.Users.Find(userId);
+            if (user == null)
+            {
+                return "error";
+            }
+            user.Password = newHashedPassword;
+            return "";            
+        }
+        catch (System.Exception e)
+        {
+
+            throw e;
+        }
+    }
 }

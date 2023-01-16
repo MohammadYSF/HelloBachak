@@ -9,6 +9,8 @@ using FluentAssertions;
 using Dto.Models;
 using System.Collections;
 using Business.Results;
+using Business.Helpers;
+
 namespace Test;
 class RegisterUserDtoParameters : IEnumerable<object[]>
 {
@@ -17,6 +19,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
         //suppose that we have on user in our data base like this : 
         /*
         {
+            id = 1
             Username = "mohyou"
             Password="f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460" -> Mm#12345
             Email = "aa.yosefiyan7@gmail.com"
@@ -233,7 +236,8 @@ public class BusinessTest
     private User _user = new User
     {
         Id = 1,
-        Username = "Mohammad"
+        Username = "Mohammad",
+        Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460"
     };
     private User _updatedUser = new User
     {
@@ -254,6 +258,7 @@ public class BusinessTest
         {
             Id = 1,
             Username = "Mohammad"
+            
         },
         new User
         {
@@ -288,6 +293,9 @@ public class BusinessTest
             Title = "student",
             CreationDate = new DateTime(2022, 02, 02)
         });
+
+        _userRepositoryServiceMock.Setup(a=> a.ChangeUserPassword(_user.Id ,Helper.ComputeSHA256Hash("Mrx*77798")))
+        .Returns("");
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
     }
     [Fact]
@@ -331,5 +339,15 @@ public class BusinessTest
 
         }
 
+    }
+    [Fact]
+    public void Should_Change_Password(){
+        var correct_input = new ChangePasswordDto{
+            UserId = 1,
+            CurrentPassword = "Mm#12345",
+            NewPassword = "Mrx*77798"
+        };
+        var result = _userBusiness.ChangePassword(correct_input);
+        result.Success.Should().BeTrue();
     }
 }
