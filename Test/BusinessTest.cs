@@ -12,6 +12,55 @@ using Business.Results;
 using Business.Helpers;
 
 namespace Test;
+class ChangePasswordDtoParameters : IEnumerable<object[]>
+{
+    public IEnumerator<object[]> GetEnumerator()
+    {
+        //suppose that we have a user like this : 
+        /*{
+            id = 1
+            Username = "mohyou"
+            Password="f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460" -> Mm#12345
+            Email = "aa.yosefiyan7@gmail.com"
+            PhoneNumber = 09924300159
+            SexId = 1
+            GradeId=1
+        }*/
+        yield return new object[]{
+            new ChangePasswordDto{
+                UserId = 10,
+                CurrentPassword="Mm#12345",
+                NewPassword="8723Mmmfas@"
+            } , "invalid-userId"
+        };
+        yield return new object[]{
+            new ChangePasswordDto{
+                UserId = 1,
+                CurrentPassword = "Mfasfg462@",
+                NewPassword = "98Uufas@#$"
+            } , "invalid-currentPassword"
+        };
+        yield return new object[]{
+            new ChangePasswordDto{
+                UserId = 1,
+                CurrentPassword = "Mm#12345",
+                NewPassword = "1234"
+            },"invalid-newPassword"
+        };
+        yield return new object[]{
+            new ChangePasswordDto{
+                UserId = 1,
+                CurrentPassword = "Mm#12345",
+                NewPassword = "Ff123**ff"
+            } , "duplicate-newPassword"
+        };
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}
 class RegisterUserDtoParameters : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()
@@ -257,13 +306,17 @@ public class BusinessTest
             new User
         {
             Id = 1,
-            Username = "Mohammad"
-            
+            Username = "Mohammad",
+            Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460"
+
+
         },
         new User
         {
             Id = 2,
-            Username = "Fateme"
+            Username = "Fateme",
+            Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77"
+            //Ff123**ff
         }
         };
 
@@ -279,13 +332,14 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.GetGradeIds()).Returns(new List<int>() { 1 });
         _userRepositoryServiceMock.Setup(a => a.GetRoleIds()).Returns(new List<int>() { 1, 2 });
         _userRepositoryServiceMock.Setup(a => a.GetUsersEmails()).
-        Returns(new List<string>() { "aa.yosefiyan7@gmail.com" });
+        Returns(new List<string>() { "aa.yosefiyan7@gmail.com","f.yosefiyan7@gmail.com" });
         _userRepositoryServiceMock.Setup(a => a.GetHashedUsersPasswords()).
-        Returns(new List<string>() { "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460" });
+        Returns(new List<string>() { "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460",
+        "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77" });
         _userRepositoryServiceMock.Setup(a => a.GetUsersUsernames()).
-        Returns(new List<string>() { "mohyou" });
+        Returns(new List<string>() { "mohyou","fateme" });
         _userRepositoryServiceMock.Setup(a => a.GetUsersPhoneNumbers()).
-        Returns(new List<string>() { "09924300159" });
+        Returns(new List<string>() { "09924300159","09148026935" });
         _userRepositoryServiceMock.Setup(a => a.FindRoleByTitle("student"))
         .Returns(new Role
         {
@@ -294,7 +348,7 @@ public class BusinessTest
             CreationDate = new DateTime(2022, 02, 02)
         });
 
-        _userRepositoryServiceMock.Setup(a=> a.ChangeUserPassword(_user.Id ,Helper.ComputeSHA256Hash("Mrx*77798")))
+        _userRepositoryServiceMock.Setup(a => a.ChangeUserPassword(_user.Id, Helper.ComputeSHA256Hash("Mrx*77798")))
         .Returns("");
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
     }
@@ -341,13 +395,29 @@ public class BusinessTest
 
     }
     [Fact]
-    public void Should_Change_Password(){
-        var correct_input = new ChangePasswordDto{
+    public void Should_Change_Password()
+    {
+        var correct_input = new ChangePasswordDto
+        {
             UserId = 1,
             CurrentPassword = "Mm#12345",
             NewPassword = "Mrx*77798"
         };
         var result = _userBusiness.ChangePassword(correct_input);
         result.Success.Should().BeTrue();
+    }
+    [Theory]
+    [ClassData(typeof(ChangePasswordDto))]
+    public void Shoud_Not_Change_Password(ChangePasswordDto dto, string reason)
+    {
+        var result = _userBusiness.ChangePassword(dto);
+        result.Success.Should().BeFalse();
+        switch (reason)
+        {
+            case "invalid-userId":result.UserIdErrorMessages.Should().Contain(reason); break;
+            case "invalid-currentPassword":result.CurrentPasswordErrorMessages.Should().Contain(reason);break;
+            case "invalid-newPassword":result.NewPasswordErrorMessages.Should().Contain(reason);break;
+            case "duplicate-newPassword":result.NewPasswordErrorMessages.Should().Contain(reason);break;
+        }
     }
 }

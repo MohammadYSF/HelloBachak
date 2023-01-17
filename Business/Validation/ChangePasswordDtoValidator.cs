@@ -18,13 +18,17 @@ public class ChangePasswordDtoValidator : AbstractValidator<ChangePasswordDto>
             return user != null && user.Password == Helper.ComputeSHA256Hash(e);
         }).WithMessage("invalid-currentPassword");
         RuleFor(x => x.NewPassword).Must(Helper.IsPasswordValid).WithMessage("invalid-newPassword");
-        RuleFor(x => x.NewPassword).Must((a) => !IsPasswordDuplicate(a, hashedPasswords)).WithMessage("duplicate-newPassword");
+        RuleFor(x => x.NewPassword).Must((a) => !IsNewPasswordDuplicate(a,user.Password, hashedPasswords)).WithMessage("duplicate-newPassword");
+
     }
     
     
-    private bool IsPasswordDuplicate(string password, List<string> hashedPasswords)
+    private bool IsNewPasswordDuplicate(string newPassword,string currentHashedPassword,List<string> hashedPasswords)
     {
-        return hashedPasswords.Any(a => a == Helper.ComputeSHA256Hash(password));
+        if (Helper.ComputeSHA256Hash(newPassword) == currentHashedPassword){
+            return true;
+        }
+        return hashedPasswords.Any(a => a == Helper.ComputeSHA256Hash(newPassword));
     }
    
 }

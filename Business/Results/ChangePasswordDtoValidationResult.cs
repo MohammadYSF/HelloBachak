@@ -19,7 +19,9 @@ public class ChangePasswordDtoValidationResult
         {
 
             this.Success = false;
-            
+            if (validationFailures.Any(a=> a.PropertyName == "UserId")){
+                this.UserIdErrorMessages.Add(validationFailures.Find(a=> a.PropertyName == "UserId").ErrorMessage);
+            }
             if (validationFailures.Any(a => a.PropertyName == "NewPassword"))
             {
                 this.CurrentPasswordErrorMessages.Add(validationFailures.Find(a => a.PropertyName == "NewPassword").ErrorMessage);
@@ -31,6 +33,7 @@ public class ChangePasswordDtoValidationResult
         }
     }
     public bool Success { get; set; }
+    public List<string> UserIdErrorMessages { get; set; } = new List<string>();
     public List<string> CurrentPasswordErrorMessages { get; set; } = new List<string>();
     public List<string> NewPasswordErrorMessages { get; set; } = new List<string>();
 }
