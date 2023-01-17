@@ -44,7 +44,7 @@ public class UserRepository : IUserRepository
         var user = _db.Users.Find(id);
         if (user == null)
         {
-            throw new NullReferenceException();
+            return null;
         }
         else
         {
@@ -147,7 +147,7 @@ public class UserRepository : IUserRepository
             {
                 return "error";
             }
-            user.Password = newHashedPassword;
+            user.Password = newHashedPassword;            
             return "";            
         }
         catch (System.Exception e)

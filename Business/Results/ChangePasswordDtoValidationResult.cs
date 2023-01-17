@@ -24,11 +24,11 @@ public class ChangePasswordDtoValidationResult
             }
             if (validationFailures.Any(a => a.PropertyName == "NewPassword"))
             {
-                this.CurrentPasswordErrorMessages.Add(validationFailures.Find(a => a.PropertyName == "NewPassword").ErrorMessage);
+                this.NewPasswordErrorMessages.Add(validationFailures.Find(a => a.PropertyName == "NewPassword").ErrorMessage);
             }
-             if (validationFailures.Any(a => a.PropertyName == "CurrentPasswrod"))
+             if (validationFailures.Any(a => a.PropertyName == "CurrentPassword"))
             {
-                this.NewPasswordErrorMessages.Add(validationFailures.Find(a => a.PropertyName == "CurrentPasswrod").ErrorMessage);
+                this.CurrentPasswordErrorMessages.Add(validationFailures.Find(a => a.PropertyName == "CurrentPassword").ErrorMessage);
             }
         }
     }

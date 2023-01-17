@@ -407,7 +407,7 @@ public class BusinessTest
         result.Success.Should().BeTrue();
     }
     [Theory]
-    [ClassData(typeof(ChangePasswordDto))]
+    [ClassData(typeof(ChangePasswordDtoParameters))]
     public void Shoud_Not_Change_Password(ChangePasswordDto dto, string reason)
     {
         var result = _userBusiness.ChangePassword(dto);

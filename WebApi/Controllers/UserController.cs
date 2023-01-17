@@ -46,4 +46,10 @@ public class UserController : ControllerBase
         var result = new RegisterUserResult(_userBusiness.RegisterUser(userDto) , Language.Persian);
         return result;
     }
+    [Route("ChangePassword")]
+    [HttpPost]
+    public ChangePasswordResult ChangePassword(ChangePasswordDto changePasswordDto){
+        var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto) , Language.Persian);
+        return result;
+    }
 }
