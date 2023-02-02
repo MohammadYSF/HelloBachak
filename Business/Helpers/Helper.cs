@@ -1,6 +1,9 @@
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Configuration;
 
 namespace Business.Helpers;
 public class Helper
@@ -23,7 +26,8 @@ public class Helper
         var validEmailRegex = new Regex("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
         return validEmailRegex.IsMatch(email);
     }
-    public static bool IsPhoneNumberValid(string phoneNumber){
+    public static bool IsPhoneNumberValid(string phoneNumber)
+    {
         var validPhoneNumberRegex = new Regex("[0][9][0-9][0-9]{8,8}");
         return validPhoneNumberRegex.IsMatch(phoneNumber) && phoneNumber.Length == 11;
         //like 09924300159 (must start with zero)
@@ -46,5 +50,24 @@ public class Helper
     {
         var validUsernameRegex = new Regex("^[A-Za-z][A-Za-z0-9]*$");
         return validUsernameRegex.IsMatch(username) && username.Length > 3 && username.Length <= 50;
+    }
+    public static void SendEmail(IConfiguration config,string destEmailAddress, string message)
+    {
+        var host = config["Smtp:Host"];
+        int port = int.Parse(config["Smtp:Port"]);
+
+        var sourceEmailAddress = config["Smtp:Username"];
+        var sourceEmailPassword = config["Smtp:Password"];
+        var stmpClient = new SmtpClient(host:host , port:port);
+        stmpClient.EnableSsl = true;
+        stmpClient.Credentials = new NetworkCredential(sourceEmailAddress,sourceEmailPassword);
+        var mailMessage = new MailMessage{
+            From =new MailAddress(sourceEmailAddress),
+            Subject= "Hello Bachak activation code",
+            Body = message,
+            IsBodyHtml = true
+        };
+        mailMessage.To.Add(destEmailAddress);
+        stmpClient.Send(mailMessage);
     }
 }

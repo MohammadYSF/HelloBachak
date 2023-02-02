@@ -156,4 +156,9 @@ public class UserRepository : IUserRepository
             throw e;
         }
     }
+
+    public User FindUserByEmail(string email)
+    {
+        return _db.Users.First(a=> a.Email == email);
+    }
 }

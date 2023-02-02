@@ -8,6 +8,8 @@ using Business.Validation;
 using AutoMapper;
 using Business.Helpers;
 using Business.Results;
+using Microsoft.Extensions.Configuration;
+
 namespace Business;
 
 public class UserBusiness
@@ -20,12 +22,13 @@ public class UserBusiness
 
     public ChangePasswordDtoValidationResult ChangePassword(ChangePasswordDto changePasswordDto)
     {
-        var ChangePasswordDtoValidator = new ChangePasswordDtoValidator(_userRepository.Find(changePasswordDto.UserId) , _userRepository.GetHashedUsersPasswords());
+        var ChangePasswordDtoValidator = new ChangePasswordDtoValidator(_userRepository.Find(changePasswordDto.UserId), _userRepository.GetHashedUsersPasswords());
         ValidationResult result = ChangePasswordDtoValidator.Validate(changePasswordDto);
         var isValid = result.IsValid;
         var validationResult = new ChangePasswordDtoValidationResult(result);
-        if (isValid){
-             _userRepository.ChangeUserPassword(changePasswordDto.UserId , Helper.ComputeSHA256Hash(changePasswordDto.NewPassword));
+        if (isValid)
+        {
+            _userRepository.ChangeUserPassword(changePasswordDto.UserId, Helper.ComputeSHA256Hash(changePasswordDto.NewPassword));
             _userRepository.Save();
         }
         return validationResult;
@@ -60,5 +63,26 @@ public class UserBusiness
         }
         return validationResult;
 
+    }
+
+    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto,  IConfiguration config, string baseUrl , string redirectedLink)
+    {
+        var sendActivationCodeDtoValidator = new SendActivationCodeDtoValidator(_userRepository.GetUsersEmails());
+        string email = sendActivationCodeDto.Email;
+        ValidationResult result = sendActivationCodeDtoValidator.Validate(sendActivationCodeDto);
+        var isValid = result.IsValid;
+        var validationResult = new SendActivationCodeDtoValidationResult(result);
+        if (isValid)
+        {
+            User user = _userRepository.FindUserByEmail(email);
+            var g = Guid.NewGuid().ToString();
+            user.ActivationCode = g;
+            _userRepository.Update(user);
+            _userRepository.Save();
+            //send email code
+            var emailMessage = $"<h1>Activating Hello Bachak acount</h1><p> Just click the link below</p><a href=\"{baseUrl}/{redirectedLink}/{g}\">click here</a>";
+            Helper.SendEmail(config, email, emailMessage);
+        }
+        return validationResult;
     }
 }

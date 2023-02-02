@@ -22,4 +22,5 @@ public interface IUserRepository
     Role FindRoleByTitle(string title);
     int Save();
     string ChangeUserPassword(int userId, string newHashedPassword);
+    User FindUserByEmail(string email);
 }

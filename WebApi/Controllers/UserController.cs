@@ -17,12 +17,18 @@ public class UserController : ControllerBase
     private readonly UnitOfWork _db;
     private readonly ILogger<UserController> _logger;
     private readonly UserBusiness _userBusiness;
-    public UserController(ILogger<UserController> logger, HelloBachakContext context)
+    private readonly IConfiguration _config;
+    private readonly IConfigurationRoot _configRoot;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+    public UserController(ILogger<UserController> logger, IConfiguration config , IWebHostEnvironment webHostEnvironment, HelloBachakContext context)
     {
         // _userBusiness = new UserBusiness(new UserServiceE);
         _db = new UnitOfWork(context);
         _logger = logger;
         _userBusiness = new UserBusiness(new UserRepository(context));
+        _config = config;
+        _configRoot = new ConfigurationBuilder().AddUserSecrets<UserController>().Build();
+        _webHostEnvironment = webHostEnvironment;
     }
     [Route("ShowUsers")]
     [HttpGet]
@@ -42,14 +48,24 @@ public class UserController : ControllerBase
     [HttpPost]
     public RegisterUserResult RegisterUser(RegisterUserDto userDto)
     {
-        
-        var result = new RegisterUserResult(_userBusiness.RegisterUser(userDto) , Language.Persian);
+
+        var result = new RegisterUserResult(_userBusiness.RegisterUser(userDto), Language.Persian);
         return result;
     }
     [Route("ChangePassword")]
     [HttpPost]
-    public ChangePasswordResult ChangePassword(ChangePasswordDto changePasswordDto){
-        var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto) , Language.Persian);
+    public ChangePasswordResult ChangePassword(ChangePasswordDto changePasswordDto)
+    {
+        var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto), Language.Persian);
+        return result;
+    }
+    [Route("SendActivationCode")]
+    [HttpPost]
+    public SendActivationCodeResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto)
+    {
+        var result = new SendActivationCodeResult(_userBusiness.SendActivationCode(sendActivationCodeDto,
+         _configRoot,_webHostEnvironment.ContentRootPath, _webHostEnvironment.ContentRootPath + "/api/User/SendActivationCode")
+         , Language.Persian);
         return result;
     }
 }
