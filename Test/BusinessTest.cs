@@ -13,12 +13,84 @@ using Business.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
-
 namespace Test;
+class DutyDtoParameters : IEnumerable<object[]>
+{
+    public IEnumerator<object[]> GetEnumerator()
+    {
+        yield return new object[]{
+        new DutyDto{
+            Title= "Lorem ipsum dolor sit amet consectetur adipiscing elit, nullam penatibus magnis aliquet curabitur nisl etiam, orci placerat facilisis ultricies ultrices pharetra est, senectus tincidunt nulla pulvinar per venenatis. Ut pretium litora enim dictum nunc porta rhoncus, lobortis congue metus dignissim aptent diam blandit, egestas nibh conubia auctor neque nam. Velit integer faucibus gravida in interdum dis ornare, eleifend condimentum cum vel fermentum elementum, dui himenaeos ante euismod fringilla ad. Maecenas sapien lacus ac eget mollis class laoreet mattis, nostra eu convallis platea ridiculus ligula sollicitudin, molestie primis taciti quis vehicula torquent nisi. Tristique duis imperdiet parturient quam, sagittis urna hac."
+            ,StudentId = 2,
+            ConsultantId=1,
+            ArrangedDate = DateTime.Now,
+            LessonId = 1,
+            OlderDutyId = null
+        },"invalid-title"
+       };
+        yield return new object[]{
+        new DutyDto{
+            Title = "Hello",
+            StudentId = 100,
+            ConsultantId = 1,
+            ArrangedDate = DateTime.Now,
+            LessonId = 1,
+            OlderDutyId = null
+        },"invalid-studentId"
+       };
+        yield return new object[]{
+        new DutyDto{
+            Title = "Hello",
+            StudentId = 2,
+            ConsultantId = 100,
+            ArrangedDate = DateTime.Now,
+            LessonId = 1,
+            OlderDutyId = null
+        },"invalid-consultantId"
+       };
+        yield return new object[]{
+        new DutyDto{
+            Title = "Hello",
+            StudentId = 2,
+            ConsultantId = 1,
+            ArrangedDate = DateTime.Now,
+            LessonId = 1000,
+            OlderDutyId = null
+        },"invalid-lessonId"
+       };
+        yield return new object[]{
+        new DutyDto{
+            Title = "Hello",
+            StudentId = 2,
+            ConsultantId = 1,
+            ArrangedDate = DateTime.Now,
+            LessonId = 1,
+            OlderDutyId = 1000
+        },"invalid-olderDutyId"
+       };
+        yield return new object[]{
+        new DutyDto{
+            Title = "Hello",
+            StudentId = 2,
+            ConsultantId = 1,
+            ArrangedDate = default(DateTime),
+            LessonId = 1,
+            OlderDutyId = 1000
+        },"invalid-arrangedDate"
+       };
+
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+}
 class SendActivationCodeDtoParameters : IEnumerable<object[]>
 {
     public IEnumerator<object[]> GetEnumerator()
     {
+
         yield return new object[]{
             new SendActivationCodeDto{
                 Email = "asdaf"
@@ -33,7 +105,7 @@ class SendActivationCodeDtoParameters : IEnumerable<object[]>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-       return GetEnumerator();
+        return GetEnumerator();
     }
 }
 class ChangePasswordDtoParameters : IEnumerable<object[]>
@@ -296,6 +368,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
 public class BusinessTest
 {
     private UserBusiness _userBusiness;
+    private DutyBusiness _dutyBusiness;
     private Sex _sex = new Sex
     {
         Id = 1,
@@ -323,8 +396,34 @@ public class BusinessTest
         Username = "Zahra"
 
     };
+    private Entity.Models.Duty _newDuty = new Entity.Models.Duty()
+    {
+        Title = "new duty",
+        Description = "some des for the new duty",
+        ArrangedDate = DateTime.Today,
+        CreationDate = DateTime.Now,
+        ConsultantId = 1,
+        StudentId = 1,
+        OlderDutyId = null,
+        IsActive = true,
+        LessonId = 1
+    };
+    private Entity.Models.Duty _updatedDuty = new Entity.Models.Duty
+    {
+        Id = 1,
+        Title = "updated duty",
+        Description = "some des for updated duty",
+        ArrangedDate = DateTime.Today,
+        CreationDate = DateTime.Now,
+        ConsultantId = 1,
+        StudentId = 1,
+        OlderDutyId = null,
+        IsActive = true,
+        LessonId = 1
+    };
     private IConfigurationRoot _configRoot;
     private Mock<IUserRepository> _userRepositoryServiceMock;
+    private Mock<IDutyRepository> _dutyRepositoryServiceMock;
     public BusinessTest()
     {
         _configRoot = new ConfigurationBuilder().AddUserSecrets<BusinessTest>().Build();
@@ -333,7 +432,8 @@ public class BusinessTest
         {
             Id = 1,
             Username = "Mohammad",
-            Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460"
+            Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460",
+            RoleId = 1
 
 
         },
@@ -341,12 +441,52 @@ public class BusinessTest
         {
             Id = 2,
             Username = "Fateme",
-            Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77"
+            Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77",
+            RoleId = 2
             //Ff123**ff
         }
         };
+        var lessons = new List<Lesson>{
+            new Lesson{
+                Id = 1,
+                Title = "lesson 1"
+            }
+        };
+        var duties = new List<Entity.Models.Duty>{
+            new Entity.Models.Duty{
+                Id = 1,
+                Title = "duty number 1",
+                Description = "some des",
+                ArrangedDate = DateTime.Today,
+                CreationDate = DateTime.Now,
+                ConsultantId = 1,
+                StudentId = 1,
+                OlderDutyId = null,
+                IsActive = true,
+                LessonId = 1
+            }
+        };
+        var roles = new List<Role>{
+            new Role{
+                Id = 1,
+                Title = "teacher"
+            },
+            new Role{
+                Id = 2,
+                Title = "student"
+            }
+        };
 
 
+        _dutyRepositoryServiceMock = new Mock<IDutyRepository>();
+        _dutyRepositoryServiceMock.Setup(a => a.GetLessonIds()).Returns(lessons.Select(e => e.Id).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(users.Where(z => z.RoleId == 2).Select(a => a.Id).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetConsultantIds()).Returns(users.Where(z => z.RoleId == 1).Select(v => v.Id).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.Get()).Returns(duties.AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.Find(duties[0].Id)).Returns(duties[0]);
+        _dutyRepositoryServiceMock.Setup(a => a.Create(_newDuty)).Returns("");
+        _dutyRepositoryServiceMock.Setup(a => a.Update(_updatedDuty)).Returns("");
+        _dutyRepositoryServiceMock.Setup(a => a.GetDutyIds()).Returns(new List<int>() { 1 }.AsQueryable<int>());
         _userRepositoryServiceMock = new Mock<IUserRepository>();
         _userRepositoryServiceMock.Setup(a => a.Get()).Returns(users.AsQueryable<User>);
         _userRepositoryServiceMock.Setup(a => a.Find(_user.Id)).Returns(_user);
@@ -377,8 +517,9 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.ChangeUserPassword(_user.Id, Helper.ComputeSHA256Hash("Mrx*77798")))
         .Returns("");
 
-        _userRepositoryServiceMock.Setup(a=> a.FindUserByEmail(_user.Email)).Returns(_user);
+        _userRepositoryServiceMock.Setup(a => a.FindUserByEmail(_user.Email)).Returns(_user);
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
+        _dutyBusiness = new DutyBusiness(_dutyRepositoryServiceMock.Object);
     }
     [Fact]
     public void Should_Register_Valid_User_Dto()
@@ -462,14 +603,15 @@ public class BusinessTest
             {"Smtp:Password", _configRoot.GetSection("Smtp").GetSection("Password").Value}
             //...populate as needed for the test
         };
-        IConfiguration config =new  ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
-        
+        IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
+
         var result = _userBusiness.SendActivationCode(correct_input, config, "/", "Account/ActivateAccount");
         result.Success.Should().BeTrue();
     }
     [Theory]
     [ClassData(typeof(SendActivationCodeDtoParameters))]
-    public void Should_Not_Send_Activation_Code(SendActivationCodeDto dto , string reason){
+    public void Should_Not_Send_Activation_Code(SendActivationCodeDto dto, string reason)
+    {
 
         var inMemorySettings = new Dictionary<string, string> {
             {"Smtp:Host", _configRoot.GetSection("Smtp").GetSection("Host").Value},
@@ -478,9 +620,9 @@ public class BusinessTest
             {"Smtp:Password", _configRoot.GetSection("Smtp").GetSection("Password").Value}
             //...populate as needed for the test
         };
-        IConfiguration config =new  ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
+        IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
 
-        var result = _userBusiness.SendActivationCode(dto,config , "/","/Account/ActivateAccout");
+        var result = _userBusiness.SendActivationCode(dto, config, "/", "/Account/ActivateAccout");
         result.Success.Should().BeFalse();
         switch (reason)
         {
@@ -488,5 +630,40 @@ public class BusinessTest
             case "not-found-email": result.EmailErrorMessages.Should().Contain(reason); break;
         }
     }
+    [Fact]
+    public void Should_Create_Duty()
+    {
+        var correct_input = new DutyDto
+        {
+            ConsultantId = 1,
+            StudentId = 2,
+            Description = "some random description",
+            ArrangedDate = DateTime.Now,
+            Title = "the title of the test new duty",
+            LessonId = 1,
+            OlderDutyId = null
+        };
+        var result = _dutyBusiness.CreateDuty(correct_input);
+        result.Success.Should().BeTrue();
+    }
+    [Theory]
+    [ClassData(typeof(DutyDtoParameters))]
+    public void Shoud_Not_Create_Duty(DutyDto dto, string reason)
+    {
+        var result = _dutyBusiness.CreateDuty(dto);
+        // var unExpected = "";
+        result.Success.Should().BeFalse();
+        switch (reason)
+        {
+            case "invalid-title": result.TitleErrorMessage.Should().Contain(reason); break;
+            case "invalid-lessonId": result.LessonIdErrorMessage.Should().Contain(reason); break;
+            case "invalid-studentId": result.StudentIdErrorMessage.Should().Contain(reason); break;
+            case "invalid-consultantId": result.ConsultantIdErrorMessage.Should().Contain(reason); break;
+            case "invalid-arrangedDate": result.ArrangedDateErrorMessage.Should().Contain(reason); break;
+            case "invalid-olderDutyId": result.OlderDutyIdErrorMessage.Should().Contain(reason); break;
 
+
+        }
+
+    }
 }

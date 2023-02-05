@@ -1,13 +1,17 @@
 namespace Entity.Models
 {
-    public class TaskReply
+    public class DutyReply
     {
-        public int TaskId { get; set; }
+        public DutyReply()
+        {
+            
+        }
+        public int DutyId { get; set; }
         public bool IsSucceed { get; set; }
         public bool IsFailed { get; set; }
         public string? Description { get; set; }
         public DateTime CreationDate { get; set; }
         public int UserId { get; set; }
-        public virtual Task Task { get; set; } = new Task();
+        public virtual Entity.Models.Duty Duty { get; set; }
     }
 }

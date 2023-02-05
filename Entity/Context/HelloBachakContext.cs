@@ -16,8 +16,8 @@ public class HelloBachakContext : DbContext
     public virtual DbSet<Grade> Grades { get; set; }
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Lesson> Lessons{ get; set; }
-    public virtual DbSet<Task> Tasks { get; set; }
-    public virtual DbSet<TaskReply> TaskReplies { get; set; }
+    public virtual DbSet<Entity.Models.Duty> Duties { get; set; }
+    public virtual DbSet<DutyReply> DutyReplies { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder){
         modelBuilder.Entity<Sex>(entity => {
@@ -37,7 +37,7 @@ public class HelloBachakContext : DbContext
         modelBuilder.Entity<Lesson>(entity=>{
             entity.ToTable("Lesson");
             entity.HasKey(a=>a.Id);
-            entity.HasMany(a=>a.Tasks).WithOne(a=>a.Lesson).HasForeignKey(a=> a.LessonId).IsRequired();
+            entity.HasMany(a=>a.Duties).WithOne(a=>a.Lesson).HasForeignKey(a=> a.LessonId).IsRequired();
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(50);
         });
         modelBuilder.Entity<Role>(entity => {
@@ -57,19 +57,19 @@ public class HelloBachakContext : DbContext
             entity.Property(a=> a.PhoneNumber).IsRequired().HasMaxLength(50);
             entity.Property(a=> a.Description).IsRequired(false);
         });
-        modelBuilder.Entity<Task>(entity=> {
+        modelBuilder.Entity<Entity.Models.Duty>(entity=> {
             entity.ToTable("Task");
 
             entity.HasKey(a=> a.Id);
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(200);
-            entity.HasOne(a=> a.Lesson).WithMany(a=>a.Tasks).HasForeignKey(a=> a.LessonId).IsRequired();
-            entity.HasOne(a=> a.OlderTask).WithOne(a=> a.NewTask).HasForeignKey<Task>(a=> a.OlderTaskId).IsRequired(false);
-            entity.HasOne(a=> a.TaskReply).WithOne(a=> a.Task).HasForeignKey<TaskReply>(a=> a.TaskId).IsRequired(false);
+            entity.HasOne(a=> a.Lesson).WithMany(a=>a.Duties).HasForeignKey(a=> a.LessonId).IsRequired();
+            entity.HasOne(a=> a.OlderDuty).WithOne(a=> a.NewDuty).HasForeignKey<Entity.Models.Duty>(a=> a.OlderDutyId).IsRequired(false);
+            entity.HasOne(a=> a.DutyReply).WithOne(a=> a.Duty).HasForeignKey<DutyReply>(a=> a.DutyId).IsRequired(false);
         });
-        modelBuilder.Entity<TaskReply>(entity => {
+        modelBuilder.Entity<DutyReply>(entity => {
             entity.ToTable("TaskReply");
 
-            entity.HasKey(a=> a.TaskId);
+            entity.HasKey(a=> a.DutyId);
 
         });
     }
