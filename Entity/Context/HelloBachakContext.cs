@@ -58,7 +58,7 @@ public class HelloBachakContext : DbContext
             entity.Property(a=> a.Description).IsRequired(false);
         });
         modelBuilder.Entity<Entity.Models.Duty>(entity=> {
-            entity.ToTable("Task");
+            entity.ToTable("Duty");
 
             entity.HasKey(a=> a.Id);
             entity.Property(a=> a.Title).IsRequired().HasMaxLength(200);
@@ -67,7 +67,7 @@ public class HelloBachakContext : DbContext
             entity.HasOne(a=> a.DutyReply).WithOne(a=> a.Duty).HasForeignKey<DutyReply>(a=> a.DutyId).IsRequired(false);
         });
         modelBuilder.Entity<DutyReply>(entity => {
-            entity.ToTable("TaskReply");
+            entity.ToTable("DutyReply");
 
             entity.HasKey(a=> a.DutyId);
 

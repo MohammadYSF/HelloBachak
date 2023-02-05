@@ -1,8 +1,8 @@
 namespace Business.Results;
 
-public class DutyDtoResult
+public class CreateDutyResult
 {
-    public DutyDtoResult(DutyDtoValidationResult validationResult, Language lang)
+    public CreateDutyResult(DutyDtoValidationResult validationResult, Language lang)
     {
         this.Success = validationResult.Success;
         if (lang == Language.English)

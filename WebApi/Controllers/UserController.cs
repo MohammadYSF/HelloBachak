@@ -17,6 +17,7 @@ public class UserController : ControllerBase
     private readonly UnitOfWork _db;
     private readonly ILogger<UserController> _logger;
     private readonly UserBusiness _userBusiness;
+    private readonly DutyBusiness _dutyBusiness;
     private readonly IConfiguration _config;
     private readonly IConfigurationRoot _configRoot;
     private readonly IWebHostEnvironment _webHostEnvironment;
@@ -26,6 +27,7 @@ public class UserController : ControllerBase
         _db = new UnitOfWork(context);
         _logger = logger;
         _userBusiness = new UserBusiness(new UserRepository(context));
+        _dutyBusiness = new DutyBusiness(new DutyRepository(context));
         _config = config;
         _configRoot = new ConfigurationBuilder().AddUserSecrets<UserController>().Build();
         _webHostEnvironment = webHostEnvironment;
@@ -66,6 +68,12 @@ public class UserController : ControllerBase
         var result = new SendActivationCodeResult(_userBusiness.SendActivationCode(sendActivationCodeDto,
          _configRoot,_webHostEnvironment.ContentRootPath, _webHostEnvironment.ContentRootPath + "/api/User/SendActivationCode")
          , Language.Persian);
+        return result;
+    }
+    [Route("CreateDuty")]
+    [HttpPost]
+    public CreateDutyResult CreateDuty(DutyDto dutyDto){
+        var result = new CreateDutyResult(_dutyBusiness.CreateDuty(dutyDto) , Language.Persian);
         return result;
     }
 }
