@@ -367,6 +367,7 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
 }
 public class BusinessTest
 {
+    private LessonBusiness _lessonBusiness;
     private UserBusiness _userBusiness;
     private DutyBusiness _dutyBusiness;
     private Sex _sex = new Sex
@@ -396,6 +397,22 @@ public class BusinessTest
         Username = "Zahra"
 
     };
+    private Lesson _newLesson = new Lesson
+    {
+        Title = "lesson new"
+    };
+    private Lesson _updatedLesson = new Lesson
+    {
+        Title = "updated lesson 1",
+        CreationDate = DateTime.Now,
+        Id = 1
+    };
+    private List<Lesson> _lessons = new List<Lesson>{
+            new Lesson{
+                Id = 1,
+                Title = "lesson 1"
+            }
+        };
     private Entity.Models.Duty _newDuty = new Entity.Models.Duty()
     {
         Title = "new duty",
@@ -421,13 +438,7 @@ public class BusinessTest
         IsActive = true,
         LessonId = 1
     };
-    private IConfigurationRoot _configRoot;
-    private Mock<IUserRepository> _userRepositoryServiceMock;
-    private Mock<IDutyRepository> _dutyRepositoryServiceMock;
-    public BusinessTest()
-    {
-        _configRoot = new ConfigurationBuilder().AddUserSecrets<BusinessTest>().Build();
-        var users = new List<User>(){
+    private List<User> _users = new List<User>(){
             new User
         {
             Id = 1,
@@ -446,12 +457,25 @@ public class BusinessTest
             //Ff123**ff
         }
         };
-        var lessons = new List<Lesson>{
-            new Lesson{
+    private List<Role> _roles = new List<Role>{
+            new Role{
                 Id = 1,
-                Title = "lesson 1"
+                Title = "consultant"
+            },
+            new Role{
+                Id = 2,
+                Title = "student"
             }
         };
+    private IConfigurationRoot _configRoot;
+    private Mock<IUserRepository> _userRepositoryServiceMock;
+    private Mock<IDutyRepository> _dutyRepositoryServiceMock;
+    private Mock<ILessonRepository> _lessonRepositoryServiceMock;
+    public BusinessTest()
+    {
+        _configRoot = new ConfigurationBuilder().AddUserSecrets<BusinessTest>().Build();
+
+
         var duties = new List<Entity.Models.Duty>{
             new Entity.Models.Duty{
                 Id = 1,
@@ -466,29 +490,26 @@ public class BusinessTest
                 LessonId = 1
             }
         };
-        var roles = new List<Role>{
-            new Role{
-                Id = 1,
-                Title = "teacher"
-            },
-            new Role{
-                Id = 2,
-                Title = "student"
-            }
-        };
+
+        _lessonRepositoryServiceMock = new Mock<ILessonRepository>();
+        _lessonRepositoryServiceMock.Setup(a => a.Get()).Returns(_lessons.AsQueryable());
+        _lessonRepositoryServiceMock.Setup(a => a.Create(_newLesson)).Returns("");
+        _lessonRepositoryServiceMock.Setup(a => a.Update(_updatedLesson)).Returns("");
+        _lessonRepositoryServiceMock.Setup(a => a.Find(_lessons[0].Id)).Returns(_lessons[0]);
 
 
         _dutyRepositoryServiceMock = new Mock<IDutyRepository>();
-        _dutyRepositoryServiceMock.Setup(a => a.GetLessonIds()).Returns(lessons.Select(e => e.Id).AsQueryable());
-        _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(users.Where(z => z.RoleId == 2).Select(a => a.Id).AsQueryable());
-        _dutyRepositoryServiceMock.Setup(a => a.GetConsultantIds()).Returns(users.Where(z => z.RoleId == 1).Select(v => v.Id).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetLessonIds()).Returns(_lessons.Select(e => e.Id).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(_users.Where(z => z.RoleId == 2).Select(a => a.Id).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetConsultantIds()).Returns(_users.Where(z => z.RoleId == 1).Select(v => v.Id).AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.Get()).Returns(duties.AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.Find(duties[0].Id)).Returns(duties[0]);
         _dutyRepositoryServiceMock.Setup(a => a.Create(_newDuty)).Returns("");
         _dutyRepositoryServiceMock.Setup(a => a.Update(_updatedDuty)).Returns("");
         _dutyRepositoryServiceMock.Setup(a => a.GetDutyIds()).Returns(new List<int>() { 1 }.AsQueryable<int>());
+
         _userRepositoryServiceMock = new Mock<IUserRepository>();
-        _userRepositoryServiceMock.Setup(a => a.Get()).Returns(users.AsQueryable<User>);
+        _userRepositoryServiceMock.Setup(a => a.Get()).Returns(_users.AsQueryable<User>);
         _userRepositoryServiceMock.Setup(a => a.Find(_user.Id)).Returns(_user);
         _userRepositoryServiceMock.Setup(a => a.Create(_newUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.Update(_updatedUser)).Returns("");
@@ -518,8 +539,12 @@ public class BusinessTest
         .Returns("");
 
         _userRepositoryServiceMock.Setup(a => a.FindUserByEmail(_user.Email)).Returns(_user);
+        _userRepositoryServiceMock.Setup(a => a.FindRole(_roles[1].Id)).Returns(_roles[1]);
+        _userRepositoryServiceMock.Setup(a => a.FindRole(_roles[0].Id)).Returns(_roles[0]);
+
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
         _dutyBusiness = new DutyBusiness(_dutyRepositoryServiceMock.Object);
+        _lessonBusiness = new LessonBusiness(_lessonRepositoryServiceMock.Object);
     }
     [Fact]
     public void Should_Register_Valid_User_Dto()
@@ -664,6 +689,28 @@ public class BusinessTest
 
 
         }
+
+    }
+    [Fact]
+    public void Should_Get_All_Lessons()
+    {
+        var result = _lessonBusiness.GetAllLessons();
+        result.Should().BeEquivalentTo(_lessons.Select(a => new LessonDto
+        {
+            Id = a.Id,
+            Title = a.Title
+        }).ToList());
+    }
+    [Fact]
+    public void Should_Get_All_Students()
+    {
+        var result = _userBusiness.GetAllStudents();
+        var roleIdForBeingStudent = _roles.First(a=> a.Title.ToLower() == "student").Id;
+        result.Should().BeEquivalentTo(_users.Where(a=> a.RoleId == roleIdForBeingStudent).Select(a => new UserDto
+        {
+            Id = a.Id,
+            Username = a.Username
+        }).ToList());
 
     }
 }

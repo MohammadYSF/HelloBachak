@@ -9,6 +9,7 @@ using AutoMapper;
 using Business.Helpers;
 using Business.Results;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business;
 
@@ -64,8 +65,18 @@ public class UserBusiness
         return validationResult;
 
     }
+    public List<UserDto> GetAllStudents()
+    {
+        
+        var answer =  _userRepository.Get().Where((a) => _userRepository.FindRole(a.RoleId).Title.ToLower() == "student").Select(b => new UserDto
+        {
+            Id = b.Id,
+            Username = b.Username
+        }).ToList();
+        return answer;
+    }
 
-    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto,  IConfiguration config, string baseUrl , string redirectedLink)
+    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IConfiguration config, string baseUrl, string redirectedLink)
     {
         var sendActivationCodeDtoValidator = new SendActivationCodeDtoValidator(_userRepository.GetUsersEmails());
         string email = sendActivationCodeDto.Email;

@@ -161,4 +161,13 @@ public class UserRepository : IUserRepository
     {
         return _db.Users.First(a=> a.Email == email);
     }
+
+    public Role FindRole(int roleId)
+    {
+       var role = _db.Roles.First(a=> a.Id == roleId);
+       if (role == null){
+        throw new NullReferenceException();
+       }
+       return role;
+    }
 }
