@@ -67,8 +67,9 @@ public class UserBusiness
     }
     public List<UserDto> GetAllStudents()
     {
-        
-        var answer =  _userRepository.Get().Where((a) => _userRepository.FindRole(a.RoleId).Title.ToLower() == "student").Select(b => new UserDto
+
+        var answer = _userRepository.GetAllStudents()
+        .Select(b => new UserDto
         {
             Id = b.Id,
             Username = b.Username

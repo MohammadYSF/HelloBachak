@@ -32,13 +32,13 @@ public class UserController : ControllerBase
         _configRoot = new ConfigurationBuilder().AddUserSecrets<UserController>().Build();
         _webHostEnvironment = webHostEnvironment;
     }
-    [Route("ShowUsers")]
+    [Route("GetAllStudents")]
     [HttpGet]
-    public async Task<IEnumerable<User>> ShowUsers()
+    public IEnumerable<UserDto> GetAllStudents()
     {
-        var data = await _db.UserRepository.Get().ToListAsync();
-        _db.Dispose();
-        return data;
+        var result = _userBusiness.GetAllStudents();
+        
+        return result;
     }
     [Route("SayHello")]
     [HttpGet]

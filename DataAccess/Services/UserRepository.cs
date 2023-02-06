@@ -1,6 +1,7 @@
 using DataAccess.Repositories;
 using Entity.Context;
 using Entity.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Services;
 
@@ -169,5 +170,11 @@ public class UserRepository : IUserRepository
         throw new NullReferenceException();
        }
        return role;
+    }
+
+    public IQueryable<User> GetAllStudents()
+    {
+        var x = _db.Users.Include(a=> a.Role).Where(a=> a.Role.Title.ToLower() == "student");
+        return x;
     }
 }

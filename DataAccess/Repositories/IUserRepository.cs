@@ -6,6 +6,7 @@ using Entity.Models;
 public interface IUserRepository
 {
     public IQueryable<User> Get();
+    public IQueryable<User>GetAllStudents();
     string Create(User user);
     string Update(User user);
     string Delete(User user);
