@@ -76,7 +76,6 @@ public class UserBusiness
         }).ToList();
         return answer;
     }
-
     public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IConfiguration config, string baseUrl, string redirectedLink)
     {
         var sendActivationCodeDtoValidator = new SendActivationCodeDtoValidator(_userRepository.GetUsersEmails());

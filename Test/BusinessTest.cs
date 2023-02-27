@@ -407,6 +407,18 @@ public class BusinessTest
         CreationDate = DateTime.Now,
         Id = 1
     };
+    private List<DutyDto> _duties = new List<DutyDto>{
+        new DutyDto{
+            Id = 1,
+        Title = "duty 1",
+        ArrangedDate = DateTime.Today,
+        IsActive = true,
+        LessonTitle = "title lesson 1",
+        StudentTitle = "Fateme",
+        ConsultantTitle = "Mohammad",
+
+        }
+    };
     private List<Lesson> _lessons = new List<Lesson>{
             new Lesson{
                 Id = 1,
@@ -541,10 +553,38 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.FindUserByEmail(_user.Email)).Returns(_user);
         _userRepositoryServiceMock.Setup(a => a.FindRole(_roles[1].Id)).Returns(_roles[1]);
         _userRepositoryServiceMock.Setup(a => a.FindRole(_roles[0].Id)).Returns(_roles[0]);
-
+        _userRepositoryServiceMock.Setup(a=> a.GetAllStudents()).Returns(new List<User>{   new User
+        {
+            Id = 2,
+            Username = "Fateme",
+            Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77",
+            RoleId = 2
+            //Ff123**ff
+        }}.AsQueryable());
         _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
         _dutyBusiness = new DutyBusiness(_dutyRepositoryServiceMock.Object);
         _lessonBusiness = new LessonBusiness(_lessonRepositoryServiceMock.Object);
+
+        _dutyRepositoryServiceMock.Setup(a => a.Get()).Returns(new List<Duty>{new Duty{
+            Id = 1,
+            Title = "duty 1",
+            Student =new User{
+                Id=1,
+                Username="Fateme"
+            },
+            Consultant = new User{
+                Id=2,
+                Username="Mohammad"
+            },
+            ArrangedDate=DateTime.Today,
+            IsActive=true,
+            Lesson = new Lesson{
+                Id=1,
+                Title = "title lesson 1"
+            }
+
+
+        }}.AsQueryable());
     }
     [Fact]
     public void Should_Register_Valid_User_Dto()
@@ -705,12 +745,27 @@ public class BusinessTest
     public void Should_Get_All_Students()
     {
         var result = _userBusiness.GetAllStudents();
-        var roleIdForBeingStudent = _roles.First(a=> a.Title.ToLower() == "student").Id;
-        result.Should().BeEquivalentTo(_users.Where(a=> a.RoleId == roleIdForBeingStudent).Select(a => new UserDto
+        var roleIdForBeingStudent = _roles.First(a => a.Title.ToLower() == "student").Id;
+        result.Should().BeEquivalentTo(_users.Where(a => a.RoleId == roleIdForBeingStudent).Select(a => new UserDto
         {
             Id = a.Id,
             Username = a.Username
         }).ToList());
 
+    }
+    [Fact]
+    public void Should_Get_All_Duties()
+    {
+        List<DutyDto> result = _dutyBusiness.GetAllDuties();
+        result.Should().BeEquivalentTo(_duties.Select(a => new DutyDto
+        {
+            ArrangedDate = a.ArrangedDate,
+            Id = a.Id,
+            IsActive = a.IsActive,
+            Title = a.Title,
+            ConsultantTitle = a.ConsultantTitle,
+            LessonTitle = a.LessonTitle,
+            StudentTitle = a.StudentTitle
+        }));
     }
 }

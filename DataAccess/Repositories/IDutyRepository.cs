@@ -17,4 +17,5 @@ public interface IDutyRepository
     IQueryable<int> GetConsultantIds();
     IQueryable<int> GetDutyIds();
     int Save();
+    IQueryable<Duty> GetAllStudents();
 }

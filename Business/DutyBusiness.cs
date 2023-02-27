@@ -42,7 +42,21 @@ public class DutyBusiness
         }
         return validationResult;
     }
-   
 
-  
+    public List<DutyDto> GetAllDuties()
+    {
+        var answer = _dutyRepository.Get()
+        .Select(b => new DutyDto
+        {
+            Id = b.Id,
+            Title = b.Title,
+            IsActive = b.IsActive,
+            StudentTitle = b.Student.Username,
+            ConsultantTitle = b.Consultant.Username,
+            ArrangedDate = b.ArrangedDate,
+            LessonTitle = b.Lesson.Title
+
+        }).ToList();
+        return answer;
+    }
 }

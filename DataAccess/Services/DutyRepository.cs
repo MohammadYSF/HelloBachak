@@ -60,6 +60,11 @@ public class DutyRepository : IDutyRepository
         return _db.Duties;
     }
 
+    public IQueryable<Duty> GetAllStudents()
+    {
+        return _db.Duties.Include(a=> a.Lesson).Include(a=> a.Consultant).Include(a=> a.Student);
+    }
+
     public IQueryable<int> GetConsultantIds()
     {
         var y = _db.Roles.ToList();

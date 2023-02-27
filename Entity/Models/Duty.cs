@@ -20,4 +20,7 @@ public class Duty
     public virtual Lesson Lesson { get; set; }
     public virtual DutyReply DutyReply { get; set; }
     public virtual Entity.Models.Duty? NewDuty{get;set;}
+
+    public virtual User Consultant { get; set; }
+    public virtual User Student { get; set; }
 }

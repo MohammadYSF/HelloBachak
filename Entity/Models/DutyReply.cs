@@ -11,7 +11,6 @@ namespace Entity.Models
         public bool IsFailed { get; set; }
         public string? Description { get; set; }
         public DateTime CreationDate { get; set; }
-        public int UserId { get; set; }
         public virtual Entity.Models.Duty Duty { get; set; }
     }
 }
