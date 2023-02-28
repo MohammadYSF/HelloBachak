@@ -1,0 +1,27 @@
+.bg-primary{
+    height: 100vh !important;
+}
+#registerCard{
+    background: #fff;
+    position: relative;
+    top: 100px;
+    padding-top: 20px;
+    padding-bottom: 60px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.inp{
+    background: #eee;
+    border: none;
+    margin-top: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    direction: rtl !important;
+}
+.inp:focus{
+    background: #ccc;
+    outline: none !important;
+}
+.errorMessage{
+    font-size: 13px;
+}
