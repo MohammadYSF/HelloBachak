@@ -7,7 +7,7 @@ export const RegisterUser = () => {
             
             <div className="bg-primary">
                 <div className="row">
-                    <form onSubmit={handleSubmit((data) => { setData(JSON.stringify(data)) })} className="container col-12 col-sm-8 col-md-6 col-lg-4" id="registerCard">
+                    <form onSubmit={handleSubmit((data) => { alert("Wait") })} className="container col-12 col-sm-8 col-md-6 col-lg-4" id="registerCard">
                         <h1 className="text-dark text-center">ثبت کاربر</h1>
                         <div className="row">
                             <div className="col-6">
@@ -15,7 +15,7 @@ export const RegisterUser = () => {
                                 <span className="text-danger errorMessage">{errors.Username?.message}</span>
                             </div>
                             <div className="col-6">
-                                <input {...register("Age")} type={"number"} defaultValue={12} placeholder="سن" className="w-100 inp" />
+                                <input {...register("Age")} type={"number"} defaultValue={16} placeholder="سن" className="w-100 inp" />
                                 <span className="text-danger errorMessage">{errors.Age?.message}</span>
                             
                             </div>
