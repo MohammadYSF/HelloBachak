@@ -1,7 +1,8 @@
 import { UseAssignDuty } from "./Hook";
 import "./style.css";
 export const AssignDuty = () => {
-    const { data, setData, handleSubmit, register, errors } = UseAssignDuty();
+    const { data, setData, handleSubmit, register, errors , myOwnHandleSubmit
+         , onChangeDayInput , onChangeMonthInput , numberOfDaysOfMonth , maxMonthNumber} = UseAssignDuty();
 
     return (
         <>
@@ -21,11 +22,11 @@ export const AssignDuty = () => {
                             </div>
                             <div className="col-12 row text-center">
                                 <div className="col-4">
-                                    <input {...register("Day")} type={"number"} defaultValue={''} min={1} max={31} placeholder="روز" className="inp w-100" />
+                                    <input  {...register("Day")} type={"number"} onChange={onChangeDayInput} defaultValue={''} min={1} max={numberOfDaysOfMonth} placeholder="روز" className="inp w-100" />
                                     <span className="text-danger errorMessage">{errors.Day?.message}</span>
                                 </div>
                                 <div className="col-4">
-                                    <input {...register("Month")} type={"number"} defaultValue={''} min={1} max={12} placeholder="ماه" className="inp w-100" />
+                                    <input {...register("Month")} onChange={onChangeMonthInput} type={"number"} defaultValue={''} min={1} max={maxMonthNumber} placeholder="ماه" className="inp w-100" />
                                     <span className="text-danger errorMessage">{errors.Month?.message}</span>
 
                                 </div>
@@ -38,7 +39,7 @@ export const AssignDuty = () => {
 
                             </div>
                             <div className="col-6 mt-2">
-                                <select {...register("LessonId")} class="form-select" aria-label="Default select example">
+                                <select {...register("LessonId")} className="form-select" aria-label="Default select example">
                                     <option value={0}>انتخاب درس ...</option>
                                     <option value="1">درس ۱</option>
                                     <option value="2">درس ۲</option>
@@ -48,7 +49,7 @@ export const AssignDuty = () => {
 
                             </div>
                             <div className="col-6 mt-2">
-                                <select {...register("StudentId")} class="form-select" aria-label="Default select example">
+                                <select {...register("StudentId")} className="form-select" aria-label="Default select example">
                                     <option value="0">انتخاب دانش آموز ...</option>
                                     <option value="1">دانش آموز ۱</option>
                                     <option value="2">دانش آموز ۲</option>
