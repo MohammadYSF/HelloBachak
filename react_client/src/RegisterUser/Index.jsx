@@ -1,13 +1,13 @@
 import { UseRegisterForm } from "./Hook";
 import "./style.css";
 export const RegisterUser = () => {
-    const { data, setData, handleSubmit, register , errors } = UseRegisterForm();
+    const { data, setData, handleSubmit, register , errors , myOwnHandleSubmit } = UseRegisterForm();
     return (
         <>
             
             <div className="bg-primary">
                 <div className="row">
-                    <form onSubmit={handleSubmit((data) => { alert("Wait") })} className="container col-12 col-sm-8 col-md-6 col-lg-4" id="registerCard">
+                    <form onSubmit={handleSubmit((data) => { myOwnHandleSubmit(data)})} className="container col-12 col-sm-8 col-md-6 col-lg-4" id="registerCard">
                         <h1 className="text-dark text-center">ثبت کاربر</h1>
                         <div className="row">
                             <div className="col-6">
@@ -21,7 +21,7 @@ export const RegisterUser = () => {
                             </div>
                             <div className="col-12">
 
-                                <input {...register("Email")} type={"email"} placeholder="ایمیل" className="w-100 inp" />
+                                <input {...register("Email")} type={"text"} placeholder="ایمیل" className="w-100 inp" />
                                 <span className="text-danger errorMessage">{errors.Email?.message}</span>
 
                             </div>

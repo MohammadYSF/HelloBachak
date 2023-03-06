@@ -7,10 +7,13 @@ export const UseRegisterForm = () => {
     const { register, handleSubmit,formState:{errors} } = useForm({
         resolver:yupResolver(RegisterUserHelper.schema)
     });
+    const myOwnHandleSubmit = (data) => {
+        console.log(data);
+    }
     const [data, setData] = useState("");
     return(
         {
-            data,setData,handleSubmit , register , errors
+            data,setData,handleSubmit , register , errors , myOwnHandleSubmit
         }
     );
 }
