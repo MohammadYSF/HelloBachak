@@ -1,7 +1,7 @@
-.bg-primary{
+.bg-info{
     height: 100vh !important;
 }
-#assignDutyCard{
+#registerCard{
     background: #fff;
     position: relative;
     top: 100px;

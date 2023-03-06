@@ -3,11 +3,13 @@ import "vazirmatn/Vazirmatn-font-face.css";
 import logo from './logo.svg';
 import './App.css';
 import { RegisterUser } from './RegisterUser/Index';
+import { AssignDuty } from "./AssignDuty/Index";
 
 function App() {
   return (
     <div className="App">
-      <RegisterUser />
+      {/* <RegisterUser /> */}
+      <AssignDuty />
     </div>
   );
 }
