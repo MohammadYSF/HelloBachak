@@ -11,6 +11,7 @@ export const UseAssignDuty = () => {
     const [maxMonthNumber , setMaxMonthNumber] = useState(12);
     const [data, setData] = useState("");
     const [mode , setMode] = useState(1);
+    const [previousDuties , setPreviousDuties] = useState([]);
     const myOwnHandleSubmit = (data) => {
 
     }
@@ -33,11 +34,12 @@ export const UseAssignDuty = () => {
             setMaxMonthNumber(12);
         }        
     }
-    return(
+    const accordionData = new AssignDutyHelper().previousDuties;
+    return(        
         {
             data,setData,handleSubmit , register , errors  ,
              myOwnHandleSubmit , onChangeDayInput , onChangeMonthInput , numberOfDaysOfMonth , maxMonthNumber,
-             mode
+             mode , accordionData
         }
     );
 }
