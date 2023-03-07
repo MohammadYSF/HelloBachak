@@ -1,10 +1,10 @@
 .bg-info{
     height: 100vh !important;
 }
-#registerCard{
+#assignDutyCard{
     background: #fff;
     position: relative;
-    top: 100px;
+    top: 30px !important;
     padding-top: 20px;
     padding-bottom: 60px;
     padding-left: 30px;

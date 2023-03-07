@@ -10,6 +10,7 @@ export const UseAssignDuty = () => {
     const [numberOfDaysOfMonth , setNumberOfDaysOfMonth] = useState(31);
     const [maxMonthNumber , setMaxMonthNumber] = useState(12);
     const [data, setData] = useState("");
+    const [mode , setMode] = useState(1);
     const myOwnHandleSubmit = (data) => {
 
     }
@@ -35,7 +36,8 @@ export const UseAssignDuty = () => {
     return(
         {
             data,setData,handleSubmit , register , errors  ,
-             myOwnHandleSubmit , onChangeDayInput , onChangeMonthInput , numberOfDaysOfMonth , maxMonthNumber
+             myOwnHandleSubmit , onChangeDayInput , onChangeMonthInput , numberOfDaysOfMonth , maxMonthNumber,
+             mode
         }
     );
 }

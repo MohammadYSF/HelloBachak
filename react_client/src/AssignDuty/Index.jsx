@@ -1,12 +1,32 @@
 import { UseAssignDuty } from "./Hook";
-import "./style.css";
+import Accordion from 'react-bootstrap/Accordion';
+import "../AssignDuty/style.css";
 export const AssignDuty = () => {
-    const { data, setData, handleSubmit, register, errors , myOwnHandleSubmit
-         , onChangeDayInput , onChangeMonthInput , numberOfDaysOfMonth , maxMonthNumber} = UseAssignDuty();
+    const { data, setData, handleSubmit, register, errors, myOwnHandleSubmit
+        , onChangeDayInput, onChangeMonthInput, numberOfDaysOfMonth, maxMonthNumber, mode } = UseAssignDuty();
 
     return (
         <>
+
             <div className="bg-info">
+                <div className="container w-50 pt-5">
+                    {mode == 1 ?
+                        <Accordion>
+                            <Accordion.Item eventKey="0">
+                                <Accordion.Header>دیوتی تعریف شده ۱</Accordion.Header>
+                                <Accordion.Body>
+                                    توضیحاتی راجع به دیوتی ۱
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey="1">
+                            <Accordion.Header>دیوتی تعریف شده ۲</Accordion.Header>
+                                <Accordion.Body>
+                                    توضیحاتی راجع به دیوتی ۲
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                        : <></>}
+                </div>
                 <div className="row">
                     <form onSubmit={handleSubmit((data) => { })} className="container col-12 col-sm-8 col-md-6 col-lg-4" id="assignDutyCard">
                         <h1 className="text-dark text-center">ثبت تکلیف</h1>

@@ -10,8 +10,8 @@ function App() {
   return (
     <div className="App">
       {/* <RegisterUser /> */}
-      {/* <AssignDuty /> */}
-      <DutyReply />
+      <AssignDuty />
+      {/* <DutyReply /> */}
     </div>
   );
 }
