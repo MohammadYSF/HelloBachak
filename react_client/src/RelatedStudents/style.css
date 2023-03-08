@@ -1,0 +1,24 @@
+.bg-secondary{
+    height: 100vh !important;
+}
+.inp{
+    background: #eee;
+    border: none;
+    margin-top: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    direction: rtl !important;
+}
+.inp:focus{
+    background: #ccc;
+    outline: none !important;
+}
+.errorMessage{
+    font-size: 13px;
+}
+.isSuccessLabel{
+    margin-left: 30px;
+}
+label[for="isSuccess1"]{
+    margin-left: 20px;
+}

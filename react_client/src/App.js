@@ -5,13 +5,15 @@ import './App.css';
 import { RegisterUser } from './RegisterUser/Index';
 import { AssignDuty } from "./AssignDuty/Index";
 import { DutyReply } from "./DutyReply/Index";
+import { RelatedStudents } from "./RelatedStudents/Index";
 
 function App() {
   return (
     <div className="App">
       {/* <RegisterUser /> */}
-      <AssignDuty />
+      {/* <AssignDuty /> */}
       {/* <DutyReply /> */}
+      <RelatedStudents />
     </div>
   );
 }
