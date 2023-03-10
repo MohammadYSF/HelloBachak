@@ -6,8 +6,8 @@ import Modal from 'react-bootstrap/Modal';
 import { Student } from "../Student/Index";
 
 export const RelatedStudents = () => {
-    const { data, modalShowState, onClickEditStudent, onClickCloseModal
-        , studentModalTitle, onClickDetailStudent , modalMode } = UseRelatedStudents();
+    const { data, modalShowState, onClickCloseModal
+        , studentModalTitle, onClickDetailStudent } = UseRelatedStudents();
     return (
         <>
             <div className="">
@@ -33,8 +33,6 @@ export const RelatedStudents = () => {
                                         <td>{item.Age}</td>
                                         <td>
                                             <button className="btn btn-danger btn-sm rounded-0">X</button>
-                                            <button className="btn btn-warning btn-sm rounded-0 ms-2"
-                                                onClick={onClickEditStudent}>ویرایش</button>
                                             <button className="btn btn-info btn-sm rounded-0 ms-2"
                                                 onClick={onClickDetailStudent}>جزئیات</button>
                                         </td>
@@ -50,7 +48,7 @@ export const RelatedStudents = () => {
                         </Modal.Header>
 
                         <Modal.Body className="bg-dark text-light">
-                            <Student mode={modalMode}/>
+                            <Student/>
                         </Modal.Body>
 
                         <Modal.Footer className="bg-dark text-light">
