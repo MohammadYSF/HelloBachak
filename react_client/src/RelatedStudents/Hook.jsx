@@ -4,6 +4,9 @@ import {yupResolver} from "@hookform/resolvers/yup"
 import { DutyReplyHelper } from "./Helper";
 
 export const UseRelatedStudents = () => {
+    const [modalMode , setModalMode] = useState("detail");
+    const [modalShowState , setModalShowState] = useState(false); 
+    const [studentModalTitle , setStudentModalTitle] = useState("جزئیات دانش آموز");
     const [data , setData] = useState([
         {
             Id:1,
@@ -40,7 +43,24 @@ export const UseRelatedStudents = () => {
 
         },
     ]);
+    const onClickEditStudent = () => {
+        setModalMode("edit");
+        setStudentModalTitle("ویرایش دانش آموز");
+        setModalShowState(true);
+
+    }
+    const onClickCloseModal = () => {
+        setModalMode("detail");
+        setStudentModalTitle("جزئیات دانش آموز");
+        setModalShowState(false);
+    }
+    const onClickDetailStudent = () => {
+        setModalMode("detail");
+        setStudentModalTitle("جزئیات دانش آموز");
+        setModalShowState(true);
+    }
    return(
-        {data}
+        {data , modalShowState , onClickEditStudent , onClickCloseModal , 
+            studentModalTitle , onClickDetailStudent , modalMode}
     );
 }

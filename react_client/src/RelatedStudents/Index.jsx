@@ -1,8 +1,13 @@
 import "./style.css";
 import Table from 'react-bootstrap/Table';
 import { UseRelatedStudents } from "./Hook";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import { Student } from "../Student/Index";
+
 export const RelatedStudents = () => {
-    const { data } = UseRelatedStudents();
+    const { data, modalShowState, onClickEditStudent, onClickCloseModal
+        , studentModalTitle, onClickDetailStudent , modalMode } = UseRelatedStudents();
     return (
         <>
             <div className="">
@@ -28,7 +33,10 @@ export const RelatedStudents = () => {
                                         <td>{item.Age}</td>
                                         <td>
                                             <button className="btn btn-danger btn-sm rounded-0">X</button>
-                                            <button className="btn btn-warning btn-sm rounded-0 ms-2">E</button>
+                                            <button className="btn btn-warning btn-sm rounded-0 ms-2"
+                                                onClick={onClickEditStudent}>ویرایش</button>
+                                            <button className="btn btn-info btn-sm rounded-0 ms-2"
+                                                onClick={onClickDetailStudent}>جزئیات</button>
                                         </td>
                                     </tr>
                                 );
@@ -36,6 +44,19 @@ export const RelatedStudents = () => {
 
                         </tbody>
                     </Table>
+                    <Modal show={modalShowState} onHide={onClickCloseModal}>
+                        <Modal.Header closeButton className="bg-dark text-light">
+                            <Modal.Title>{studentModalTitle}</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body className="bg-dark text-light">
+                            <Student mode={modalMode}/>
+                        </Modal.Body>
+
+                        <Modal.Footer className="bg-dark text-light">
+                            <Button className="rounded-0" variant="secondary" onClick={onClickCloseModal}>بستن</Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             </div>
         </>
