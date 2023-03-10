@@ -6,15 +6,43 @@ import { RegisterUser } from './RegisterUser/Index';
 import { AssignDuty } from "./AssignDuty/Index";
 import { DutyReply } from "./DutyReply/Index";
 import { RelatedStudents } from "./RelatedStudents/Index";
-
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 function App() {
   return (
-    <div className="App">
-      {/* <RegisterUser /> */}
-      {/* <AssignDuty /> */}
-      {/* <DutyReply /> */}
-      <RelatedStudents />
-    </div>
+    <>
+
+      <BrowserRouter>
+        <div className="App">
+          <Navbar bg="dark" variant="dark">
+            <Container>
+              <NavLink className={"navbar-brand"} to="/">Hello Bachak</NavLink>
+              <Nav className="me-auto">
+                <NavLink className={"nav-link"} to={"/"}>Home</NavLink>
+                <Nav.Item><NavLink className={"nav-link"} to={"/RegisterUser"}>RegisterUser</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/AssignDuty"}>AssignDuty</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/DutyReply"}>DutyReply</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/RelatedStudents"}>RelatedStudents</NavLink></Nav.Item>
+              </Nav>
+            </Container>
+          </Navbar>
+        </div>
+
+        
+        <Routes>
+          <Route path="/RegisterUser" element={<RegisterUser />} />
+          <Route path="/AssignDuty" element={<AssignDuty />} />
+          <Route path="/DutyReply" element={<DutyReply />} />
+          <Route path="/RelatedStudents" element={<RelatedStudents />} />
+
+        </Routes>
+      </BrowserRouter>
+
+    </>
+
   );
 }
 
