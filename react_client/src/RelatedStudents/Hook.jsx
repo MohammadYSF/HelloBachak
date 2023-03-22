@@ -2,8 +2,11 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import {yupResolver} from "@hookform/resolvers/yup"
 import { DutyReplyHelper } from "./Helper";
+import {useNavigate} from 'react-router-dom';
 
 export const UseRelatedStudents = () => {
+    const navigate = useNavigate();
+    
     const [modalShowState , setModalShowState] = useState(false); 
     const [studentModalTitle , setStudentModalTitle] = useState("جزئیات دانش آموز");
     const [data , setData] = useState([
@@ -50,8 +53,11 @@ export const UseRelatedStudents = () => {
         setStudentModalTitle("جزئیات دانش آموز");
         setModalShowState(true);
     }
+    const onClickStudentDuties = (id) => {
+        navigate(`/Students/${id}/duties`);
+    }
    return(
         {data , modalShowState  , onClickCloseModal , 
-            studentModalTitle , onClickDetailStudent}
+            studentModalTitle , onClickDetailStudent , onClickStudentDuties}
     );
 }

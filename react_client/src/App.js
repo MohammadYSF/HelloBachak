@@ -11,6 +11,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { StudentDuties } from "./Student/StudentDuties/Index";
 function App() {
   return (
     <>
@@ -37,7 +38,7 @@ function App() {
           <Route path="/AssignDuty" element={<AssignDuty />} />
           <Route path="/DutyReply" element={<DutyReply />} />
           <Route path="/RelatedStudents" element={<RelatedStudents />} />
-
+          <Route path="/Students/:id/Duties" element={<StudentDuties />} />
         </Routes>
       </BrowserRouter>
 

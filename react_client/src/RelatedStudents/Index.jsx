@@ -4,10 +4,9 @@ import { UseRelatedStudents } from "./Hook";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Student } from "../Student/Index";
-
 export const RelatedStudents = () => {
     const { data, modalShowState, onClickCloseModal
-        , studentModalTitle, onClickDetailStudent } = UseRelatedStudents();
+        , studentModalTitle, onClickDetailStudent , onClickStudentDuties } = UseRelatedStudents();
     return (
         <>
             <div className="">
@@ -35,6 +34,8 @@ export const RelatedStudents = () => {
                                             <button className="btn btn-danger btn-sm rounded-0">X</button>
                                             <button className="btn btn-info btn-sm rounded-0 ms-2"
                                                 onClick={onClickDetailStudent}>جزئیات</button>
+                                                <button className="btn btn-warning btn-sm rounded-0 ms-2"
+                                                onClick={()=>{onClickStudentDuties(item.Id)}}>وظایف</button>
                                         </td>
                                     </tr>
                                 );
