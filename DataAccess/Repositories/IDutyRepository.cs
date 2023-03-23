@@ -18,4 +18,6 @@ public interface IDutyRepository
     IQueryable<int> GetDutyIds();
     int Save();
     IQueryable<Duty> GetAllStudents();
+
+    string CreateDutyReply(DutyReply dutyReply);
 }

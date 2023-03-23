@@ -26,6 +26,20 @@ public class DutyRepository : IDutyRepository
         }
     }
 
+    public string CreateDutyReply(DutyReply dutyReply)
+    {
+        try
+        {
+            _db.DutyReplies.Add(dutyReply);
+            return "";
+        }
+        catch (Exception e)
+        {
+
+            throw e;
+        }
+    }
+
     public string Delete(Duty duty)
     {
         try

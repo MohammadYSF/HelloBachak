@@ -365,6 +365,27 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
         return GetEnumerator();
     }
 }
+
+class DutyReplyDtoParameters : IEnumerable<object[]>
+{
+    public IEnumerator<object[]> GetEnumerator()
+    {
+        yield return new object[]
+        {
+           new DutyReplyDto
+           {
+               DutyId = 10000
+
+           }
+       ,"invalid-dutyId"};
+
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        throw new NotImplementedException();
+    }
+}
 public class BusinessTest
 {
     private LessonBusiness _lessonBusiness;
@@ -553,7 +574,7 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.FindUserByEmail(_user.Email)).Returns(_user);
         _userRepositoryServiceMock.Setup(a => a.FindRole(_roles[1].Id)).Returns(_roles[1]);
         _userRepositoryServiceMock.Setup(a => a.FindRole(_roles[0].Id)).Returns(_roles[0]);
-        _userRepositoryServiceMock.Setup(a=> a.GetAllStudents()).Returns(new List<User>{   new User
+        _userRepositoryServiceMock.Setup(a => a.GetAllStudents()).Returns(new List<User>{   new User
         {
             Id = 2,
             Username = "Fateme",
@@ -768,4 +789,43 @@ public class BusinessTest
             StudentTitle = a.StudentTitle
         }));
     }
+    [Fact]
+    public void Should_Create_Duty_Reply()
+    {
+        var correct_input = new DutyReplyDto
+        {
+            DutyId = 1,
+            IsSucceed = true,
+            Description = "some test description"
+        };
+        var result = _dutyBusiness.CreateDutyReply(correct_input);
+        result.Success.Should().BeTrue();
+    }
+    [Theory]
+    [ClassData(typeof(DutyReplyDtoParameters))]
+    public void Shoud_Not_Create_DutyReply(DutyReplyDto dto, string reason)
+    {
+        var result = _dutyBusiness.CreateDutyReply(dto);
+        // var unExpected = "";
+        result.Success.Should().BeFalse();
+        switch (reason)
+        {
+            case "invalid-dutyId": result.DutyIdErrorMessage.Should().Contain(reason); break;
+
+        }
+
+    }
+    [Fact]
+    public void Should_Get_ActiveDuties_By_StudentId()
+    {
+        int studentId = 1;
+        List<DutyDto> result = _dutyBusiness.GetActiveDutiesByStudentId(studentId);
+        result.Should().BeEquivalentTo(_duties.Where(a=> a.IsActive).Select(a => new DutyDto
+        {
+            ArrangedDate = a.ArrangedDate,
+            Id = a.Id,
+            Title = a.Title,
+        }));
+    }
+    []
 }
