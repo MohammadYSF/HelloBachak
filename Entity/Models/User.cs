@@ -1,3 +1,5 @@
+using System;
+
 namespace Entity.Models
 {
     public class User
@@ -8,7 +10,7 @@ namespace Entity.Models
         public string Username { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public DateTime CreationDate { get; set; }
-        public Int16 Age { get; set; }
+        public short Age { get; set; }
         public string PhoneNumber { get; set; } = string.Empty;
         public string? Description { get; set; }
         public int SexId { get; set; }

@@ -96,4 +96,25 @@ public class UserBusiness
         }
         return validationResult;
     }
+    public SingleStudentDetailDto GetStudentDetail(int userId)
+    {
+        var result = _userRepository.Find(userId);
+        var gradeTitle = _userRepository.FindGrade(result.GradeId).Title;
+        var sexTitle = _userRepository.FindSex(result.SexId).Title;
+        if (result == null)
+            return null;
+        var answer = new SingleStudentDetailDto
+        {
+            Id = result.Id,
+            Description = result.Description,
+            Email = result.Email,
+            GradeTitle = gradeTitle,
+            PhoneNumber = result.PhoneNumber,
+            SexTitle = sexTitle,
+            Username = result.Username,
+            RegisterDateString = Helper.ToPersianDateString(result.CreationDate)
+        };
+        return answer;
+
+    }
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace Entity.Models;
 
 public class Duty

@@ -486,9 +486,18 @@ public class BusinessTest
             Id = 2,
             Username = "Fateme",
             Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77",
-            RoleId = 2
+            RoleId = 2,
+            Age = 16,
+            GradeId = 1,
+            CreationDate = DateTime.Now,
+            Description = "توضیحات",
+            Email = "testemail@gmail.com",
+            PhoneNumber = "09985434455",
+            SexId = 1         
             //Ff123**ff
-        }
+        },
+        
+
         };
     private List<Role> _roles = new List<Role>{
             new Role{
@@ -527,10 +536,8 @@ public class BusinessTest
         _lessonRepositoryServiceMock = new Mock<ILessonRepository>();
         _lessonRepositoryServiceMock.Setup(a => a.Get()).Returns(_lessons.AsQueryable());
         _lessonRepositoryServiceMock.Setup(a => a.Create(_newLesson)).Returns("");
-        _lessonRepositoryServiceMock.Setup(a => a.Update(_updatedLesson)).Returns("");
         _lessonRepositoryServiceMock.Setup(a => a.Find(_lessons[0].Id)).Returns(_lessons[0]);
-
-
+        _lessonRepositoryServiceMock.Setup(a => a.Update(_updatedLesson)).Returns("");
         _dutyRepositoryServiceMock = new Mock<IDutyRepository>();
         _dutyRepositoryServiceMock.Setup(a => a.GetLessonIds()).Returns(_lessons.Select(e => e.Id).AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(_users.Where(z => z.RoleId == 2).Select(a => a.Id).AsQueryable());
@@ -544,6 +551,8 @@ public class BusinessTest
         _userRepositoryServiceMock = new Mock<IUserRepository>();
         _userRepositoryServiceMock.Setup(a => a.Get()).Returns(_users.AsQueryable<User>);
         _userRepositoryServiceMock.Setup(a => a.Find(_user.Id)).Returns(_user);
+        _userRepositoryServiceMock.Setup(a => a.Find(_users[1].Id)).Returns(_users[1]);
+
         _userRepositoryServiceMock.Setup(a => a.Create(_newUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.Update(_updatedUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.FindSex(_sex.Id)).Returns(_sex);
@@ -820,12 +829,25 @@ public class BusinessTest
     {
         int studentId = 1;
         List<DutyDto> result = _dutyBusiness.GetActiveDutiesByStudentId(studentId);
-        result.Should().BeEquivalentTo(_duties.Where(a=> a.IsActive).Select(a => new DutyDto
+        result.Should().BeEquivalentTo(_duties.Where(a => a.IsActive).Select(a => new DutyDto
         {
             ArrangedDate = a.ArrangedDate,
             Id = a.Id,
             Title = a.Title,
         }));
     }
-    []
+    [Fact]
+    public void Should_Get_Student_Detail()
+    {
+        int studentId = 2;
+        SingleStudentDetailDto result = _userBusiness.GetStudentDetail(studentId);
+        User expected = _users.First(a=> a.Id == studentId);
+        result.Id.Should().Be(expected.Id);
+        result.PhoneNumber.Should().Be(expected.PhoneNumber);
+        result.Email.Should().Be(expected.Email);
+        result.Description.Should().Be(expected.Description);
+        result.Username.Should().Be(expected.Username);
+
+
+    }
 }
