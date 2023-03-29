@@ -15,6 +15,7 @@ import { StudentDuties } from "./Student/StudentDuties/Index";
 import { Login } from "./Login/Index";
 import { Lessons } from "./Lessons/Index";
 import { LessonEdit } from "./Lessons/LessonEdit/Index";
+import { Home } from "./Home/Index";
 function App() {
   return (
     <>
@@ -23,22 +24,23 @@ function App() {
         <div className="App">
           <Navbar bg="dark" variant="dark">
             <Container>
-              <NavLink className={"navbar-brand"} to="/">Hello Bachak</NavLink>
+              <NavLink className={"navbar-brand"} to="/">هلو بچک</NavLink>
               <Nav className="me-auto">
-                <NavLink className={"nav-link"} to={"/"}>Home</NavLink>
-                <Nav.Item><NavLink className={"nav-link"} to={"/RegisterUser"}>RegisterUser</NavLink></Nav.Item>
-                <Nav.Item><NavLink className={"nav-link"} to={"/Login"}>Login</NavLink></Nav.Item>
-                <Nav.Item><NavLink className={"nav-link"} to={"/AssignDuty"}>AssignDuty</NavLink></Nav.Item>
-                <Nav.Item><NavLink className={"nav-link"} to={"/DutyReply"}>DutyReply</NavLink></Nav.Item>
-                <Nav.Item><NavLink className={"nav-link"} to={"/RelatedStudents"}>RelatedStudents</NavLink></Nav.Item>
-                <Nav.Item><NavLink className={"nav-link"} to={"/Lessons"}>Lessons</NavLink></Nav.Item>
+                <NavLink className={"nav-link"} to={"/"}>خانه</NavLink>
+                <Nav.Item><NavLink className={"nav-link"} to={"/RegisterUser"}>ثبت نام</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/Login"}>ورود</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/AssignDuty"}>ثبت وظیفه</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/DutyReply"}>ثبت بازخورد</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/RelatedStudents"}>دانش آموز ها</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/Lessons"}>درس های تعریف شده</NavLink></Nav.Item>
               </Nav>
             </Container>
           </Navbar>
         </div>
 
-        
+
         <Routes>
+          <Route path="/Home" element={<Home />} />
           <Route path="/RegisterUser" element={<RegisterUser />} />
           <Route path="/AssignDuty" element={<AssignDuty />} />
           <Route path="/DutyReply" element={<DutyReply />} />
