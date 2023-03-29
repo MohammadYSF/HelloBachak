@@ -13,6 +13,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { StudentDuties } from "./Student/StudentDuties/Index";
 import { Login } from "./Login/Index";
+import { Lessons } from "./Lessons/Index";
+import { LessonEdit } from "./Lessons/LessonEdit/Index";
 function App() {
   return (
     <>
@@ -29,6 +31,7 @@ function App() {
                 <Nav.Item><NavLink className={"nav-link"} to={"/AssignDuty"}>AssignDuty</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/DutyReply"}>DutyReply</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/RelatedStudents"}>RelatedStudents</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/Lessons"}>Lessons</NavLink></Nav.Item>
               </Nav>
             </Container>
           </Navbar>
@@ -42,6 +45,8 @@ function App() {
           <Route path="/RelatedStudents" element={<RelatedStudents />} />
           <Route path="/Students/:id/Duties" element={<StudentDuties />} />
           <Route path="/Login" element={<Login />} />
+          <Route path="/Lessons" element={<Lessons />} />
+          <Route path="/Lessons/:id" element={<LessonEdit />} />
         </Routes>
       </BrowserRouter>
 
