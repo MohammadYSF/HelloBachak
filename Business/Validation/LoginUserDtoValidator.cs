@@ -10,7 +10,7 @@ public class LoginUserDtoValidator : AbstractValidator<LoginUserDto>
     public LoginUserDtoValidator(IQueryable<User> users)
     {
         RuleFor(a => a.Email).Must((a) => IsEmailExist(a, users.Select(a => a.Email))).WithMessage("notexist-email");
-        RuleFor(a => a).Must(a => IsUserExist(users, a.Email, a.Password)).WithMessage("wrong-password");
+        RuleFor(a => a).Must(a => IsUserExist(users, a.Email, a.Password)).WithName("Password").WithMessage("wrong-password");
     }
     private bool IsUserExist(IQueryable<User> users,string email , string password)
     {

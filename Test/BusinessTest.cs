@@ -368,6 +368,33 @@ class RegisterUserDtoParameters : IEnumerable<object[]>
         return GetEnumerator();
     }
 }
+class LoginUserDtoParameters : IEnumerable<object[]>
+{
+    public IEnumerator<object[]> GetEnumerator()
+    {
+        yield return new object[]
+        {
+            new LoginUserDto
+            {
+                Email = "aa.yosefiyan7@gmail.com",
+                Password = "wrong password"
+            },"wrong-password"
+        };
+        yield return new object[]
+        {
+            new LoginUserDto
+            {
+                Email = "notexisitingemail@gmail.com",
+                Password = "Whateverpassword"
+            },"notexist-email"
+        };
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        throw new NotImplementedException();
+    }
+}
 
 class DutyReplyDtoParameters : IEnumerable<object[]>
 {
@@ -389,6 +416,8 @@ class DutyReplyDtoParameters : IEnumerable<object[]>
         throw new NotImplementedException();
     }
 }
+
+
 public class BusinessTest
 {
     private LessonBusiness _lessonBusiness;
@@ -641,6 +670,19 @@ public class BusinessTest
         };
         var result = _userBusiness.LoginUser(loginUserDto);
         result.Item1.Success.Should().BeTrue();
+    }
+    [Theory]
+    [ClassData(typeof(LoginUserDtoParameters))]
+    public void Should_Not_Login_Invalid_User_Dto(LoginUserDto dto, string reason)
+    {
+        var result = _userBusiness.LoginUser(dto);
+        // var unExpected = "";
+        result.Item1.Success.Should().BeFalse();
+        switch (reason)
+        {
+            case "wrong-password": result.Item1.PasswordErrorMessages.Should().Contain(reason); break;
+            case "notexist-email": result.Item1.EmailErrorMessages.Should().Contain(reason); break;
+        }
     }
     [Fact]
     public void Should_Register_Valid_User_Dto()
