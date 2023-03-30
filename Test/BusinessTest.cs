@@ -13,6 +13,9 @@ using Business.Helpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
+using Business.Auth;
+using Microsoft.Extensions.Options;
+
 namespace Test;
 class DutyDtoParameters : IEnumerable<object[]>
 {
@@ -477,7 +480,8 @@ public class BusinessTest
             Id = 1,
             Username = "Mohammad",
             Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460",
-            RoleId = 1
+            RoleId = 1,
+            Email ="aa.yosefiyan7@gmail.com"
 
 
         },
@@ -513,6 +517,7 @@ public class BusinessTest
     private Mock<IUserRepository> _userRepositoryServiceMock;
     private Mock<IDutyRepository> _dutyRepositoryServiceMock;
     private Mock<ILessonRepository> _lessonRepositoryServiceMock;
+    private Mock<ITokenService> _tokenServiceMock;
     public BusinessTest()
     {
         _configRoot = new ConfigurationBuilder().AddUserSecrets<BusinessTest>().Build();
@@ -552,7 +557,7 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.Get()).Returns(_users.AsQueryable<User>);
         _userRepositoryServiceMock.Setup(a => a.Find(_user.Id)).Returns(_user);
         _userRepositoryServiceMock.Setup(a => a.Find(_users[1].Id)).Returns(_users[1]);
-
+        _userRepositoryServiceMock.Setup(a => a.FindUserByUsername(_user.Username)).Returns(_user);
         _userRepositoryServiceMock.Setup(a => a.Create(_newUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.Update(_updatedUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.FindSex(_sex.Id)).Returns(_sex);
@@ -591,7 +596,17 @@ public class BusinessTest
             RoleId = 2
             //Ff123**ff
         }}.AsQueryable());
-        _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object);
+
+
+        _tokenServiceMock = new Mock<ITokenService>();
+        JwtSettings jwtSettings = new JwtSettings();
+        jwtSettings.Audience = "http://localhost:7243/api/";
+        jwtSettings.AccessTokenDurationInMinutes = 1;
+        jwtSettings.Issuer = "http://localhost:7243/api/";
+        jwtSettings.Key = "0123456789ABCDEF";
+
+        var options = Options.Create(jwtSettings);
+        _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object ,new TokenService(options));
         _dutyBusiness = new DutyBusiness(_dutyRepositoryServiceMock.Object);
         _lessonBusiness = new LessonBusiness(_lessonRepositoryServiceMock.Object);
 
@@ -615,6 +630,17 @@ public class BusinessTest
 
 
         }}.AsQueryable());
+    }
+    [Fact]
+    public void Should_Login_User_Dto()
+    {
+        var loginUserDto = new LoginUserDto
+        {
+            Email = "aa.yosefiyan7@gmail.com",
+            Password = "Mm#12345"
+        };
+        var result = _userBusiness.LoginUser(loginUserDto);
+        result.Item1.Success.Should().BeTrue();
     }
     [Fact]
     public void Should_Register_Valid_User_Dto()
@@ -695,7 +721,11 @@ public class BusinessTest
             {"Smtp:Host", _configRoot.GetSection("Smtp").GetSection("Host").Value},
             {"Smtp:Port", _configRoot.GetSection("Smtp").GetSection("Port").Value},
             {"Smtp:Username", _configRoot.GetSection("Smtp").GetSection("Username").Value},
-            {"Smtp:Password", _configRoot.GetSection("Smtp").GetSection("Password").Value}
+            {"Smtp:Password", _configRoot.GetSection("Smtp").GetSection("Password").Value},
+            {"JWTSettings:Key","0123456789ABCDEF" },
+            {"JWTSettings:Issuer","http://localhost:7243/api/" },
+            {"JWTSettings:Audience" ,"http://localhost:7243/api/"},
+            {"JWTSettings:AccessTokenDurationInMinutes","1" }
             //...populate as needed for the test
         };
         IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();

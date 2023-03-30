@@ -16,6 +16,8 @@ namespace Entity.Models
         public int SexId { get; set; }
         public int GradeId { get; set; }
         public int RoleId{ get; set; }
+        public string RefreshToken { get; set; }
+
         public string ActivationCode { get; set; } = string.Empty;
         public virtual Sex Sex { get; set; } = new Sex();
         public virtual Grade Grade { get; set; } = new Grade();

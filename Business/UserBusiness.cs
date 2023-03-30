@@ -10,15 +10,19 @@ using Business.Helpers;
 using Business.Results;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Business.Auth;
 
 namespace Business;
 
 public class UserBusiness
 {
     private readonly IUserRepository _userRepository;
-    public UserBusiness(IUserRepository userRepository)
+    private readonly ITokenService _tokenService;
+    public UserBusiness(IUserRepository userRepository, ITokenService tokenService)
     {
         _userRepository = userRepository;
+        _tokenService = tokenService;
     }
 
     public ChangePasswordDtoValidationResult ChangePassword(ChangePasswordDto changePasswordDto)
@@ -34,7 +38,35 @@ public class UserBusiness
         }
         return validationResult;
     }
+    public Tuple<LoginUserDtoValidationResult, string, string> LoginUser(LoginUserDto loginUserDto)
+    {
+        string token = "", refreshToken = "";
+        var loginUserDtoValidator = new LoginUserDtoValidator(_userRepository.Get());
+        ValidationResult result = loginUserDtoValidator.Validate(loginUserDto);
+        var validationResult = new LoginUserDtoValidationResult(result);
+        var isValid = result.IsValid;
+        if (isValid)
+        {
+            var user = _userRepository.FindUserByEmail(loginUserDto.Email);
+            var claims = new[]
+            {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Role, user.RoleId.ToString())
+            };
 
+            token = _tokenService.GenerateAccessToken(claims);
+            refreshToken = _tokenService.GenerateRefreshToken();
+
+            user.RefreshToken = refreshToken;
+
+            _userRepository.Update(user);
+            _userRepository.Save();
+
+        }
+        return new Tuple<LoginUserDtoValidationResult, string, string>(validationResult, token, refreshToken);
+
+    }
     public RegisterUserDtoValidationResult RegisterUser(RegisterUserDto userDto)
     {
         var userDtoValidator = new UserDtoValidator(_userRepository.GetUsersEmails(),

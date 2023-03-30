@@ -116,7 +116,19 @@ public class UserRepository : IUserRepository
 
     public string Update(User user)
     {
-        throw new NotImplementedException();
+
+        try
+        {
+            var u = _db.Users.Find(user.Id);
+            u = user;
+            return "";
+        }
+        catch (Exception e)
+        {
+            return e.InnerException.Message;
+            throw e;
+        }
+        
     }
 
     public List<int> GetRoleIds()
@@ -160,7 +172,7 @@ public class UserRepository : IUserRepository
 
     public User FindUserByEmail(string email)
     {
-        return _db.Users.First(a=> a.Email == email);
+        return _db.Users.FirstOrDefault(a=> a.Email == email);
     }
 
     public Role FindRole(int roleId)
@@ -176,5 +188,10 @@ public class UserRepository : IUserRepository
     {
         var x = _db.Users.Include(a=> a.Role).Where(a=> a.Role.Title.ToLower() == "student");
         return x;
+    }
+
+    public User FindUserByUsername(string username)
+    {
+        return _db.Users.SingleOrDefault(a => a.Username == username);
     }
 }

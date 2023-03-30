@@ -7,8 +7,20 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using DataAccess;
+using Business.Auth;
+
 var builder = WebApplication.CreateBuilder(args);
 
+
+var configSection = builder.Configuration.GetSection(nameof(JwtSettings));
+var settings = new JwtSettings();
+
+configSection.Bind(settings);
+
+builder.Services.AddSingleton<IConfiguration>(provider => builder.Configuration);
+builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddOptions();
+builder.Services.Configure<JwtSettings>(configSection);
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -28,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-
+app.UseAuthentication();    
 app.UseAuthorization();
 // app.MapControllerRoute(
 //     name:"default",
