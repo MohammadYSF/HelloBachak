@@ -7,8 +7,8 @@ import Button from 'react-bootstrap/Button';
 
 export const StudentDuties = () => {
     const { id } = useParams();
-    const { data, modalShowState, onClickCloseModal
-        , modalTitle, onClickDetailDuty, studentName , dutyDescription} = UseStudentDuties(id);
+    const { data,
+         onClickDetailDuty, studentName ,} = UseStudentDuties(id);
     return (
 
         <>
@@ -20,6 +20,7 @@ export const StudentDuties = () => {
                         <tr>
                             <th>وظیفه</th>
                             <th>تاریخ تحویل</th>
+                            <th>انجام داده؟</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -29,10 +30,11 @@ export const StudentDuties = () => {
                                 <tr key={index}>
                                     <td>{item.Title}</td>
                                     <td>{item.ArrangedDate}</td>
+                                    <td>{item.IsSucceedTitle}</td>
                                     <td>
                                         <button className="btn btn-danger btn-sm rounded-0">X</button>
-                                        <button className="btn btn-info btn-sm rounded-0 ms-2"
-                                            onClick={onClickDetailDuty}>توضیحات</button>
+                                            <button className="btn btn-light btn-sm rounded-0 ms-2"
+                                            onClick={() => onClickDetailDuty(item.Id)}>مشاهده</button>
                                     </td>
                                 </tr>
                             );
@@ -40,19 +42,7 @@ export const StudentDuties = () => {
 
                     </tbody>
                 </Table>
-                <Modal show={modalShowState} onHide={onClickCloseModal}>
-                        <Modal.Header closeButton className="bg-dark text-light">
-                            <Modal.Title>{modalTitle}</Modal.Title>
-                        </Modal.Header>
-
-                        <Modal.Body className="bg-dark text-light">
-                            {dutyDescription}
-                        </Modal.Body>
-
-                        <Modal.Footer className="bg-dark text-light">
-                            <Button className="rounded-0" variant="secondary" onClick={onClickCloseModal}>بستن</Button>
-                        </Modal.Footer>
-                    </Modal>
+           
             </div>
         </div>
         </>

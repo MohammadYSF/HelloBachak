@@ -16,6 +16,7 @@ import { Login } from "./Login/Index";
 import { Lessons } from "./Lessons/Index";
 import { LessonEdit } from "./Lessons/LessonEdit/Index";
 import { Home } from "./Home/Index";
+import { SingleDuty } from "./Student/StudentDuties/SingleDuty/Index";
 function App() {
   return (
     <>
@@ -49,6 +50,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Lessons" element={<Lessons />} />
           <Route path="/Lessons/:id" element={<LessonEdit />} />
+          <Route path="/Duties/:id" element={<SingleDuty />} />
         </Routes>
       </BrowserRouter>
 

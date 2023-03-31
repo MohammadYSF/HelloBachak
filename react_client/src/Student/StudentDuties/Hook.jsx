@@ -2,54 +2,43 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import {yupResolver} from "@hookform/resolvers/yup"
 import { StudentDutiesHelper } from "./Helper";
+import { useNavigate } from "react-router";
 
 export const UseStudentDuties = ({id}) => {
+    const navigate = useNavigate();
     const [dutyDescription , setDutyDescription] = useState('');
     const [studentName , setStudentName] = useState(StudentDutiesHelper.FindStudentName(id));
-    const [modalShowState , setModalShowState] = useState(false); 
-    const [modalTitle , setModalTitle] = useState("توضیحات");
     const [data , setData] = useState([
         {
             Id:1,
             Title : "وظیفه 1",
-            ArrangedDate:"1401/05/04"
+            ArrangedDate:"1401/05/04",
+            IsSucceedTitle:"آره"
         },
         {
             Id:2,
             Title : "وظیفه 2",
-            ArrangedDate:"1401/05/04"
-
-
-
+            ArrangedDate:"1401/05/04",
+            IsSucceedTitle:"نه"
         },
         {
             Id:1,
             Title :"وظیفه 3",
-            ArrangedDate:"1401/05/04"
-
-
+            ArrangedDate:"1401/05/04",
+            IsSucceedTitle:"نه"
 
         },
         {
             Id:1,
             Title : "وظیفه 4",
-            ArrangedDate:"1401/05/04"
-
-
-
+            ArrangedDate:"1401/05/04",
+            IsSucceedTitle:"آره"
         }
     ]);
-    const onClickCloseModal = () => {
-        setModalTitle("توضیحات");
-        setModalShowState(false);
-    }
     const onClickDetailDuty = (id) => {
-        setModalTitle("توضیحات");
-        setModalShowState(true);
-        setDutyDescription(StudentDutiesHelper.FindDutyDescription(id));
+        navigate(`/Duties/${id}`);
     }
    return(
-        {data , modalShowState  , onClickCloseModal , 
-            modalTitle , onClickDetailDuty , studentName , dutyDescription}
+        {data ,onClickDetailDuty , studentName , dutyDescription}
     );
 }
