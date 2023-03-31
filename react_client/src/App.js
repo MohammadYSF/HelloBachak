@@ -40,7 +40,7 @@ function App() {
 
 
         <Routes>
-          <Route path="/Home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/RegisterUser" element={<RegisterUser />} />
           <Route path="/AssignDuty" element={<AssignDuty />} />
           <Route path="/DutyReply" element={<DutyReply />} />
