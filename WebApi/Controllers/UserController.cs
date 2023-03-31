@@ -10,6 +10,7 @@ using DataAccess.Services;
 using System.Security.Claims;
 using System.Security.Claims;
 using Business.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers;
 
@@ -33,10 +34,11 @@ public class UserController : ControllerBase
         _dutyBusiness = new DutyBusiness(new DutyRepository(context));
         _config = config;
         _configRoot = new ConfigurationBuilder().AddUserSecrets<UserController>().Build();
-        _webHostEnvironment = webHostEnvironment;
+        _webHostEnvironment = webHostEnvironment;        
     }
     [Route("GetAllStudents")]
     [HttpGet]
+    [Authorize(Roles = "admin,consultant,student")]
     public IEnumerable<UserDto> GetAllStudents()
     {
         var result = _userBusiness.GetAllStudents();

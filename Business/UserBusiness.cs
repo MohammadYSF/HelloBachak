@@ -48,11 +48,12 @@ public class UserBusiness
         if (isValid)
         {
             var user = _userRepository.FindUserByEmail(loginUserDto.Email);
+            var role = _userRepository.FindRole(user.RoleId);
             var claims = new[]
             {
         new Claim(ClaimTypes.Name, user.Username),
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Role, user.RoleId.ToString())
+        new Claim(ClaimTypes.Role, role.Title)
             };
 
             token = _tokenService.GenerateAccessToken(claims);

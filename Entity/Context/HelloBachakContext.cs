@@ -57,6 +57,7 @@ public class HelloBachakContext : DbContext
             entity.Property(a=> a.Username).IsRequired().HasMaxLength(50);
             entity.Property(a=> a.PhoneNumber).IsRequired().HasMaxLength(50);
             entity.Property(a=> a.Description).IsRequired(false);
+            entity.Property(a => a.RefreshToken).IsRequired(false);
         });
         modelBuilder.Entity<Entity.Models.Duty>(entity=> {
             entity.ToTable("Duty");
