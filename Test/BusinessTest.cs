@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Configuration.Memory;
 using Business.Auth;
 using Microsoft.Extensions.Options;
+using Business.Helpers.EmailService;
 
 namespace Test;
 class DutyDtoParameters : IEnumerable<object[]>
@@ -438,7 +439,8 @@ public class BusinessTest
         Id = 1,
         Username = "Mohammad",
         Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460",
-        Email = "aa.yosefiyan7@gmail.com"
+        Email = "aa.yosefiyan7@gmail.com",
+        RoleId= 1
     };
     private User _updatedUser = new User
     {
@@ -771,8 +773,8 @@ public class BusinessTest
             //...populate as needed for the test
         };
         IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
-
-        var result = _userBusiness.SendActivationCode(correct_input, config, "/", "Account/ActivateAccount");
+        IEmailService emailService = new MockEmailService();
+        var result = _userBusiness.SendActivationCode(correct_input, emailService,config, "/", "Account/ActivateAccount");
         result.Success.Should().BeTrue();
     }
     [Theory]
@@ -788,8 +790,9 @@ public class BusinessTest
             //...populate as needed for the test
         };
         IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
+        IEmailService emailService = new MockEmailService();
 
-        var result = _userBusiness.SendActivationCode(dto, config, "/", "/Account/ActivateAccout");
+        var result = _userBusiness.SendActivationCode(dto, emailService, config, "/", "/Account/ActivateAccout");
         result.Success.Should().BeFalse();
         switch (reason)
         {

@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Security.Claims;
 using Business.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Business.Helpers.EmailService;
 
 namespace WebApi.Controllers;
 
@@ -70,7 +71,8 @@ public class UserController : ControllerBase
     [HttpPost]
     public SendActivationCodeResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto)
     {
-        var result = new SendActivationCodeResult(_userBusiness.SendActivationCode(sendActivationCodeDto,
+        IEmailService emailService = new GmailService(_config);
+        var result = new SendActivationCodeResult(_userBusiness.SendActivationCode(sendActivationCodeDto, emailService,
          _configRoot,_webHostEnvironment.ContentRootPath, _webHostEnvironment.ContentRootPath + "/api/User/SendActivationCode")
          , Language.Persian);
         return result;

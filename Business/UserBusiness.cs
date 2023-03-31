@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Business.Auth;
+using Business.Helpers.EmailService;
+using System.Net.Mail;
 
 namespace Business;
 
@@ -109,7 +111,7 @@ public class UserBusiness
         }).ToList();
         return answer;
     }
-    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IConfiguration config, string baseUrl, string redirectedLink)
+    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IEmailService emailService,IConfiguration config, string baseUrl, string redirectedLink)
     {
         var sendActivationCodeDtoValidator = new SendActivationCodeDtoValidator(_userRepository.GetUsersEmails());
         string email = sendActivationCodeDto.Email;
@@ -125,7 +127,13 @@ public class UserBusiness
             _userRepository.Save();
             //send email code
             var emailMessage = $"<h1>Activating Hello Bachak acount</h1><p> Just click the link below</p><a href=\"{baseUrl}/{redirectedLink}/{g}\">click here</a>";
-            Helper.SendEmail(config, email, emailMessage);
+            var mailMessage = new MailMessage
+            {
+                Subject = "Hello Bachak activation code",
+                Body = emailMessage,
+                IsBodyHtml = true
+            };
+            emailService.Send(mailMessage , email);
         }
         return validationResult;
     }
