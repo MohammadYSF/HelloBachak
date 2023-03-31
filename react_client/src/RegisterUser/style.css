@@ -25,3 +25,10 @@
 .errorMessage{
     font-size: 13px;
 }
+.toast-header{
+    background-color: #fd7e14;
+    color: #fff;
+}
+.toast-body{
+    background-color: #f8f9fa;
+}

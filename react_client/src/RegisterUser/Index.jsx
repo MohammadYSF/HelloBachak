@@ -1,13 +1,15 @@
 import { UseRegisterForm } from "./Hook";
 import "./style.css";
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
 export const RegisterUser = () => {
-    const { data, setData, handleSubmit, register , errors , myOwnHandleSubmit } = UseRegisterForm();
+    const { data, setData, handleSubmit, register, errors, myOwnHandleSubmit , toastShow ,onCloseToast } = UseRegisterForm();
     return (
         <>
-            
+
             <div className="bg-primary">
                 <div className="row">
-                    <form onSubmit={handleSubmit((data) => { myOwnHandleSubmit(data)})} className="container col-12 col-sm-8 col-md-6 col-lg-4" id="registerCard">
+                    <form onSubmit={handleSubmit((data) => { myOwnHandleSubmit(data) })} className="container col-12 col-sm-8 col-md-6 col-lg-4" id="registerCard">
                         <h1 className="text-dark text-center">ثبت کاربر</h1>
                         <div className="row">
                             <div className="col-6">
@@ -17,7 +19,7 @@ export const RegisterUser = () => {
                             <div className="col-6">
                                 <input {...register("Age")} type={"number"} defaultValue={16} placeholder="سن" className="w-100 inp" />
                                 <span className="text-danger errorMessage">{errors.Age?.message}</span>
-                            
+
                             </div>
                             <div className="col-12">
 
@@ -45,6 +47,17 @@ export const RegisterUser = () => {
                             </div>
                         </div>
                     </form>
+
+
+
+                    <ToastContainer className="p-3" position={"bottom-end"}>
+                        <Toast onClose={onCloseToast} show={toastShow} delay={10000} animation={true} autohide={true}>
+                            <Toast.Header  closeButton={false}>
+                                <strong className="me-auto">پیغام !</strong>
+                            </Toast.Header>
+                            <Toast.Body>جهت تکمیل ثبت نام ، به حساب ایمیل خود رفته و روی لینک فعالسازی حساب کلیک کنید</Toast.Body>
+                        </Toast>
+                    </ToastContainer>
                 </div>
             </div>
         </>
