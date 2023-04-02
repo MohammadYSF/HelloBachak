@@ -17,6 +17,8 @@ import { Lessons } from "./Lessons/Index";
 import { LessonEdit } from "./Lessons/LessonEdit/Index";
 import { Home } from "./Home/Index";
 import { SingleDuty } from "./Student/StudentDuties/SingleDuty/Index";
+import { ManageStudents } from "./ManageStudents/Index";
+import { ChangeConsultant } from "./ManageStudents/ChangeConsultant/Index";
 function App() {
   return (
     <>
@@ -34,6 +36,7 @@ function App() {
                 <Nav.Item><NavLink className={"nav-link"} to={"/DutyReply"}>ثبت بازخورد</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/RelatedStudents"}>دانش آموز ها</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/Lessons"}>درس های تعریف شده</NavLink></Nav.Item>
+                <Nav.Item><NavLink className={"nav-link"} to={"/ManageStudents"}>مدیریت دانش آموزان</NavLink></Nav.Item>
               </Nav>
             </Container>
           </Navbar>
@@ -51,6 +54,8 @@ function App() {
           <Route path="/Lessons" element={<Lessons />} />
           <Route path="/Lessons/:id" element={<LessonEdit />} />
           <Route path="/Duties/:id" element={<SingleDuty />} />
+          <Route path="/ManageStudents" element={<ManageStudents />} />
+          <Route path="ManageStudents/:id/ChangeConsultant" element={<ChangeConsultant />} />
         </Routes>
       </BrowserRouter>
 
