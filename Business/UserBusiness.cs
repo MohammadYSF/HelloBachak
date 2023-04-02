@@ -50,12 +50,13 @@ public class UserBusiness
         if (isValid)
         {
             var user = _userRepository.FindUserByEmail(loginUserDto.Email);
-            var role = _userRepository.FindRole(user.RoleId);
+            var roles = _userRepository.GetRolesByUserId(user.Id);
+
             var claims = new[]
             {
         new Claim(ClaimTypes.Name, user.Username),
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Role, role.Title)
+        new Claim(ClaimTypes.Role, string.Join(',',roles.Select(a=> a.Title)))
             };
 
             token = _tokenService.GenerateAccessToken(claims);
@@ -79,6 +80,7 @@ public class UserBusiness
         ValidationResult result = userDtoValidator.Validate(userDto);
         var isValid = result.IsValid;
         var validationResult = new RegisterUserDtoValidationResult(result);
+        var roleIdStudent = _userRepository.FindRoleByTitle("student").Id;
         if (isValid)
         {
             User user = new User
@@ -89,10 +91,16 @@ public class UserBusiness
                 Username = userDto.Username,
                 GradeId = userDto.GradeId,
                 SexId = userDto.SexId,
-                RoleId = _userRepository.FindRoleByTitle("student").Id,
                 CreationDate = DateTime.Now,
                 PhoneNumber = userDto.PhoneNumber,
-                IsActive = false
+                IsActive = false,
+                            
+            };
+            UserRole userRole = new UserRole
+            {
+                RoleId = roleIdStudent,
+                User = user
+
             };
             _userRepository.Create(user);
             _userRepository.Save();
@@ -111,7 +119,7 @@ public class UserBusiness
         }).ToList();
         return answer;
     }
-    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IEmailService emailService,IConfiguration config, string baseUrl, string redirectedLink)
+    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IEmailService emailService, IConfiguration config, string baseUrl, string redirectedLink)
     {
         var sendActivationCodeDtoValidator = new SendActivationCodeDtoValidator(_userRepository.GetUsersEmails());
         string email = sendActivationCodeDto.Email;
@@ -133,7 +141,7 @@ public class UserBusiness
                 Body = emailMessage,
                 IsBodyHtml = true
             };
-            emailService.Send(mailMessage , email);
+            emailService.Send(mailMessage, email);
         }
         return validationResult;
     }

@@ -439,8 +439,8 @@ public class BusinessTest
         Id = 1,
         Username = "Mohammad",
         Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460",
-        Email = "aa.yosefiyan7@gmail.com",
-        RoleId= 1
+        Email = "aa.yosefiyan7@gmail.com"
+        //,RoleId= 1
     };
     private User _updatedUser = new User
     {
@@ -505,13 +505,29 @@ public class BusinessTest
         IsActive = true,
         LessonId = 1
     };
+    private List<UserRole> _userRoles = new List<UserRole>()
+    {
+        new UserRole
+        {
+            Id = 1,
+            RoleId = 1,
+            UserId = 1
+        },
+        new UserRole
+        {
+            Id = 2,
+            RoleId = 2,
+            UserId = 2
+        },
+
+    };
     private List<User> _users = new List<User>(){
             new User
         {
             Id = 1,
             Username = "Mohammad",
             Password = "f0af0f555fe5e3d4f0f60415138deb7710fa9dd5058671c179cfbb4384139460",
-            RoleId = 1,
+            //RoleId = 1,
             Email ="aa.yosefiyan7@gmail.com"
 
 
@@ -521,7 +537,7 @@ public class BusinessTest
             Id = 2,
             Username = "Fateme",
             Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77",
-            RoleId = 2,
+            //RoleId = 2,
             Age = 16,
             GradeId = 1,
             CreationDate = DateTime.Now,
@@ -576,8 +592,8 @@ public class BusinessTest
         _lessonRepositoryServiceMock.Setup(a => a.Update(_updatedLesson)).Returns("");
         _dutyRepositoryServiceMock = new Mock<IDutyRepository>();
         _dutyRepositoryServiceMock.Setup(a => a.GetLessonIds()).Returns(_lessons.Select(e => e.Id).AsQueryable());
-        _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(_users.Where(z => z.RoleId == 2).Select(a => a.Id).AsQueryable());
-        _dutyRepositoryServiceMock.Setup(a => a.GetConsultantIds()).Returns(_users.Where(z => z.RoleId == 1).Select(v => v.Id).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(_userRoles.Where(a=> a.RoleId == 2).Select(a=> a.UserId).Distinct().AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetConsultantIds()).Returns(_userRoles.Where(a => a.RoleId == 1).Select(a => a.UserId).Distinct().AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.Get()).Returns(duties.AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.Find(duties[0].Id)).Returns(duties[0]);
         _dutyRepositoryServiceMock.Setup(a => a.Create(_newDuty)).Returns("");
@@ -623,8 +639,8 @@ public class BusinessTest
         {
             Id = 2,
             Username = "Fateme",
-            Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77",
-            RoleId = 2
+            Password = "27a29d2f7061c41cb255e141dc2636bbd8f810fdbd16d8d654c66c11811c9c77"
+            //,RoleId = 2
             //Ff123**ff
         }}.AsQueryable());
 
@@ -851,7 +867,8 @@ public class BusinessTest
     {
         var result = _userBusiness.GetAllStudents();
         var roleIdForBeingStudent = _roles.First(a => a.Title.ToLower() == "student").Id;
-        result.Should().BeEquivalentTo(_users.Where(a => a.RoleId == roleIdForBeingStudent).Select(a => new UserDto
+        var studentIds = _userRoles.Where(a => a.RoleId == roleIdForBeingStudent).Select(a => a.UserId).Distinct();
+        result.Should().BeEquivalentTo(_users.Where(a => studentIds.Contains(a.Id)).Select(a => new UserDto
         {
             Id = a.Id,
             Username = a.Username

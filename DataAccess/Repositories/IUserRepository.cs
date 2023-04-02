@@ -24,6 +24,7 @@ public interface IUserRepository
     int Save();
     string ChangeUserPassword(int userId, string newHashedPassword);
     User FindUserByEmail(string email);
-    public Role FindRole(int roleId);
+    Role FindRole(int roleId);
     User FindUserByUsername(string username);
+    IQueryable<Role> GetRolesByUserId(int userId);
 }

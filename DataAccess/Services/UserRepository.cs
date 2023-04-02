@@ -194,4 +194,10 @@ public class UserRepository : IUserRepository
     {
         return _db.Users.SingleOrDefault(a => a.Username == username);
     }
+
+    public IQueryable<Role> GetRolesByUserId(int userId)
+    {
+        var roleIds = _db.UserRoles.Where(a => a.UserId == userId).Select(a => a.RoleId);
+        return _db.Roles.Where(a => roleIds.Contains(a.Id));
+    }
 }

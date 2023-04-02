@@ -15,13 +15,14 @@ namespace Entity.Models
         public string? Description { get; set; }
         public int SexId { get; set; }
         public int GradeId { get; set; }
-        public int RoleId{ get; set; }
+      
         public string RefreshToken { get; set; }
 
         public string ActivationCode { get; set; } = string.Empty;
         public virtual Sex Sex { get; set; } = new Sex();
         public virtual Grade Grade { get; set; } = new Grade();
         public virtual Role Role { get; set; } = new Role();
+        public virtual ICollection<UserRole> UserRoles { get; set; } 
 
     }
 }
