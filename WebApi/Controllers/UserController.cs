@@ -46,12 +46,7 @@ public class UserController : ControllerBase
         
         return result;
     }
-    [Route("SayHello")]
-    [HttpGet]
-    public string SayHello()
-    {
-        return "HelloWorld!";
-    }
+
     [Route("RegisterUser")]
     [HttpPost]
     public RegisterUserResult RegisterUser(RegisterUserDto userDto)
@@ -77,12 +72,7 @@ public class UserController : ControllerBase
          , Language.Persian);
         return result;
     }
-    [Route("CreateDuty")]
-    [HttpPost]
-    public CreateDutyResult CreateDuty(DutyDto dutyDto){
-        var result = new CreateDutyResult(_dutyBusiness.CreateDuty(dutyDto) , Language.Persian);
-        return result;
-    }
+
     [HttpPost("Login")]
     public ActionResult<LoginUserResult> Login(LoginUserDto loginUserDto)
     {

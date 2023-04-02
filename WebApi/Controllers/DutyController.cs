@@ -50,6 +50,13 @@ public class DutyController : ControllerBase
 
 
     }
+    [Route("CreateDuty")]
+    [HttpPost]
+    public CreateDutyResult CreateDuty(DutyDto dutyDto)
+    {
+        var result = new CreateDutyResult(_dutyBusiness.CreateDuty(dutyDto), Language.Persian);
+        return result;
+    }
     [HttpGet]
     [Route("GetActiveDutiesByStudentId")]
     public ActionResult<DutyDto> GetActiveDutiesByStudentId(int userId)
