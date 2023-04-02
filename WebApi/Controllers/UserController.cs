@@ -57,12 +57,15 @@ public class UserController : ControllerBase
     }
     [Route("ChangePassword")]
     [HttpPost]
+    [Authorize(Roles = "admin,consultant,student")]
+
     public ChangePasswordResult ChangePassword(ChangePasswordDto changePasswordDto)
     {
         var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto), Language.Persian);
         return result;
     }
     [Route("SendActivationCode")]
+    [Authorize(Roles = "admin,consultant,student")]
     [HttpPost]
     public SendActivationCodeResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto)
     {

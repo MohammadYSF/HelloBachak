@@ -1,7 +1,9 @@
 using DataAccess.Repositories;
 using Entity.Context;
 using Entity.Models;
+using Entity.Models.FunctionModels;
 using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
 
 namespace DataAccess.Services;
 
@@ -199,5 +201,18 @@ public class UserRepository : IUserRepository
     {
         var roleIds = _db.UserRoles.Where(a => a.UserId == userId).Select(a => a.RoleId);
         return _db.Roles.Where(a => roleIds.Contains(a.Id));
+    }
+
+    public IQueryable<Func_Report_Related_Student> Func_Report_Related_Student(int userId)
+    {
+        var pUserId = new SqlParameter("@UserId", userId);
+        var data = _db.Func_Report_Related_Student.FromSqlRaw("SELECT * From func_report_related_students(@UserId)" , pUserId);
+        return data;
+    }
+
+    public IQueryable<Func_Report_Manage_Student> Func_Report_ManageStudent()
+    { 
+        var data = _db.Func_Report_Manage_Student.FromSqlRaw("SELECT * From func_report_manage_student()");
+        return data;
     }
 }

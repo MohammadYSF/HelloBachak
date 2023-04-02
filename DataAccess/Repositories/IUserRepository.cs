@@ -3,8 +3,13 @@ using System.Collections;
 using System;
 using System.Linq;
 using Entity.Models;
+using Entity.Models.FunctionModels;
+
 public interface IUserRepository
 {
+    public IQueryable<Func_Report_Related_Student> Func_Report_Related_Students(int userId);
+    public IQueryable<Func_Report_Manage_Student> Func_Report_ManageStudent();
+
     public IQueryable<User> Get();
     public IQueryable<User>GetAllStudents();
     string Create(User user);

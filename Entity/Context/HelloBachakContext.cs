@@ -1,6 +1,7 @@
 
 namespace Entity.Context;
 using Entity.Models;
+using Entity.Models.FunctionModels;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore;
 
@@ -20,7 +21,10 @@ public class HelloBachakContext : DbContext
     public virtual DbSet<Lesson> Lessons{ get; set; }
     public virtual DbSet<Entity.Models.Duty> Duties { get; set; }
     public virtual DbSet<DutyReply> DutyReplies { get; set; }
-
+    public virtual DbSet<Func_Report_Lesson> Func_Report_Lesson{ get; set; }
+    public virtual DbSet<Func_Report_Manage_Student> Func_Report_Manage_Student { get; set; }
+    public virtual DbSet<Func_Report_Related_Student> Func_Report_Related_Student { get; set; }
+    public virtual DbSet<Func_Report_Student_Related_Duty> Func_Report_Student_Related_Duty { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder){
         modelBuilder.Entity<Sex>(entity => {
             entity.ToTable("Sex");
@@ -82,5 +86,26 @@ public class HelloBachakContext : DbContext
             entity.HasKey(a=> a.DutyId);
 
         });
+        modelBuilder.Entity<Func_Report_Lesson>(entity =>
+        {
+            entity.ToFunction("func_report_lessons");
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<Func_Report_Manage_Student>(entity =>
+        {
+            entity.ToFunction("func_report_manage_students");
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<Func_Report_Related_Student>(entity =>
+        {
+            entity.ToFunction("func_report_related_student");
+            entity.HasNoKey();
+        });
+        modelBuilder.Entity<Func_Report_Student_Related_Duty>(entity =>
+        {
+            entity.ToFunction("func_report_student_related_duties");
+            entity.HasNoKey();
+        });
+        
     }
 }

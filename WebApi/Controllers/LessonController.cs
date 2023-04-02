@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Business.Results;
 using Dto.Models;
 using DataAccess.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace WebApi.Controllers;
 
@@ -32,6 +34,8 @@ public class LessonController : ControllerBase
     }
 
     [Route("GetAllLessons")]
+    [Authorize(Roles = "admin,consultant")]
+
     [HttpGet]
     public IEnumerable<LessonDto> GetAllLessons()
     {

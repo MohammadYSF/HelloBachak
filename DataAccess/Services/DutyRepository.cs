@@ -1,7 +1,9 @@
 using DataAccess.Repositories;
 using Entity.Context;
 using Entity.Models;
+using Entity.Models.FunctionModels;
 using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
 
 namespace DataAccess.Services;
 
@@ -67,7 +69,12 @@ public class DutyRepository : IDutyRepository
         }
     }
 
-
+    public IQueryable<Func_Report_Student_Related_Duty> Func_Report_Student_Related_Duty(int userId)
+    {
+        var pUserId = new SqlParameter("@UserId", userId);
+        var data = _db.Func_Report_Student_Related_Duty.FromSqlRaw("SELECT * from func_Report_Student_related_duties(@UserId)", pUserId);
+        return data;
+    }
 
     public IQueryable<Duty> Get()
     {
