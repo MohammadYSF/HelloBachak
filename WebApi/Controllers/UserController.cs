@@ -41,7 +41,7 @@ public class UserController : ControllerBase
     [Route("GetAllStudents")]
     [HttpGet]
     [Authorize(Roles = "admin")]
-    public ActionResult<IEnumerable<UserDto>> GetAllStudents()
+    public ActionResult<IEnumerable<Func_Report_Manage_Student>> GetAllStudents()
     {
         var result = _userBusiness.GetAllStudents();
         

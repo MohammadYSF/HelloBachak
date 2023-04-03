@@ -115,14 +115,9 @@ public class UserBusiness
         return validationResult;
 
     }
-    public List<UserDto> GetAllStudents()
+    public List<Func_Report_Manage_Student> GetAllStudents()
     {
-        var answer = _userRepository.Func_Report_ManageStudent().Select(b => new UserDto
-        {
-            Id = b.Id,
-            Username = b.Username
-        }).ToList();
-
+        var answer = _userRepository.Func_Report_ManageStudent().ToList();
         return answer;
     }
     public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IEmailService emailService, IConfiguration config, string baseUrl, string redirectedLink, ref int httpCode)
