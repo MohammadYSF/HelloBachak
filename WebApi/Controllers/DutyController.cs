@@ -26,7 +26,7 @@ public class DutyController : ControllerBase
         // _userBusiness = new UserBusiness(new UserServiceE);
         _db = new UnitOfWork(context);
         _logger = logger;
-        _dutyBusiness = new DutyBusiness(new DutyRepository(context));
+        _dutyBusiness = new DutyBusiness(new DutyRepository(context),new UserRepository(context));
         _config = config;
         _configRoot = new ConfigurationBuilder().AddUserSecrets<UserController>().Build();
         _webHostEnvironment = webHostEnvironment;

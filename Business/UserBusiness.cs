@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Business.Auth;
 using Business.Helpers.EmailService;
 using System.Net.Mail;
+using Entity.Models.FunctionModels;
 
 namespace Business;
 
@@ -110,13 +111,12 @@ public class UserBusiness
     }
     public List<UserDto> GetAllStudents()
     {
-
-        var answer = _userRepository.GetAllStudents()
-        .Select(b => new UserDto
+        var answer = _userRepository.Func_Report_ManageStudent().Select(b => new UserDto
         {
             Id = b.Id,
             Username = b.Username
         }).ToList();
+        
         return answer;
     }
     public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IEmailService emailService, IConfiguration config, string baseUrl, string redirectedLink)
@@ -166,4 +166,14 @@ public class UserBusiness
         return answer;
 
     }
+    public List<Func_Report_Related_Student> GetConsultantRelatedStudents(int consultantId)
+    {
+        var consultant = _userRepository.Find(consultantId);
+        if (consultant == null)
+            return null;
+        
+        var data = _userRepository.Func_Report_Related_Students(consultantId);
+        return data.ToList();
+    }
+    
 }

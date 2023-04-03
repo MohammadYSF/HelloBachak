@@ -20,10 +20,12 @@ public class LessonBusiness
         _lessonRepository = lessonRepository;
     }
     public List<LessonDto> GetAllLessons(){
-        return  _lessonRepository.Get().Select(a=> new LessonDto{
+        return _lessonRepository.Func_Report_Lesson().Select(a => new LessonDto
+        {
             Id = a.Id,
             Title = a.Title
         }).ToList();
+        
     }
    
 

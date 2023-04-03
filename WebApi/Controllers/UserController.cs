@@ -32,19 +32,28 @@ public class UserController : ControllerBase
         _db = new UnitOfWork(context);
         _logger = logger;
         _userBusiness = new UserBusiness(new UserRepository(context) , tokenService);
-        _dutyBusiness = new DutyBusiness(new DutyRepository(context));
+        _dutyBusiness = new DutyBusiness(new DutyRepository(context), new UserRepository(context));
         _config = config;
         _configRoot = new ConfigurationBuilder().AddUserSecrets<UserController>().Build();
         _webHostEnvironment = webHostEnvironment;        
     }
     [Route("GetAllStudents")]
     [HttpGet]
-    [Authorize(Roles = "admin,consultant,student")]
+    [Authorize(Roles = "admin")]
     public IEnumerable<UserDto> GetAllStudents()
     {
         var result = _userBusiness.GetAllStudents();
         
         return result;
+    }
+    [Route("GetConsultantRelatedStudents")]
+    [HttpGet]
+    [Authorize(Roles = "consultant")]
+    public IEnumerable<UserDto> GetConsultantRelatedStudents(int consultantId)
+    {
+        return null;
+        //var result = _userBusiness.GetConsultantRelatedStudents(consultantId);
+        //return result;
     }
 
     [Route("RegisterUser")]

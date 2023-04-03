@@ -203,7 +203,7 @@ public class UserRepository : IUserRepository
         return _db.Roles.Where(a => roleIds.Contains(a.Id));
     }
 
-    public IQueryable<Func_Report_Related_Student> Func_Report_Related_Student(int userId)
+    public IQueryable<Func_Report_Related_Student> Func_Report_Related_Students(int userId)
     {
         var pUserId = new SqlParameter("@UserId", userId);
         var data = _db.Func_Report_Related_Student.FromSqlRaw("SELECT * From func_report_related_students(@UserId)" , pUserId);

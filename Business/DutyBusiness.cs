@@ -9,14 +9,18 @@ using AutoMapper;
 using Business.Helpers;
 using Business.Results;
 using Microsoft.Extensions.Configuration;
+using DataAccess.Services;
+using Entity.Models.FunctionModels;
 
 namespace Business;
 
 public class DutyBusiness
 {
     private readonly IDutyRepository _dutyRepository;
-    public DutyBusiness(IDutyRepository dutyRepository)
+    private readonly IUserRepository _userRepository;
+    public DutyBusiness(IDutyRepository dutyRepository , IUserRepository userRepository)
     {
+        _userRepository = userRepository;
         _dutyRepository = dutyRepository;
     }
     public DutyDtoValidationResult CreateDuty(DutyDto dutyDto)
@@ -94,5 +98,13 @@ public class DutyBusiness
         }).ToList();
         return answer;
     }
-   
+    public List<Func_Report_Student_Related_Duty> GetStudentRelatedDuties(int studentId)
+    {
+        var student = _userRepository.Find(studentId);
+        if (student == null)
+            return null;
+        var data = _dutyRepository.Func_Report_Student_Related_Duty(studentId);
+        return data.ToList();
+    }
+
 }

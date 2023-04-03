@@ -19,6 +19,7 @@ namespace Entity.Models
         public string RefreshToken { get; set; }
 
         public string ActivationCode { get; set; } = string.Empty;
+        public int? ConsultantId { get; set; }
         public virtual Sex Sex { get; set; } = new Sex();
         public virtual Grade Grade { get; set; } = new Grade();
         public virtual Role Role { get; set; } = new Role();
