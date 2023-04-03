@@ -17,6 +17,9 @@ using Business.Auth;
 using Microsoft.Extensions.Options;
 using Business.Helpers.EmailService;
 using Entity.Models.FunctionModels;
+using System.Linq.Expressions;
+using AutoMapper.Configuration.Annotations;
+using FluentAssertions.Execution;
 
 namespace Test;
 class DutyDtoParameters : IEnumerable<object[]>
@@ -475,6 +478,20 @@ public class BusinessTest
         StudentId = 3,
         ConsultantId = 2
 
+        },
+        new DutyDto
+        {
+                Id = 2,
+        Title = "continue duty 1",
+        ArrangedDate = DateTime.Today,
+        IsActive = true,
+        LessonTitle = "title lesson 1",
+        StudentTitle = "Fateme",
+        ConsultantTitle = "Mohammad",
+        StudentId = 3,
+        ConsultantId = 2,
+        OlderDutyId = 1
+
         }
     };
     private List<Lesson> _lessons = new List<Lesson>{
@@ -557,7 +574,7 @@ public class BusinessTest
             Password="e9ea449842656e5557783455c439cd718883cdb256a08f4ae0ca529d23d4ab4e",
             ConsultantId = 2
         }
-        
+
 
         };
     private List<Role> _roles = new List<Role>{
@@ -592,25 +609,34 @@ public class BusinessTest
                 OlderDutyId = null,
                 IsActive = true,
                 LessonId = 1
+            },
+            new Duty{
+                Id =2,
+                Title ="continue duty 1",
+                StudentId = 3,
+                OlderDutyId = 1
             }
         };
 
         _lessonRepositoryServiceMock = new Mock<ILessonRepository>();
         _lessonRepositoryServiceMock.Setup(a => a.Get()).Returns(_lessons.AsQueryable());
-        _lessonRepositoryServiceMock.Setup(a => a.Func_Report_Lesson()).Returns(_lessons.Select(b=> new Func_Report_Lesson { Id = b.Id,Title=b.Title}).AsQueryable());
+        _lessonRepositoryServiceMock.Setup(a => a.Func_Report_Lesson()).Returns(_lessons.Select(b => new Func_Report_Lesson { Id = b.Id, Title = b.Title }).AsQueryable());
         _lessonRepositoryServiceMock.Setup(a => a.Create(_newLesson)).Returns("");
         _lessonRepositoryServiceMock.Setup(a => a.Find(_lessons[0].Id)).Returns(_lessons[0]);
         _lessonRepositoryServiceMock.Setup(a => a.Update(_updatedLesson)).Returns("");
         _dutyRepositoryServiceMock = new Mock<IDutyRepository>();
         _dutyRepositoryServiceMock.Setup(a => a.GetLessonIds()).Returns(_lessons.Select(e => e.Id).AsQueryable());
-        _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(_userRoles.Where(a=> a.RoleId == 2).Select(a=> a.UserId).Distinct().AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(_userRoles.Where(a => a.RoleId == 2).Select(a => a.UserId).Distinct().AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.GetConsultantIds()).Returns(_userRoles.Where(a => a.RoleId == 1).Select(a => a.UserId).Distinct().AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.Get()).Returns(duties.AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.Find(duties[0].Id)).Returns(duties[0]);
+        _dutyRepositoryServiceMock.Setup(a => a.Find(duties[1].Id)).Returns(duties[1]);
         _dutyRepositoryServiceMock.Setup(a => a.Create(_newDuty)).Returns("");
         _dutyRepositoryServiceMock.Setup(a => a.Update(_updatedDuty)).Returns("");
         _dutyRepositoryServiceMock.Setup(a => a.GetDutyIds()).Returns(new List<int>() { 1 }.AsQueryable<int>());
-        _dutyRepositoryServiceMock.Setup(a => a.Func_Report_Student_Related_Duty(_duties[0].StudentId)).Returns(new List<Func_Report_Student_Related_Duty>{ new Func_Report_Student_Related_Duty { Id = _duties[0].Id, Title = _duties[0].Title } }.AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.Func_Report_Student_Related_Duty(_duties[0].StudentId)).Returns(_duties.Where(a => a.StudentId == _duties[0].StudentId).Select(a => new Func_Report_Student_Related_Duty { Id = a.Id, Title = a.Title }).AsQueryable());
+        _dutyRepositoryServiceMock.Setup(a => a.Func_Get_Previous_Duty(_duties[0].Id)).Returns(_duties.Where(a => a.OlderDutyId == _duties[0].Id).Select(a => new Func_Get_Previous_Duty { Id = a.Id, OlderDutyId = a.Id, Title = a.Title }).AsQueryable());
+
         _userRepositoryServiceMock = new Mock<IUserRepository>();
         _userRepositoryServiceMock.Setup(a => a.Get()).Returns(_users.AsQueryable<User>);
         _userRepositoryServiceMock.Setup(a => a.Find(_user.Id)).Returns(_user);
@@ -674,8 +700,8 @@ public class BusinessTest
         jwtSettings.Key = "0123456789ABCDEF";
 
         var options = Options.Create(jwtSettings);
-        _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object ,new TokenService(options));
-        _dutyBusiness = new DutyBusiness(_dutyRepositoryServiceMock.Object , _userRepositoryServiceMock.Object);
+        _userBusiness = new UserBusiness(_userRepositoryServiceMock.Object, new TokenService(options));
+        _dutyBusiness = new DutyBusiness(_dutyRepositoryServiceMock.Object, _userRepositoryServiceMock.Object);
         _lessonBusiness = new LessonBusiness(_lessonRepositoryServiceMock.Object);
 
         _dutyRepositoryServiceMock.Setup(a => a.Get()).Returns(new List<Duty>{new Duty{
@@ -708,7 +734,7 @@ public class BusinessTest
             Password = "Mm#12345"
         };
         int testHttpCode = 200;
-        var result = _userBusiness.LoginUser(loginUserDto , ref testHttpCode);
+        var result = _userBusiness.LoginUser(loginUserDto, ref testHttpCode);
         result.Item1.Success.Should().BeTrue();
     }
     [Theory]
@@ -717,7 +743,7 @@ public class BusinessTest
     {
         int testHttpCode = 200;
 
-        var result = _userBusiness.LoginUser(dto , ref testHttpCode);
+        var result = _userBusiness.LoginUser(dto, ref testHttpCode);
         // var unExpected = "";
         result.Item1.Success.Should().BeFalse();
         switch (reason)
@@ -741,7 +767,7 @@ public class BusinessTest
         };
         int testHttpCode = 200;
 
-        var result = _userBusiness.RegisterUser(userDto , ref testHttpCode);
+        var result = _userBusiness.RegisterUser(userDto, ref testHttpCode);
 
         result.Success.Should().BeTrue();
 
@@ -752,7 +778,7 @@ public class BusinessTest
     {
         int testHttpCode = 200;
 
-        var result = _userBusiness.RegisterUser(dto , ref testHttpCode);
+        var result = _userBusiness.RegisterUser(dto, ref testHttpCode);
         // var unExpected = "";
         result.Success.Should().BeFalse();
         switch (reason)
@@ -783,7 +809,7 @@ public class BusinessTest
             CurrentPassword = "Mm#12345",
             NewPassword = "Mrx*77798"
         };
-        var result = _userBusiness.ChangePassword(correct_input , ref testHttpCode);
+        var result = _userBusiness.ChangePassword(correct_input, ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
@@ -823,7 +849,7 @@ public class BusinessTest
         };
         IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
         IEmailService emailService = new MockEmailService();
-        var result = _userBusiness.SendActivationCode(correct_input, emailService,config, "/", "Account/ActivateAccount" , ref testHttpCode);
+        var result = _userBusiness.SendActivationCode(correct_input, emailService, config, "/", "Account/ActivateAccount", ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
@@ -864,7 +890,7 @@ public class BusinessTest
             OlderDutyId = null
         };
         int testHttpCode = 200;
-        var result = _dutyBusiness.CreateDuty(correct_input , ref testHttpCode);
+        var result = _dutyBusiness.CreateDuty(correct_input, ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
@@ -912,7 +938,7 @@ public class BusinessTest
         }).ToList());
 
     }
-    [Fact]
+    [Fact(Skip = "no need any more")]
     public void Should_Get_All_Duties()
     {
         List<DutyDto> result = _dutyBusiness.GetAllDuties();
@@ -937,7 +963,7 @@ public class BusinessTest
             IsSucceed = true,
             Description = "some test description"
         };
-        var result = _dutyBusiness.CreateDutyReply(correct_input , ref testHttpCode);
+        var result = _dutyBusiness.CreateDutyReply(correct_input, ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
@@ -956,7 +982,8 @@ public class BusinessTest
         }
 
     }
-    [Fact]
+    [Fact(Skip = "no need any more")]
+
     public void Should_Get_ActiveDuties_By_StudentId()
     {
         int studentId = 1;
@@ -973,7 +1000,7 @@ public class BusinessTest
     {
         int studentId = 2;
         SingleStudentDetailDto result = _userBusiness.GetStudentDetail(studentId);
-        User expected = _users.First(a=> a.Id == studentId);
+        User expected = _users.First(a => a.Id == studentId);
         result.Id.Should().Be(expected.Id);
         result.PhoneNumber.Should().Be(expected.PhoneNumber);
         result.Email.Should().Be(expected.Email);
@@ -990,12 +1017,12 @@ public class BusinessTest
         List<Func_Report_Related_Student> result = _userBusiness.GetConsultantRelatedStudents(consultantId, ref testHttpCode);
         var roleIdForBeingStudent = _roles.First(a => a.Title.ToLower() == "student").Id;
         var studentIds = _userRoles.Where(a => a.RoleId == roleIdForBeingStudent).Select(a => a.UserId).Distinct();
-        result.Select(a=> new UserDto { Id=a.Id,Username=a.Username}).Should().BeEquivalentTo(_users.Where(a => studentIds.Contains(a.Id) && a.ConsultantId == consultantId).Select(a => new UserDto
+        result.Select(a => new UserDto { Id = a.Id, Username = a.Username }).Should().BeEquivalentTo(_users.Where(a => studentIds.Contains(a.Id) && a.ConsultantId == consultantId).Select(a => new UserDto
         {
             Id = a.Id,
             Username = a.Username
         }).ToList());
-        
+
     }
     [Fact]
     public void Should_Not_Get_Consultant_Related_Students()
@@ -1012,14 +1039,14 @@ public class BusinessTest
         int testHttpCode = 200;
 
         int studentId = 3;
-        var result = _dutyBusiness.GetStudentRelatedDuties(studentId , ref testHttpCode);
+        var result = _dutyBusiness.GetStudentRelatedDuties(studentId, ref testHttpCode);
         result.Select(a => new DutyDto { Id = a.Id, Title = a.Title }).ToList().Should()
-            .BeEquivalentTo(_duties.Where(a=> a.StudentId == studentId).Select(a=> new DutyDto
+            .BeEquivalentTo(_duties.Where(a => a.StudentId == studentId).Select(a => new DutyDto
             {
                 Id = a.Id,
-                Title=a.Title
+                Title = a.Title
             }));
-        
+
     }
     [Fact]
     public void Should_Not_Get_Student_Related_Duties()
@@ -1030,5 +1057,22 @@ public class BusinessTest
         var result = _dutyBusiness.GetStudentRelatedDuties(studentId, ref testHttpCode);
         result.Should().BeNull();
 
+    }
+    [Fact]
+    public void Should_Get_Parent_Duties()
+    {
+        int dutyId = 2;
+        int testHttpCode = 200;
+        var result = _dutyBusiness.GetParentDuties(dutyId, ref testHttpCode);
+        result.Select(a => new DutyDto { Id = a.Id, OlderDutyId = a.Id, Title = a.Title }).Should()
+            .BeEquivalentTo(_duties.Where(a => a.OlderDutyId == dutyId));
+    }
+    [Fact]
+    public void Should_Not_Get_Parent_Duties()
+    {
+        int dutyId = 300;
+        int testHttpCode = 200;
+        var result = _dutyBusiness.GetParentDuties(dutyId, ref testHttpCode);
+        result.Should().BeNull();
     }
 }

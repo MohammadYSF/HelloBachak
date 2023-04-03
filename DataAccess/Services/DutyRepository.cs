@@ -69,6 +69,13 @@ public class DutyRepository : IDutyRepository
         }
     }
 
+    public IQueryable<Func_Get_Previous_Duty> Func_Get_Previous_Duty(int dutyId)
+    {
+        var pDutyId = new SqlParameter("@DutyId", dutyId);
+        var data = _db.Func_Get_Previous_Duty.FromSqlRaw("SELECT * from func_get_previous_duties(@DutyId)", pDutyId);
+        return data;
+    }
+
     public IQueryable<Func_Report_Student_Related_Duty> Func_Report_Student_Related_Duty(int userId)
     {
         var pUserId = new SqlParameter("@UserId", userId);

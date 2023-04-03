@@ -25,6 +25,8 @@ public class HelloBachakContext : DbContext
     public virtual DbSet<Func_Report_Manage_Student> Func_Report_Manage_Student { get; set; }
     public virtual DbSet<Func_Report_Related_Student> Func_Report_Related_Student { get; set; }
     public virtual DbSet<Func_Report_Student_Related_Duty> Func_Report_Student_Related_Duty { get; set; }
+    public virtual DbSet<Func_Get_Previous_Duty> Func_Get_Previous_Duty { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder){
         modelBuilder.Entity<Sex>(entity => {
             entity.ToTable("Sex");
@@ -106,6 +108,13 @@ public class HelloBachakContext : DbContext
             entity.ToFunction("func_report_student_related_duties");
             entity.HasNoKey();
         });
+        modelBuilder.Entity<Func_Get_Previous_Duty>(entity =>
+        {
+            entity.ToFunction("func_get_previous_duties");
+            entity.HasNoKey();
+        });
         
+
+
     }
 }

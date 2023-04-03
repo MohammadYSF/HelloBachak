@@ -112,5 +112,16 @@ public class DutyBusiness
         var data = _dutyRepository.Func_Report_Student_Related_Duty(studentId);
         return data.ToList();
     }
-
+    
+    public List<Func_Get_Previous_Duty> GetParentDuties(int dutyId , ref int httpCode)
+    {
+        var duty = _dutyRepository.Find(dutyId);
+        if (duty == null)
+        {
+            httpCode = 400;
+            return null;
+        }
+        var data = _dutyRepository.Func_Get_Previous_Duty(dutyId);
+        return data.ToList();
+    }
 }
