@@ -863,14 +863,17 @@ public class BusinessTest
             LessonId = 1,
             OlderDutyId = null
         };
-        var result = _dutyBusiness.CreateDuty(correct_input);
+        int testHttpCode = 200;
+        var result = _dutyBusiness.CreateDuty(correct_input , ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
     [ClassData(typeof(DutyDtoParameters))]
     public void Shoud_Not_Create_Duty(DutyDto dto, string reason)
     {
-        var result = _dutyBusiness.CreateDuty(dto);
+        int testHttpCode = 200;
+
+        var result = _dutyBusiness.CreateDuty(dto, ref testHttpCode);
         // var unExpected = "";
         result.Success.Should().BeFalse();
         switch (reason)
@@ -927,20 +930,23 @@ public class BusinessTest
     [Fact]
     public void Should_Create_Duty_Reply()
     {
+        int testHttpCode = 200;
         var correct_input = new DutyReplyDto
         {
             DutyId = 1,
             IsSucceed = true,
             Description = "some test description"
         };
-        var result = _dutyBusiness.CreateDutyReply(correct_input);
+        var result = _dutyBusiness.CreateDutyReply(correct_input , ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
     [ClassData(typeof(DutyReplyDtoParameters))]
     public void Shoud_Not_Create_DutyReply(DutyReplyDto dto, string reason)
     {
-        var result = _dutyBusiness.CreateDutyReply(dto);
+        int testHttpCode = 200;
+
+        var result = _dutyBusiness.CreateDutyReply(dto, ref testHttpCode);
         // var unExpected = "";
         result.Success.Should().BeFalse();
         switch (reason)
@@ -1003,8 +1009,10 @@ public class BusinessTest
     [Fact]
     public void Should_Get_Student_Related_Duties()
     {
+        int testHttpCode = 200;
+
         int studentId = 3;
-        var result = _dutyBusiness.GetStudentRelatedDuties(studentId);
+        var result = _dutyBusiness.GetStudentRelatedDuties(studentId , ref testHttpCode);
         result.Select(a => new DutyDto { Id = a.Id, Title = a.Title }).ToList().Should()
             .BeEquivalentTo(_duties.Where(a=> a.StudentId == studentId).Select(a=> new DutyDto
             {
@@ -1016,8 +1024,10 @@ public class BusinessTest
     [Fact]
     public void Should_Not_Get_Student_Related_Duties()
     {
+        int testHttpCode = 200;
+
         int studentId = 300;
-        var result = _dutyBusiness.GetStudentRelatedDuties(studentId);
+        var result = _dutyBusiness.GetStudentRelatedDuties(studentId, ref testHttpCode);
         result.Should().BeNull();
 
     }

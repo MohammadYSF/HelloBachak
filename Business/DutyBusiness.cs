@@ -23,7 +23,7 @@ public class DutyBusiness
         _userRepository = userRepository;
         _dutyRepository = dutyRepository;
     }
-    public DutyDtoValidationResult CreateDuty(DutyDto dutyDto)
+    public DutyDtoValidationResult CreateDuty(DutyDto dutyDto , ref int httpCode)
     {
         var dutyDtoValidator = new DutyDtoValidator(_dutyRepository.GetLessonIds().ToList(), _dutyRepository.GetStudentIds().ToList(), _dutyRepository.GetConsultantIds().ToList(), _dutyRepository.GetDutyIds().ToList());
         ValidationResult result = dutyDtoValidator.Validate(dutyDto);
@@ -47,10 +47,12 @@ public class DutyBusiness
             _dutyRepository.Create(duty);
             _dutyRepository.Save();
         }
+        else
+            httpCode = 400;
         return validationResult;
     }
 
-    public DutyReplyDtoValidationResult CreateDutyReply(DutyReplyDto dutyReplyDto)
+    public DutyReplyDtoValidationResult CreateDutyReply(DutyReplyDto dutyReplyDto , ref int httpCode)
     {
         var dutyReplyDtoValidator = new DutyReplyDtoValidator(_dutyRepository.GetDutyIds().ToList());
         ValidationResult result = dutyReplyDtoValidator.Validate(dutyReplyDto);
@@ -68,6 +70,8 @@ public class DutyBusiness
             _dutyRepository.CreateDutyReply(dutyReply);
             _dutyRepository.Save();
         }
+        else
+            httpCode = 400;
         return validationResult;
 
     }
@@ -98,11 +102,13 @@ public class DutyBusiness
         }).ToList();
         return answer;
     }
-    public List<Func_Report_Student_Related_Duty> GetStudentRelatedDuties(int studentId)
+    public List<Func_Report_Student_Related_Duty> GetStudentRelatedDuties(int studentId , ref int httpCode)
     {
         var student = _userRepository.Find(studentId);
-        if (student == null)
+        if (student == null) {
+            httpCode = 400;
             return null;
+        }
         var data = _dutyRepository.Func_Report_Student_Related_Duty(studentId);
         return data.ToList();
     }

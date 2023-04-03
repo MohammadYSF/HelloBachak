@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Business.Results;
 using Dto.Models;
 using DataAccess.Services;
+using Microsoft.AspNetCore.Authorization;
+using Entity.Models.FunctionModels;
 
 namespace WebApi.Controllers;
 
@@ -32,37 +34,48 @@ public class DutyController : ControllerBase
         _webHostEnvironment = webHostEnvironment;
     }
     [HttpGet]
-    [Route("GetAllDuties")]
-    public ActionResult<IEnumerable<DutyDto>> GetAllDuties()
+    [Route("GetRelatedStudentDuties")]
+    [Authorize(Roles = "student,consultant")]
+    public ActionResult<Func_Report_Student_Related_Duty> GetRelatedStudentDuties(int studentId)
     {
-        var result = _dutyBusiness.GetAllDuties();
-        return Ok(result);
+        int httpCode = 200;
+        var result = _dutyBusiness.GetStudentRelatedDuties(studentId, ref studentId);
+        return StatusCode(httpCode, result);
     }
+    //[HttpGet]
+    //[Route("GetAllDuties")]
+    //public ActionResult<IEnumerable<DutyDto>> GetAllDuties()
+    //{
+    //    var result = _dutyBusiness.GetAllDuties();
+    //    return Ok(result);
+    //}
     [HttpPost]
     [Route("CreateDutyReply")]
+    [Authorize(Roles = "student")]
     public ActionResult<DutyReplyDtoValidationResult> CreateDutyReply(DutyReplyDto dto)
     {
-        var result = _dutyBusiness.CreateDutyReply(dto);
-        if (result.Success)
-            return Ok(result);
-        else
-            return BadRequest(result);
+        int httpCode = 200;
+        var result = _dutyBusiness.CreateDutyReply(dto , ref httpCode);
+        return StatusCode(httpCode, result);
 
 
     }
     [Route("CreateDuty")]
+    [Authorize(Roles = "consultant")]
     [HttpPost]
-    public CreateDutyResult CreateDuty(DutyDto dutyDto)
+    public ActionResult<CreateDutyResult> CreateDuty(DutyDto dutyDto)
     {
-        var result = new CreateDutyResult(_dutyBusiness.CreateDuty(dutyDto), Language.Persian);
-        return result;
+        int httpCode = 200;
+        var result = new CreateDutyResult(_dutyBusiness.CreateDuty(dutyDto , ref httpCode), Language.Persian);
+        return StatusCode(httpCode, result);
+
     }
-    [HttpGet]
-    [Route("GetActiveDutiesByStudentId")]
-    public ActionResult<DutyDto> GetActiveDutiesByStudentId(int userId)
-    {
-        var result = _dutyBusiness.GetActiveDutiesByStudentId(userId);
-        return Ok(result);
-    }
+    //[HttpGet]
+    //[Route("GetActiveDutiesByStudentId")]
+    //public ActionResult<DutyDto> GetActiveDutiesByStudentId(int userId)
+    //{
+    //    var result = _dutyBusiness.GetActiveDutiesByStudentId(userId);
+    //    return Ok(result);
+    //}
     
 }
