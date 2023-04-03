@@ -37,10 +37,10 @@ public class LessonController : ControllerBase
     [Authorize(Roles = "admin,consultant")]
 
     [HttpGet]
-    public IEnumerable<LessonDto> GetAllLessons()
+    public ActionResult<IEnumerable<LessonDto>> GetAllLessons()
     {
         
         var result = _lessonBusiness.GetAllLessons();
-        return result;
+        return Ok(result);
     }
 }
