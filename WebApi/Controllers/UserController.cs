@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Business.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Business.Helpers.EmailService;
+using Entity.Models.FunctionModels;
 
 namespace WebApi.Controllers;
 
@@ -40,61 +41,61 @@ public class UserController : ControllerBase
     [Route("GetAllStudents")]
     [HttpGet]
     [Authorize(Roles = "admin")]
-    public IEnumerable<UserDto> GetAllStudents()
+    public ActionResult<IEnumerable<UserDto>> GetAllStudents()
     {
         var result = _userBusiness.GetAllStudents();
         
-        return result;
+        return Ok(result);
     }
     [Route("GetConsultantRelatedStudents")]
     [HttpGet]
     [Authorize(Roles = "consultant")]
-    public IEnumerable<UserDto> GetConsultantRelatedStudents(int consultantId)
+    public ActionResult<IEnumerable<Func_Report_Related_Student>> GetConsultantRelatedStudents(int consultantId)
     {
-        return null;
-        //var result = _userBusiness.GetConsultantRelatedStudents(consultantId);
-        //return result;
+        int httpCode = 200;
+        var result = _userBusiness.GetConsultantRelatedStudents(consultantId , ref httpCode);
+        return StatusCode(httpCode, result);
     }
 
     [Route("RegisterUser")]
     [HttpPost]
-    public RegisterUserResult RegisterUser(RegisterUserDto userDto)
+    public ActionResult<RegisterUserResult> RegisterUser(RegisterUserDto userDto)
     {
-
-        var result = new RegisterUserResult(_userBusiness.RegisterUser(userDto), Language.Persian);
-        return result;
+        int httpCode = 200;
+        var result = new RegisterUserResult(_userBusiness.RegisterUser(userDto , ref httpCode), Language.Persian);
+        return StatusCode(httpCode, result);
     }
     [Route("ChangePassword")]
     [HttpPost]
     [Authorize(Roles = "admin,consultant,student")]
 
-    public ChangePasswordResult ChangePassword(ChangePasswordDto changePasswordDto)
+    public ActionResult<ChangePasswordResult> ChangePassword(ChangePasswordDto changePasswordDto)
     {
-        var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto), Language.Persian);
-        return result;
+        int httpCode = 200;
+        var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto , ref httpCode), Language.Persian);
+        return StatusCode(httpCode, result);
     }
     [Route("SendActivationCode")]
-    [Authorize(Roles = "admin,consultant,student")]
     [HttpPost]
-    public SendActivationCodeResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto)
+    public ActionResult<SendActivationCodeResult> SendActivationCode(SendActivationCodeDto sendActivationCodeDto)
     {
+        int httpCode = 200;
         IEmailService emailService = new GmailService(_config);
         var result = new SendActivationCodeResult(_userBusiness.SendActivationCode(sendActivationCodeDto, emailService,
-         _configRoot,_webHostEnvironment.ContentRootPath, _webHostEnvironment.ContentRootPath + "/api/User/SendActivationCode")
+         _configRoot,_webHostEnvironment.ContentRootPath, _webHostEnvironment.ContentRootPath + "/api/User/SendActivationCode" , ref httpCode)
          , Language.Persian);
-        return result;
+        return StatusCode(httpCode, result);
     }
 
     [HttpPost("Login")]
     public ActionResult<LoginUserResult> Login(LoginUserDto loginUserDto)
     {
-        var loginUserResult = _userBusiness.LoginUser(loginUserDto);
+        int httpCode = 200;
+        var loginUserResult = _userBusiness.LoginUser(loginUserDto , ref httpCode);
         dynamic result = "";
         result = new LoginUserResult(loginUserResult.Item1, Language.Persian , loginUserResult.Item2 , loginUserResult.Item3);
-        if (result.Success)
-            return StatusCode(200, result);
-        else
-            return StatusCode(500, result);
+        return StatusCode(httpCode, result);
+
 
     }
 }

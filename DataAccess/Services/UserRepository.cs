@@ -215,4 +215,19 @@ public class UserRepository : IUserRepository
         var data = _db.Func_Report_Manage_Student.FromSqlRaw("SELECT * From func_report_manage_student()");
         return data;
     }
+
+    public string CreateUserRole(UserRole userRole)
+    {
+        try
+        {
+            _db.UserRoles.Add(userRole);
+            return "";
+        }
+        catch (Exception e)
+        {
+
+            throw e;
+            return "error";
+        }
+    }
 }

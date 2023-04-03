@@ -28,7 +28,7 @@ public class UserBusiness
         _tokenService = tokenService;
     }
 
-    public ChangePasswordDtoValidationResult ChangePassword(ChangePasswordDto changePasswordDto)
+    public ChangePasswordDtoValidationResult ChangePassword(ChangePasswordDto changePasswordDto, ref int httpCode)
     {
         var ChangePasswordDtoValidator = new ChangePasswordDtoValidator(_userRepository.Find(changePasswordDto.UserId), _userRepository.GetHashedUsersPasswords());
         ValidationResult result = ChangePasswordDtoValidator.Validate(changePasswordDto);
@@ -39,9 +39,11 @@ public class UserBusiness
             _userRepository.ChangeUserPassword(changePasswordDto.UserId, Helper.ComputeSHA256Hash(changePasswordDto.NewPassword));
             _userRepository.Save();
         }
+        else
+            httpCode = 400;
         return validationResult;
     }
-    public Tuple<LoginUserDtoValidationResult, string, string> LoginUser(LoginUserDto loginUserDto)
+    public Tuple<LoginUserDtoValidationResult, string, string> LoginUser(LoginUserDto loginUserDto, ref int httpCode)
     {
         string token = "", refreshToken = "";
         var loginUserDtoValidator = new LoginUserDtoValidator(_userRepository.Get());
@@ -69,10 +71,12 @@ public class UserBusiness
             _userRepository.Save();
 
         }
+        else
+            httpCode = 400;
         return new Tuple<LoginUserDtoValidationResult, string, string>(validationResult, token, refreshToken);
 
     }
-    public RegisterUserDtoValidationResult RegisterUser(RegisterUserDto userDto)
+    public RegisterUserDtoValidationResult RegisterUser(RegisterUserDto userDto, ref int httpCode)
     {
         var userDtoValidator = new UserDtoValidator(_userRepository.GetUsersEmails(),
         _userRepository.GetHashedUsersPasswords(), _userRepository.GetSexIds(),
@@ -95,7 +99,7 @@ public class UserBusiness
                 CreationDate = DateTime.Now,
                 PhoneNumber = userDto.PhoneNumber,
                 IsActive = false,
-                            
+
             };
             UserRole userRole = new UserRole
             {
@@ -103,9 +107,11 @@ public class UserBusiness
                 User = user
 
             };
-            _userRepository.Create(user);
+            _userRepository.CreateUserRole(userRole);
             _userRepository.Save();
         }
+        else
+            httpCode = 400;
         return validationResult;
 
     }
@@ -116,10 +122,10 @@ public class UserBusiness
             Id = b.Id,
             Username = b.Username
         }).ToList();
-        
+
         return answer;
     }
-    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IEmailService emailService, IConfiguration config, string baseUrl, string redirectedLink)
+    public SendActivationCodeDtoValidationResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto, IEmailService emailService, IConfiguration config, string baseUrl, string redirectedLink, ref int httpCode)
     {
         var sendActivationCodeDtoValidator = new SendActivationCodeDtoValidator(_userRepository.GetUsersEmails());
         string email = sendActivationCodeDto.Email;
@@ -143,6 +149,8 @@ public class UserBusiness
             };
             emailService.Send(mailMessage, email);
         }
+        else
+            httpCode = 400;
         return validationResult;
     }
     public SingleStudentDetailDto GetStudentDetail(int userId)
@@ -166,14 +174,16 @@ public class UserBusiness
         return answer;
 
     }
-    public List<Func_Report_Related_Student> GetConsultantRelatedStudents(int consultantId)
+    public List<Func_Report_Related_Student> GetConsultantRelatedStudents(int consultantId, ref int httpCode)
     {
         var consultant = _userRepository.Find(consultantId);
         if (consultant == null)
+        {
+            httpCode = 400;
             return null;
-        
+        }
         var data = _userRepository.Func_Report_Related_Students(consultantId);
         return data.ToList();
     }
-    
+
 }

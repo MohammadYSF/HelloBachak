@@ -32,4 +32,6 @@ public interface IUserRepository
     Role FindRole(int roleId);
     User FindUserByUsername(string username);
     IQueryable<Role> GetRolesByUserId(int userId);
+
+    string CreateUserRole(UserRole userRole);
 }

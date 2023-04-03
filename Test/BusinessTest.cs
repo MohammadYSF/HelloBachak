@@ -707,14 +707,17 @@ public class BusinessTest
             Email = "aa.yosefiyan7@gmail.com",
             Password = "Mm#12345"
         };
-        var result = _userBusiness.LoginUser(loginUserDto);
+        int testHttpCode = 200;
+        var result = _userBusiness.LoginUser(loginUserDto , ref testHttpCode);
         result.Item1.Success.Should().BeTrue();
     }
     [Theory]
     [ClassData(typeof(LoginUserDtoParameters))]
     public void Should_Not_Login_Invalid_User_Dto(LoginUserDto dto, string reason)
     {
-        var result = _userBusiness.LoginUser(dto);
+        int testHttpCode = 200;
+
+        var result = _userBusiness.LoginUser(dto , ref testHttpCode);
         // var unExpected = "";
         result.Item1.Success.Should().BeFalse();
         switch (reason)
@@ -736,7 +739,9 @@ public class BusinessTest
             GradeId = 1,
             PhoneNumber = "09372898644"
         };
-        var result = _userBusiness.RegisterUser(userDto);
+        int testHttpCode = 200;
+
+        var result = _userBusiness.RegisterUser(userDto , ref testHttpCode);
 
         result.Success.Should().BeTrue();
 
@@ -745,7 +750,9 @@ public class BusinessTest
     [ClassData(typeof(RegisterUserDtoParameters))]
     public void Should_Not_Register_Invalid_User_Dto(RegisterUserDto dto, string reason)
     {
-        var result = _userBusiness.RegisterUser(dto);
+        int testHttpCode = 200;
+
+        var result = _userBusiness.RegisterUser(dto , ref testHttpCode);
         // var unExpected = "";
         result.Success.Should().BeFalse();
         switch (reason)
@@ -768,20 +775,24 @@ public class BusinessTest
     [Fact]
     public void Should_Change_Password()
     {
+        int testHttpCode = 200;
+
         var correct_input = new ChangePasswordDto
         {
             UserId = 1,
             CurrentPassword = "Mm#12345",
             NewPassword = "Mrx*77798"
         };
-        var result = _userBusiness.ChangePassword(correct_input);
+        var result = _userBusiness.ChangePassword(correct_input , ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
     [ClassData(typeof(ChangePasswordDtoParameters))]
     public void Shoud_Not_Change_Password(ChangePasswordDto dto, string reason)
     {
-        var result = _userBusiness.ChangePassword(dto);
+        int testHttpCode = 200;
+
+        var result = _userBusiness.ChangePassword(dto, ref testHttpCode);
         result.Success.Should().BeFalse();
         switch (reason)
         {
@@ -794,6 +805,7 @@ public class BusinessTest
     [Fact]
     public void Shoud_Send_Activation_Code()
     {
+        var testHttpCode = 200;
         var correct_input = new SendActivationCodeDto
         {
             Email = "aa.yosefiyan7@gmail.com"
@@ -811,13 +823,14 @@ public class BusinessTest
         };
         IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
         IEmailService emailService = new MockEmailService();
-        var result = _userBusiness.SendActivationCode(correct_input, emailService,config, "/", "Account/ActivateAccount");
+        var result = _userBusiness.SendActivationCode(correct_input, emailService,config, "/", "Account/ActivateAccount" , ref testHttpCode);
         result.Success.Should().BeTrue();
     }
     [Theory]
     [ClassData(typeof(SendActivationCodeDtoParameters))]
     public void Should_Not_Send_Activation_Code(SendActivationCodeDto dto, string reason)
     {
+        var testHttpCode = 200;
 
         var inMemorySettings = new Dictionary<string, string> {
             {"Smtp:Host", _configRoot.GetSection("Smtp").GetSection("Host").Value},
@@ -829,7 +842,7 @@ public class BusinessTest
         IConfiguration config = new ConfigurationBuilder().AddInMemoryCollection(inMemorySettings).Build();
         IEmailService emailService = new MockEmailService();
 
-        var result = _userBusiness.SendActivationCode(dto, emailService, config, "/", "/Account/ActivateAccout");
+        var result = _userBusiness.SendActivationCode(dto, emailService, config, "/", "/Account/ActivateAccout", ref testHttpCode);
         result.Success.Should().BeFalse();
         switch (reason)
         {
@@ -966,8 +979,9 @@ public class BusinessTest
     [Fact]
     public void Should_Get_Consultant_Related_Students()
     {
+        int testHttpCode = 200;
         int consultantId = 2;
-        List<Func_Report_Related_Student> result = _userBusiness.GetConsultantRelatedStudents(consultantId);
+        List<Func_Report_Related_Student> result = _userBusiness.GetConsultantRelatedStudents(consultantId, ref testHttpCode);
         var roleIdForBeingStudent = _roles.First(a => a.Title.ToLower() == "student").Id;
         var studentIds = _userRoles.Where(a => a.RoleId == roleIdForBeingStudent).Select(a => a.UserId).Distinct();
         result.Select(a=> new UserDto { Id=a.Id,Username=a.Username}).Should().BeEquivalentTo(_users.Where(a => studentIds.Contains(a.Id) && a.ConsultantId == consultantId).Select(a => new UserDto
@@ -980,8 +994,9 @@ public class BusinessTest
     [Fact]
     public void Should_Not_Get_Consultant_Related_Students()
     {
+        int testHttpCode = 200;
         int consultantId = 3000;
-        var result = _userBusiness.GetConsultantRelatedStudents(consultantId);
+        var result = _userBusiness.GetConsultantRelatedStudents(consultantId, ref testHttpCode);
         result.Should().BeNull();
 
     }
