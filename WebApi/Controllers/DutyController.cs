@@ -42,6 +42,15 @@ public class DutyController : ControllerBase
         var result = _dutyBusiness.GetStudentRelatedDuties(studentId, ref studentId);
         return StatusCode(httpCode, result);
     }
+    [HttpGet]
+    [Route("GetParentDuties")]
+    [Authorize(Roles = "student,consultant")]
+    public ActionResult<Func_Get_Previous_Duty> GetParentDuties(int dutyId)
+    {
+        int httpCode = 200;
+        var result = _dutyBusiness.GetParentDuties(dutyId, ref httpCode);
+        return StatusCode(httpCode, result);
+    }
     //[HttpGet]
     //[Route("GetAllDuties")]
     //public ActionResult<IEnumerable<DutyDto>> GetAllDuties()
