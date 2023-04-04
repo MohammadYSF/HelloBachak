@@ -27,7 +27,29 @@ public class LessonBusiness
         }).ToList();
         
     }
-   
+    public string UpdateLesson(LessonDto dto , ref int httpCode)
+    {
+        string result = "";
+        Lesson lesson = _lessonRepository.Find(dto.Id);
+        if (lesson == null)
+        {
+            result = "invalid-lessonId";
+            httpCode = 400;
+            return result;
+        }
+        if (dto.Title.Length > 50)
+        {
+            result = "invalid-title";
+            httpCode = 400;
+            return result;
+        }
+        lesson.Title = dto.Title;
+        result = _lessonRepository.Update(lesson);
+        _lessonRepository.Save();
+        return result;
+    }
 
-  
+
+
+
 }

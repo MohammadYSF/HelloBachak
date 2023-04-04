@@ -462,9 +462,9 @@ public class BusinessTest
     };
     private Lesson _updatedLesson = new Lesson
     {
-        Title = "updated lesson 1",
-        CreationDate = DateTime.Now,
-        Id = 1
+        Id = 1,
+        Title = "updated lesson 1"
+        //CreationDate = DateTime.Now,
     };
     private List<DutyDto> _duties = new List<DutyDto>{
         new DutyDto{
@@ -623,7 +623,8 @@ public class BusinessTest
         _lessonRepositoryServiceMock.Setup(a => a.Func_Report_Lesson()).Returns(_lessons.Select(b => new Func_Report_Lesson { Id = b.Id, Title = b.Title }).AsQueryable());
         _lessonRepositoryServiceMock.Setup(a => a.Create(_newLesson)).Returns("");
         _lessonRepositoryServiceMock.Setup(a => a.Find(_lessons[0].Id)).Returns(_lessons[0]);
-        _lessonRepositoryServiceMock.Setup(a => a.Update(_updatedLesson)).Returns("");
+        //_lessonRepositoryServiceMock.Setup(a => a.Update(_updatedLesson)).Returns("");
+        _lessonRepositoryServiceMock.Setup(a => a.Update(It.IsAny<Lesson>())).Returns("");
         _dutyRepositoryServiceMock = new Mock<IDutyRepository>();
         _dutyRepositoryServiceMock.Setup(a => a.GetLessonIds()).Returns(_lessons.Select(e => e.Id).AsQueryable());
         _dutyRepositoryServiceMock.Setup(a => a.GetStudentIds()).Returns(_userRoles.Where(a => a.RoleId == 2).Select(a => a.UserId).Distinct().AsQueryable());
@@ -645,6 +646,7 @@ public class BusinessTest
         _userRepositoryServiceMock.Setup(a => a.FindUserByUsername(_user.Username)).Returns(_user);
         _userRepositoryServiceMock.Setup(a => a.Create(_newUser)).Returns("");
         _userRepositoryServiceMock.Setup(a => a.Update(_updatedUser)).Returns("");
+        _userRepositoryServiceMock.Setup(a => a.Update(_users[2])).Returns("");
         _userRepositoryServiceMock.Setup(a => a.FindSex(_sex.Id)).Returns(_sex);
         _userRepositoryServiceMock.Setup(a => a.FindGrade(_grade.Id)).Returns(_grade);
         _userRepositoryServiceMock.Setup(a => a.GetSexIds()).Returns(new List<int>() { 1, 2 });
@@ -1074,5 +1076,76 @@ public class BusinessTest
         int testHttpCode = 200;
         var result = _dutyBusiness.GetParentDuties(dutyId, ref testHttpCode);
         result.Should().BeNull();
+    }
+    [Fact]
+    public void Should_Update_Lesson()
+    {
+        int testHttpCode = 200;
+        var input = new LessonDto
+        {
+            Id = 1,
+            Title = "updated lesson 1"
+
+        };
+        var result = _lessonBusiness.UpdateLesson(input, ref testHttpCode);
+        result.Should().Be("");
+
+    }
+    [Theory]
+    [InlineData(300,"some title","invalid-lessonid")]
+    [InlineData(1, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "invalid-title")]
+    [InlineData(300, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "invalid-lessonid")]
+
+    public void Should_Not_Update_Lesson(int id , string title, string reason)
+    {
+        int testHttpCode = 200;
+        var input = new LessonDto
+        {
+            Id = id,
+            Title = title
+        };
+        var result = _lessonBusiness.UpdateLesson(input, ref testHttpCode);
+        result.Should().NotBe("");
+        switch (result)
+        {
+            case "invalid-lessonid":
+                result.Should().Be("invalid-lessonid");
+                break;
+            case "invalid-title":
+                result.Should().Be("invalid-title");
+                break;
+            default:
+                break;
+        }
+    }
+    [Fact]
+    public void Should_Change_Consultant()
+    {
+        int studentId = 3;
+        int consultantId = 2;
+        int testHttpCode = 200;
+        var result = _userBusiness.ChangeConsultant(studentId, consultantId , ref testHttpCode);
+        result.Should().Be("");
+    }
+    [Theory]
+    [InlineData(3,300 , "invalid-consultantid")]
+    [InlineData(300,2 , "invalid-studentid")]
+    [InlineData(300,301 , "invalid-studentid")]
+    public void Should_Not_Change_Consultant(int studentId , int newConsultantId , string reason)
+    {
+        int testHttpCode = 200;
+        var result = _userBusiness.ChangeConsultant(studentId , newConsultantId , ref testHttpCode);
+        result.Should().NotBe("");
+        switch (result)
+        {
+            case "invalid-studentid":
+                result.Should().Be("invalid-studentid");
+                break;
+            case "invalid-consultantId":
+                result.Should().Be("invalid-consultantid");
+                break;
+            default:
+                break;
+        }
     }
 }

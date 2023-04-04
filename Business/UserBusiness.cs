@@ -180,5 +180,28 @@ public class UserBusiness
         var data = _userRepository.Func_Report_Related_Students(consultantId);
         return data.ToList();
     }
+    public string ChangeConsultant(int studentId , int newConsultantId , ref int httpCode)
+    {
+        string result = "";
+        var student = _userRepository.Find(studentId);
+        if (student == null)
+        {
+            httpCode = 400;
+            result = "invalid-studentId";
+            return result;
+        }
+        var newConsultant = _userRepository.Find(newConsultantId);
+        if (newConsultant == null)
+        {
+            httpCode = 400;
+            result = "invalid-consultantid";
+            return result;
+
+        }
+        student.ConsultantId = newConsultantId;
+        result = _userRepository.Update(student);
+        _userRepository.Save();
+        return result;
+    }
 
 }
