@@ -98,4 +98,13 @@ public class UserController : ControllerBase
 
 
     }
+    [HttpGet("ChangeConsultant")]
+    [Authorize("student")]
+    public ActionResult<string> ChangeConsultant(int studentId , int newConsultantId)
+    {
+        int httpCode = 200;
+        var result = _userBusiness.ChangeConsultant(studentId, newConsultantId, ref httpCode);
+        return StatusCode(httpCode, result);
+    }
+    
 }
