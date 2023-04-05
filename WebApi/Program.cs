@@ -21,7 +21,7 @@ var configSection = builder.Configuration.GetSection(nameof(JwtSettings));
 var settings = new JwtSettings();
 
 configSection.Bind(settings);
-
+builder.Services.AddCors();
 builder.Services.AddSingleton<IConfiguration>(provider => builder.Configuration);
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -78,10 +78,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 // app.MapControllerRoute(
 //     name:"default",
 //     pattern:"{controller=Home}/{action=Index}/{id?}"
 // );
 app.MapControllers();
-
 app.Run();
