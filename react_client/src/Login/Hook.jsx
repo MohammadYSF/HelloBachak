@@ -8,7 +8,8 @@ export const UseLogin = () => {
         resolver:yupResolver(LoginHelper.schema)
     });
     const myOwnHandleSubmit = (data) => {
-        console.log(data);
+        new LoginHelper().login(data.Email , data.Password);
+        // console.log(data);
     }
     const [data, setData] = useState("");
     return(

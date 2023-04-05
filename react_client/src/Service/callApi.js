@@ -1,7 +1,9 @@
-const BASE_URL = "localhost:3000/api/";
+const BASE_URL = "localhost:7243/api/";
 async function callApi(url , method='GET',body=null,headers={}){
     const options = {
         method,
+        mode: "no-cors",
+        "Access-Controll-Allow-Origin":"*",
         headers : {
             'Content-Type':'application/json',
             ...headers
