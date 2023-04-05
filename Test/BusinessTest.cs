@@ -1088,15 +1088,15 @@ public class BusinessTest
 
         };
         var result = _lessonBusiness.UpdateLesson(input, ref testHttpCode);
-        result.Should().Be("");
+        result.IsSuccess.Should().BeTrue();
 
     }
     [Theory]
-    [InlineData(300,"some title","invalid-lessonid")]
-    [InlineData(1, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "invalid-title")]
-    [InlineData(300, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "invalid-lessonid")]
+    [InlineData(300,"some title","invalid-lessonid" , "")]
+    [InlineData(1, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "","invalid-title")]
+    [InlineData(300, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "invalid-lessonid","invalid-title")]
 
-    public void Should_Not_Update_Lesson(int id , string title, string reason)
+    public void Should_Not_Update_Lesson(int id , string title, string idReason,string titleReason)
     {
         int testHttpCode = 200;
         var input = new LessonDto
@@ -1105,18 +1105,15 @@ public class BusinessTest
             Title = title
         };
         var result = _lessonBusiness.UpdateLesson(input, ref testHttpCode);
-        result.Should().NotBe("");
-        switch (result)
+        result.IsSuccess.Should().BeFalse();
+        if (idReason == "invalid-lessonid")
         {
-            case "invalid-lessonid":
-                result.Should().Be("invalid-lessonid");
-                break;
-            case "invalid-title":
-                result.Should().Be("invalid-title");
-                break;
-            default:
-                break;
+            result.LessonIdErrorMessage.Should().NotBe("");
         }
+        if (titleReason == "invalid-title")
+        {
+            result.LessonTitleErrorMessage.Should().NotBe("");
+        }        
     }
     [Fact]
     public void Should_Change_Consultant()
@@ -1125,27 +1122,25 @@ public class BusinessTest
         int consultantId = 2;
         int testHttpCode = 200;
         var result = _userBusiness.ChangeConsultant(studentId, consultantId , ref testHttpCode);
-        result.Should().Be("");
+        result.IsSuccess.Should().BeTrue();
     }
     [Theory]
-    [InlineData(3,300 , "invalid-consultantid")]
-    [InlineData(300,2 , "invalid-studentid")]
-    [InlineData(300,301 , "invalid-studentid")]
-    public void Should_Not_Change_Consultant(int studentId , int newConsultantId , string reason)
+    [InlineData(3,300 , "","invalid-consultantid")]
+    [InlineData(300,2 , "invalid-studentid","")]
+    [InlineData(300,301 , "invalid-studentid" , "invalid-consultantid")]
+    public void Should_Not_Change_Consultant(int studentId , int newConsultantId , string reasonStudentId , string reasonConsultantId)
     {
         int testHttpCode = 200;
         var result = _userBusiness.ChangeConsultant(studentId , newConsultantId , ref testHttpCode);
-        result.Should().NotBe("");
-        switch (result)
+        result.IsSuccess.Should().BeFalse();
+        if (reasonStudentId == "invalid-studentid")
         {
-            case "invalid-studentid":
-                result.Should().Be("invalid-studentid");
-                break;
-            case "invalid-consultantId":
-                result.Should().Be("invalid-consultantid");
-                break;
-            default:
-                break;
+            result.StudentIdErrorMessage.Should().NotBe("");
         }
+        if (reasonConsultantId == "invalid-consultantid")
+        {
+            result.ConsultantIdErrorMessage.Should().NotBe("");
+        }
+
     }
 }

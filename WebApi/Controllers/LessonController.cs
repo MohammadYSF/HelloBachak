@@ -45,7 +45,7 @@ public class LessonController : ControllerBase
     }
     [HttpPost("UpdateLesson")]
     [Authorize(Roles ="admin")]
-    public ActionResult<string> UpdateLesson(LessonDto lessonDto)
+    public ActionResult<UpdateLessonResult> UpdateLesson(LessonDto lessonDto)
     {
         int httpCode = 200;
         var result = _lessonBusiness.UpdateLesson(lessonDto, ref httpCode);

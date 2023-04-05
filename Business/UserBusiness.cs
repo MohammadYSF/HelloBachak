@@ -180,27 +180,41 @@ public class UserBusiness
         var data = _userRepository.Func_Report_Related_Students(consultantId);
         return data.ToList();
     }
-    public string ChangeConsultant(int studentId , int newConsultantId , ref int httpCode)
+    public ChangeConsultantResult ChangeConsultant(int studentId, int newConsultantId, ref int httpCode)
     {
-        string result = "";
+        bool success = true;
+        ChangeConsultantResult result;
+        string studentIdError = "";
+        string consultantIdError = "";
         var student = _userRepository.Find(studentId);
         if (student == null)
         {
+            success = false;
             httpCode = 400;
-            result = "invalid-studentId";
-            return result;
+            studentIdError = "invalid-studentId";
+            result = new ChangeConsultantResult(Language.Persian, false, studentIdError, consultantIdError);
+
         }
         var newConsultant = _userRepository.Find(newConsultantId);
         if (newConsultant == null)
         {
+            success = false;
             httpCode = 400;
-            result = "invalid-consultantid";
-            return result;
+            consultantIdError = "invalid-consultantid";
+            result = new ChangeConsultantResult(Language.Persian, false, studentIdError, consultantIdError);
 
         }
-        student.ConsultantId = newConsultantId;
-        result = _userRepository.Update(student);
-        _userRepository.Save();
+        if (success)
+        {
+            student.ConsultantId = newConsultantId;
+            _userRepository.Update(student);
+            _userRepository.Save();
+            result = new ChangeConsultantResult(Language.Persian, true);
+        }
+        else
+        {
+            result = new ChangeConsultantResult(Language.Persian,false, studentIdError, consultantIdError);
+        }
         return result;
     }
 
