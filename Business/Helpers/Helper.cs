@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -69,5 +70,12 @@ public class Helper
         };
         mailMessage.To.Add(destEmailAddress);
         stmpClient.Send(mailMessage);
+    }
+    public static string ToPersianDateString(DateTime d)
+    {
+        
+        PersianCalendar pc = new PersianCalendar();
+        var answer = string.Format("{0}/{1}/{2}", pc.GetYear(d), pc.GetMonth(d), pc.GetDayOfMonth(d));
+        return answer;
     }
 }

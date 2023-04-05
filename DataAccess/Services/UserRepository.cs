@@ -1,7 +1,9 @@
 using DataAccess.Repositories;
 using Entity.Context;
 using Entity.Models;
+using Entity.Models.FunctionModels;
 using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
 
 namespace DataAccess.Services;
 
@@ -116,7 +118,19 @@ public class UserRepository : IUserRepository
 
     public string Update(User user)
     {
-        throw new NotImplementedException();
+
+        try
+        {
+            var u = _db.Users.Find(user.Id);
+            u = user;
+            return "";
+        }
+        catch (Exception e)
+        {
+            return e.InnerException.Message;
+            throw e;
+        }
+        
     }
 
     public List<int> GetRoleIds()
@@ -160,7 +174,7 @@ public class UserRepository : IUserRepository
 
     public User FindUserByEmail(string email)
     {
-        return _db.Users.First(a=> a.Email == email);
+        return _db.Users.FirstOrDefault(a=> a.Email == email);
     }
 
     public Role FindRole(int roleId)
@@ -176,5 +190,44 @@ public class UserRepository : IUserRepository
     {
         var x = _db.Users.Include(a=> a.Role).Where(a=> a.Role.Title.ToLower() == "student");
         return x;
+    }
+
+    public User FindUserByUsername(string username)
+    {
+        return _db.Users.SingleOrDefault(a => a.Username == username);
+    }
+
+    public IQueryable<Role> GetRolesByUserId(int userId)
+    {
+        var roleIds = _db.UserRoles.Where(a => a.UserId == userId).Select(a => a.RoleId);
+        return _db.Roles.Where(a => roleIds.Contains(a.Id));
+    }
+
+    public IQueryable<Func_Report_Related_Student> Func_Report_Related_Students(int userId)
+    {
+        var pUserId = new SqlParameter("@UserId", userId);
+        var data = _db.Func_Report_Related_Student.FromSqlRaw("SELECT * From func_report_related_students(@UserId)" , pUserId);
+        return data;
+    }
+
+    public IQueryable<Func_Report_Manage_Student> Func_Report_ManageStudent()
+    { 
+        var data = _db.Func_Report_Manage_Student.FromSqlRaw("SELECT * From func_report_manage_student()");
+        return data;
+    }
+
+    public string CreateUserRole(UserRole userRole)
+    {
+        try
+        {
+            _db.UserRoles.Add(userRole);
+            return "";
+        }
+        catch (Exception e)
+        {
+
+            throw e;
+            return "error";
+        }
     }
 }

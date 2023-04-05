@@ -19,13 +19,48 @@ public class LessonBusiness
     {
         _lessonRepository = lessonRepository;
     }
-    public List<LessonDto> GetAllLessons(){
-        return  _lessonRepository.Get().Select(a=> new LessonDto{
+    public List<LessonDto> GetAllLessons()
+    {
+        return _lessonRepository.Func_Report_Lesson().Select(a => new LessonDto
+        {
             Id = a.Id,
             Title = a.Title
         }).ToList();
-    }
-   
 
-  
+    }
+    public UpdateLessonResult UpdateLesson(LessonDto dto, ref int httpCode)
+    {
+        bool success = true;
+        string result = "";
+        string lessonIdErrorMessage = "";
+        string lessonTitleErrorMessage = "";
+        Lesson lesson = _lessonRepository.Find(dto.Id);
+        if (lesson == null)
+        {
+            success = false;
+            httpCode = 400;
+            lessonIdErrorMessage = "invalid-lessonId";
+        }
+        if (dto.Title.Length > 50)
+        {
+            success = false;
+            httpCode = 400;
+            lessonTitleErrorMessage = "invalid-title";
+        }
+        if (success)
+        {
+            lesson.Title = dto.Title;
+            result = _lessonRepository.Update(lesson);
+            _lessonRepository.Save();
+            return new UpdateLessonResult(Language.Persian, true);
+        }
+        else
+        {
+            return new UpdateLessonResult(Language.Persian,success,lessonIdErrorMessage,lessonTitleErrorMessage);
+        }
+    }
+
+
+
+
 }

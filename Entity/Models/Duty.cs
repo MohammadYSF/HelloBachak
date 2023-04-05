@@ -1,3 +1,5 @@
+using System;
+
 namespace Entity.Models;
 
 public class Duty
@@ -16,6 +18,7 @@ public class Duty
     public int ConsultantId { get; set; }
     public int StudentId { get; set; }
     public int? OlderDutyId { get; set; } = null;
+    public bool IsSucceed { get; set; }
     public virtual Entity.Models.Duty? OlderDuty { get; set; }
     public virtual Lesson Lesson { get; set; }
     public virtual DutyReply DutyReply { get; set; }

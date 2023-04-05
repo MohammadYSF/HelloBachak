@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Entity.Models;
 
@@ -12,4 +14,5 @@ public class Role
     public string Title { get; set; } = string.Empty;
     public DateTime CreationDate { get; set; }
     public virtual ICollection<User> Users { get; set; }
+    public virtual ICollection<UserRole> UserRoles{ get; set; }
 }

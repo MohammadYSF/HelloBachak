@@ -1,0 +1,4 @@
+https://www.reddit.com/r/dotnet/comments/iaq5t1/please_help_me_understand_authentication_in_net/?rdt=62242
+    https://github.com/matthewblott/simple_aspnet_auth
+    https://dzone.com/articles/creating-a-jwt-auth-server-in-1-second
+

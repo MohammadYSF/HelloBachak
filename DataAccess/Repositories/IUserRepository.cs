@@ -3,8 +3,13 @@ using System.Collections;
 using System;
 using System.Linq;
 using Entity.Models;
+using Entity.Models.FunctionModels;
+
 public interface IUserRepository
 {
+    public IQueryable<Func_Report_Related_Student> Func_Report_Related_Students(int userId);
+    public IQueryable<Func_Report_Manage_Student> Func_Report_ManageStudent();
+
     public IQueryable<User> Get();
     public IQueryable<User>GetAllStudents();
     string Create(User user);
@@ -24,5 +29,9 @@ public interface IUserRepository
     int Save();
     string ChangeUserPassword(int userId, string newHashedPassword);
     User FindUserByEmail(string email);
-    public Role FindRole(int roleId);
+    Role FindRole(int roleId);
+    User FindUserByUsername(string username);
+    IQueryable<Role> GetRolesByUserId(int userId);
+
+    string CreateUserRole(UserRole userRole);
 }
