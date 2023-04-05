@@ -1,6 +1,7 @@
 using DataAccess.Repositories;
 using Entity.Context;
 using Entity.Models;
+using Entity.Models.FunctionModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Services;
@@ -53,7 +54,11 @@ public class lessonRepository : ILessonRepository
         }
     }
 
-
+    public IQueryable<Func_Report_Lesson> Func_Report_Lesson()
+    {
+        var data = _db.Func_Report_Lesson.FromSqlRaw("SELECT * from func_report_lesson()");
+        return data;
+    }
 
     public IQueryable<Lesson> Get()
     {

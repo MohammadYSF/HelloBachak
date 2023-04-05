@@ -7,6 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Business.Results;
 using Dto.Models;
 using DataAccess.Services;
+using System.Security.Claims;
+using System.Security.Claims;
+using Business.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Business.Helpers.EmailService;
+using Entity.Models.FunctionModels;
 
 namespace WebApi.Controllers;
 
@@ -21,59 +27,84 @@ public class UserController : ControllerBase
     private readonly IConfiguration _config;
     private readonly IConfigurationRoot _configRoot;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    public UserController(ILogger<UserController> logger, IConfiguration config , IWebHostEnvironment webHostEnvironment, HelloBachakContext context)
+    public UserController(ILogger<UserController> logger, IConfiguration config , IWebHostEnvironment webHostEnvironment, HelloBachakContext context , ITokenService tokenService)
     {
         // _userBusiness = new UserBusiness(new UserServiceE);
         _db = new UnitOfWork(context);
         _logger = logger;
-        _userBusiness = new UserBusiness(new UserRepository(context));
-        _dutyBusiness = new DutyBusiness(new DutyRepository(context));
+        _userBusiness = new UserBusiness(new UserRepository(context) , tokenService);
+        _dutyBusiness = new DutyBusiness(new DutyRepository(context), new UserRepository(context));
         _config = config;
         _configRoot = new ConfigurationBuilder().AddUserSecrets<UserController>().Build();
-        _webHostEnvironment = webHostEnvironment;
+        _webHostEnvironment = webHostEnvironment;        
     }
     [Route("GetAllStudents")]
     [HttpGet]
-    public IEnumerable<UserDto> GetAllStudents()
+    [Authorize(Roles = "admin")]
+    public ActionResult<IEnumerable<Func_Report_Manage_Student>> GetAllStudents()
     {
         var result = _userBusiness.GetAllStudents();
         
-        return result;
+        return Ok(result);
     }
-    [Route("SayHello")]
+    [Route("GetConsultantRelatedStudents")]
     [HttpGet]
-    public string SayHello()
+    [Authorize(Roles = "consultant")]
+    public ActionResult<IEnumerable<Func_Report_Related_Student>> GetConsultantRelatedStudents(int consultantId)
     {
-        return "HelloWorld!";
+        int httpCode = 200;
+        var result = _userBusiness.GetConsultantRelatedStudents(consultantId , ref httpCode);
+        return StatusCode(httpCode, result);
     }
+
     [Route("RegisterUser")]
     [HttpPost]
-    public RegisterUserResult RegisterUser(RegisterUserDto userDto)
+    public ActionResult<RegisterUserResult> RegisterUser(RegisterUserDto userDto)
     {
-
-        var result = new RegisterUserResult(_userBusiness.RegisterUser(userDto), Language.Persian);
-        return result;
+        int httpCode = 200;
+        var result = new RegisterUserResult(_userBusiness.RegisterUser(userDto , ref httpCode), Language.Persian);
+        return StatusCode(httpCode, result);
     }
     [Route("ChangePassword")]
     [HttpPost]
-    public ChangePasswordResult ChangePassword(ChangePasswordDto changePasswordDto)
+    [Authorize(Roles = "admin,consultant,student")]
+
+    public ActionResult<ChangePasswordResult> ChangePassword(ChangePasswordDto changePasswordDto)
     {
-        var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto), Language.Persian);
-        return result;
+        int httpCode = 200;
+        var result = new ChangePasswordResult(_userBusiness.ChangePassword(changePasswordDto , ref httpCode), Language.Persian);
+        return StatusCode(httpCode, result);
     }
     [Route("SendActivationCode")]
     [HttpPost]
-    public SendActivationCodeResult SendActivationCode(SendActivationCodeDto sendActivationCodeDto)
+    public ActionResult<SendActivationCodeResult> SendActivationCode(SendActivationCodeDto sendActivationCodeDto)
     {
-        var result = new SendActivationCodeResult(_userBusiness.SendActivationCode(sendActivationCodeDto,
-         _configRoot,_webHostEnvironment.ContentRootPath, _webHostEnvironment.ContentRootPath + "/api/User/SendActivationCode")
+        int httpCode = 200;
+        IEmailService emailService = new GmailService(_config);
+        var result = new SendActivationCodeResult(_userBusiness.SendActivationCode(sendActivationCodeDto, emailService,
+         _configRoot,_webHostEnvironment.ContentRootPath, _webHostEnvironment.ContentRootPath + "/api/User/SendActivationCode" , ref httpCode)
          , Language.Persian);
-        return result;
+        return StatusCode(httpCode, result);
     }
-    [Route("CreateDuty")]
-    [HttpPost]
-    public CreateDutyResult CreateDuty(DutyDto dutyDto){
-        var result = new CreateDutyResult(_dutyBusiness.CreateDuty(dutyDto) , Language.Persian);
-        return result;
+
+    [HttpPost("Login")]
+    public ActionResult<LoginUserResult> Login(LoginUserDto loginUserDto)
+    {
+        int httpCode = 200;
+        var loginUserResult = _userBusiness.LoginUser(loginUserDto , ref httpCode);
+        dynamic result = "";
+        result = new LoginUserResult(loginUserResult.Item1, Language.Persian , loginUserResult.Item2 , loginUserResult.Item3);
+        return StatusCode(httpCode, result);
+
+
     }
+    [HttpGet("ChangeConsultant")]
+    [Authorize("student")]
+    public ActionResult<string> ChangeConsultant(int studentId , int newConsultantId)
+    {
+        int httpCode = 200;
+        var result = _userBusiness.ChangeConsultant(studentId, newConsultantId, ref httpCode);
+        return StatusCode(httpCode, result);
+    }
+    
 }
