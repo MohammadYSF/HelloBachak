@@ -21,7 +21,13 @@ var configSection = builder.Configuration.GetSection(nameof(JwtSettings));
 var settings = new JwtSettings();
 
 configSection.Bind(settings);
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("dev_policy", b =>
+    {
+        b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
 builder.Services.AddSingleton<IConfiguration>(provider => builder.Configuration);
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
@@ -76,9 +82,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
+app.UseCors("dev_policy");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+//app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 // app.MapControllerRoute(
 //     name:"default",
 //     pattern:"{controller=Home}/{action=Index}/{id?}"
