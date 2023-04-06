@@ -25,7 +25,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("dev_policy", b =>
     {
-        b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(host=> true);
     });
 });
 builder.Services.AddSingleton<IConfiguration>(provider => builder.Configuration);
