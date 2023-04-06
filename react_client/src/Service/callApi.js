@@ -1,4 +1,4 @@
-const BASE_URL = "127.0.0.1:7243/api/";
+const BASE_URL = "http://localhost:7243/";
 async function callApi(url , method='GET',body=null,headers={}){
     const options = {
         method,
