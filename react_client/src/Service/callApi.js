@@ -1,4 +1,4 @@
-const BASE_URL = "localhost:3000/api/";
+const BASE_URL = "http://localhost:7243/";
 async function callApi(url , method='GET',body=null,headers={}){
     const options = {
         method,
@@ -8,7 +8,7 @@ async function callApi(url , method='GET',body=null,headers={}){
         }
     };
     if (body){options.body = JSON.stringify(body);}
-    const response = await fetch(`${BASE_URL}${url}` , options);
+    const response = await fetch(BASE_URL + url , options);
     const data = await response.json();
     return data;
 }
