@@ -111,6 +111,7 @@ public class HelloBachakContext : DbContext
         modelBuilder.Entity<Func_Get_Previous_Duty>(entity =>
         {
             entity.ToFunction("func_get_previous_duties");
+            entity.Property(a => a.OlderDutyId).IsRequired(false);
             entity.HasNoKey();
         });
         

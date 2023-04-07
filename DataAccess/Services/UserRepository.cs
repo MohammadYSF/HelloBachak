@@ -3,7 +3,9 @@ using Entity.Context;
 using Entity.Models;
 using Entity.Models.FunctionModels;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace DataAccess.Services;
 
@@ -188,8 +190,10 @@ public class UserRepository : IUserRepository
 
     public IQueryable<User> GetAllStudents()
     {
-        var x = _db.Users.Include(a=> a.Role).Where(a=> a.Role.Title.ToLower() == "student");
-        return x;
+        var roleIdForBeingStudent = _db.Roles.First(a => a.Title == "student").Id;
+        var userIds = _db.UserRoles.Where(a=> a.RoleId == roleIdForBeingStudent).Select(a=> a.UserId);
+        var result = _db.Users.Where(a => userIds.Contains(a.Id));
+        return result;
     }
 
     public User FindUserByUsername(string username)
@@ -205,14 +209,14 @@ public class UserRepository : IUserRepository
 
     public IQueryable<Func_Report_Related_Student> Func_Report_Related_Students(int userId)
     {
-        var pUserId = new SqlParameter("@UserId", userId);
+        var pUserId = new NpgsqlParameter("@UserId", userId);
         var data = _db.Func_Report_Related_Student.FromSqlRaw("SELECT * From func_report_related_students(@UserId)" , pUserId);
         return data;
     }
 
     public IQueryable<Func_Report_Manage_Student> Func_Report_ManageStudent()
     { 
-        var data = _db.Func_Report_Manage_Student.FromSqlRaw("SELECT * From func_report_manage_student()");
+        var data = _db.Func_Report_Manage_Student.FromSqlRaw("SELECT * From func_report_manage_students()");
         return data;
     }
 

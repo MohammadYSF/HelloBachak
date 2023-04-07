@@ -22,7 +22,7 @@ namespace Entity.Models
         public int? ConsultantId { get; set; }
         public virtual Sex Sex { get; set; } = new Sex();
         public virtual Grade Grade { get; set; } = new Grade();
-        public virtual Role Role { get; set; } = new Role();
+        //public virtual Role Role { get; set; } = new Role();
         public virtual ICollection<UserRole> UserRoles { get; set; } 
 
     }

@@ -3,6 +3,7 @@ using Entity.Context;
 using Entity.Models;
 using Entity.Models.FunctionModels;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Data.SqlClient;
 
 namespace DataAccess.Services;
@@ -71,14 +72,14 @@ public class DutyRepository : IDutyRepository
 
     public IQueryable<Func_Get_Previous_Duty> Func_Get_Previous_Duty(int dutyId)
     {
-        var pDutyId = new SqlParameter("@DutyId", dutyId);
+        var pDutyId = new NpgsqlParameter("@DutyId", dutyId);
         var data = _db.Func_Get_Previous_Duty.FromSqlRaw("SELECT * from func_get_previous_duties(@DutyId)", pDutyId);
         return data;
     }
 
     public IQueryable<Func_Report_Student_Related_Duty> Func_Report_Student_Related_Duty(int userId)
     {
-        var pUserId = new SqlParameter("@UserId", userId);
+        var pUserId = new NpgsqlParameter("@UserId", userId);
         var data = _db.Func_Report_Student_Related_Duty.FromSqlRaw("SELECT * from func_Report_Student_related_duties(@UserId)", pUserId);
         return data;
     }
@@ -95,9 +96,9 @@ public class DutyRepository : IDutyRepository
 
     public IQueryable<int> GetConsultantIds()
     {
-        var y = _db.Roles.ToList();
-        var x =_db.Users.Include(a => a.Role).Where(a => a.Role.Title.ToLower() == "consultant").Select(a => a.Id).ToList(); 
-        return _db.Users.Include(a => a.Role).Where(a => a.Role.Title.ToLower() == "consultant").Select(a => a.Id);
+        int roleIdForBeingConsultant = _db.Roles.First(a => a.Title == "consultant").Id;
+        var result = _db.UserRoles.Where(a => a.RoleId == roleIdForBeingConsultant).Select(a => a.UserId);
+        return result;
     }
 
     public IQueryable<int> GetDutyIds()
@@ -112,9 +113,9 @@ public class DutyRepository : IDutyRepository
 
     public IQueryable<int> GetStudentIds()
     {
-        return _db.Users.Include(a => a.Role).Where(a => a.Role.Title.ToLower() == "student").Select(a => a.Id);
-
-
+        int ruleIdForBeingStudent = _db.Roles.First(a => a.Title == "student").Id;
+        var result = _db.UserRoles.Where(a=> a.RoleId == ruleIdForBeingStudent).Select(a=> a.UserId);
+        return result;
     }
 
     public int Save()
