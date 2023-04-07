@@ -43,9 +43,9 @@ public class UserBusiness
             httpCode = 400;
         return validationResult;
     }
-    public Tuple<LoginUserDtoValidationResult, string, string> LoginUser(LoginUserDto loginUserDto, ref int httpCode)
+    public Tuple<LoginUserDtoValidationResult, string, string , string> LoginUser(LoginUserDto loginUserDto, ref int httpCode)
     {
-        string token = "", refreshToken = "";
+        string token = "", refreshToken = "",username ="";
         var loginUserDtoValidator = new LoginUserDtoValidator(_userRepository.Get());
         ValidationResult result = loginUserDtoValidator.Validate(loginUserDto);
         var validationResult = new LoginUserDtoValidationResult(result);
@@ -61,7 +61,7 @@ public class UserBusiness
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         new Claim(ClaimTypes.Role, string.Join(',',roles.Select(a=> a.Title)))
             };
-
+            username = user.Username;
             token = _tokenService.GenerateAccessToken(claims);
             refreshToken = _tokenService.GenerateRefreshToken();
 
@@ -73,7 +73,7 @@ public class UserBusiness
         }
         else
             httpCode = 400;
-        return new Tuple<LoginUserDtoValidationResult, string, string>(validationResult, token, refreshToken);
+        return new Tuple<LoginUserDtoValidationResult, string, string, string>(validationResult, token, refreshToken , username);
 
     }
     public RegisterUserDtoValidationResult RegisterUser(RegisterUserDto userDto, ref int httpCode)
