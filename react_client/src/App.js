@@ -19,7 +19,9 @@ import { Home } from "./Home/Index";
 import { SingleDuty } from "./Student/StudentDuties/SingleDuty/Index";
 import { ManageStudents } from "./ManageStudents/Index";
 import { ChangeConsultant } from "./ManageStudents/ChangeConsultant/Index";
+import { UseUser } from "./Common/UseUser";
 function App() {
+  const { isUserLoggedIn, username } = UseUser();
   return (
     <>
 
@@ -30,13 +32,14 @@ function App() {
               <NavLink className={"navbar-brand"} to="/">هلو بچک</NavLink>
               <Nav className="me-auto">
                 <NavLink className={"nav-link"} to={"/"}>خانه</NavLink>
-                <Nav.Item><NavLink className={"nav-link"} to={"/RegisterUser"}>ثبت نام</NavLink></Nav.Item>
-                <Nav.Item><NavLink className={"nav-link"} to={"/Login"}>ورود</NavLink></Nav.Item>
+                {!isUserLoggedIn && <><Nav.Item><NavLink className={"nav-link"} to={"/RegisterUser"}>ثبت نام</NavLink></Nav.Item>
+                  <Nav.Item><NavLink className={"nav-link"} to={"/Login"}>ورود</NavLink></Nav.Item></>}
                 <Nav.Item><NavLink className={"nav-link"} to={"/AssignDuty"}>ثبت وظیفه</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/DutyReply"}>ثبت بازخورد</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/RelatedStudents"}>دانش آموز ها</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/Lessons"}>درس های تعریف شده</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/ManageStudents"}>مدیریت دانش آموزان</NavLink></Nav.Item>
+                {isUserLoggedIn && <Nav.Item><NavLink className={"nav-link text-danger"} to={"/SignOut"}>خروج</NavLink></Nav.Item>}
               </Nav>
             </Container>
           </Navbar>

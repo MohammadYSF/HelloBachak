@@ -10,6 +10,6 @@ export class LoginHelper {
         let obj={email:email,password:password};
         let token = window.localStorage.getItem("token");
         let result = await callApi("User/Login","POST",obj,{Authorization:`bearer ${token}`});
-        console.log(result);
+        return result;
     }
 }

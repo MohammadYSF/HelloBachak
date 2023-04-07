@@ -1,7 +1,7 @@
 import { UseLogin } from "./Hook";
 import "./style.css";
 export const Login = () => {
-    const { data, setData, handleSubmit, register , errors , myOwnHandleSubmit } = UseLogin();
+    const { data, setData, handleSubmit, register , errors , myOwnHandleSubmit, serverEmailError , serverPasswordError  } = UseLogin();
     return (
         <>
             
@@ -14,11 +14,14 @@ export const Login = () => {
 
                                 <input {...register("Email")} type={"text"} placeholder="ایمیل" className="w-100 inp" />
                                 <span className="text-danger errorMessage">{errors.Email?.message}</span>
+                                <span className="text-danger errorMessage">{serverEmailError}</span>
 
                             </div>
                             <div className="col-12">
                                 <input {...register("Password")} type="password" placeholder="رمز عبور" className="w-100 inp" />
                                 <span className="text-danger errorMessage">{errors.Password?.message}</span>
+                                <span className="text-danger errorMessage">{serverPasswordError}</span>
+
 
                             </div>
                             
