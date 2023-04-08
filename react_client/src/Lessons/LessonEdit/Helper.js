@@ -1,12 +1,9 @@
-import * as yup from 'yup';
+import callApi from "../../Service/callApi";
 export class EditLessonHelper {
 
-    static FindLessonTitleById(id) {
-        return "فیزیک 2";
+    static async FindLessonById(id) {
+        let token = window.localStorage.getItem("token");
+        let result = await callApi(`Lesson/FindLesson?lessonId=${id}`,"GET",null,{Authorization:`bearer ${token}`});
+        return result;
     }
-
-
-    static schema = yup.object({
-        Title: yup.string().required('وارد کردن عنوان درس اجباری است').max(50)
-    }).required();
 }
