@@ -36,6 +36,8 @@ export const UseLogin = () => {
                 window.localStorage.setItem("token",j.token);
                 window.localStorage.setItem("refreshToken",j.refreshToken);
                 window.localStorage.setItem("roles" , j.roleTitle);
+                window.localStorage.setItem("userid" , j.userId);
+
                 reset({Email:"" ,Password:"" });
                 navigate("/");
                 window.location.reload();

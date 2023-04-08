@@ -12,6 +12,7 @@ export const UseUser = () => {
                 window.localStorage.setItem("token", "");
                 window.localStorage.setItem("refreshToken", "");
                 window.localStorage.setItem("roles", "");
+                window.localStorage.setItem("userid", "");
                 window.location.pathname != "/" && window.location.replace("/");
                 window.location.reload();
             }

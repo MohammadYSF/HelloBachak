@@ -13,22 +13,22 @@ namespace Business.Results
             this.IsSuccess = isSuccess;
             if (lang == Language.English)
             {
-                if (this.StudentIdErrorMessage == "invalid-studentid")
+                if (studentIdError == "invalid-studentid")
                 {
                     this.StudentIdErrorMessage = "student id is invalid";
                 }
-                if (this.ConsultantIdErrorMessage == "invalid-consultantid")
+                if (consultantIdError == "invalid-consultantid")
                 {
                     this.ConsultantIdErrorMessage = "consultant id is invalid";
                 }
             }
             else
             {
-                if (this.StudentIdErrorMessage == "invalid-studentid")
+                if (studentIdError == "invalid-studentid")
                 {
                     this.StudentIdErrorMessage = "شناسه دانش آموز نامعتبر است";
                 }
-                if (this.ConsultantIdErrorMessage == "invalid-consultantid")
+                if (consultantIdError == "invalid-consultantid")
                 {
                     this.ConsultantIdErrorMessage = "شناسه مشاور نامعتبر است";
                 }
