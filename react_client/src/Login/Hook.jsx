@@ -20,24 +20,26 @@ export const UseLogin = () => {
         return () => subscription.unsubscribe();
     } , [watch]);
     const myOwnHandleSubmit = (data) => {
-        new LoginHelper().login(data.Email , data.Password).then(d=> {
-            if (!d.success){
+        new LoginHelper().login(data.Email , data.Password).then(async d=> {            
+            const j = await d.json();
+            if (!j.success){
                 reset({Password:"" });
-                if (d.emailErrorMessage){
-                    setServerEmailError(d.emailErrorMessage);
+                if (j.emailErrorMessage){
+                    setServerEmailError(j.emailErrorMessage);
                 }
-                else if (d.passwordErrorMessage){
-                    setServerPasswordError(d.passwordErrorMessage);
+                else if (j.passwordErrorMessage){
+                    setServerPasswordError(j.passwordErrorMessage);
                 }
             }
             else{
-                window.localStorage.setItem("username",d.username);
+                window.localStorage.setItem("username",j.username);
+                window.localStorage.setItem("token",j.token);
+                window.localStorage.setItem("refreshtoken",j.refreshtoken);
                 reset({Email:"" ,Password:"" });
                 navigate("/");
+                window.location.reload();
             }
-        });
-        
-        // console.log(data);
+        }).catch(e=> console.log(e));        
     }
     const [data, setData] = useState("");
     return(

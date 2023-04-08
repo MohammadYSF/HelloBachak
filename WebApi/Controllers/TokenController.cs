@@ -2,6 +2,7 @@ using Business.Auth;
 using DataAccess.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -49,22 +50,23 @@ public class TokenController : Controller
 
     [Authorize]
     [HttpPost("Revoke")]
-    public IActionResult Revoke()
+    public ActionResult<JObject> Revoke()
     {
 
         var username = User.Identity.Name;
         var user = this.userRepository.FindUserByUsername(username);
 
         if (user == null)
-            return BadRequest();
+            return StatusCode(400, new JObject());
+            //return BadRequest(new JObject());
 
         user.RefreshToken = null;
 
         this.userRepository.Update(user);
         this.userRepository.Save();
 
-        
-        return NoContent();
+        return StatusCode(200, new JObject());
+        //return Ok(new JObject());
 
     }
 

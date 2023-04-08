@@ -9,7 +9,6 @@ async function callApi(url , method='GET',body=null,headers={}){
     };
     if (body){options.body = JSON.stringify(body);}
     const response = await fetch(BASE_URL + url , options);
-    const data = await response.json();
-    return data;
+    return response;
 }
 export default callApi;

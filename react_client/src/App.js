@@ -21,7 +21,7 @@ import { ManageStudents } from "./ManageStudents/Index";
 import { ChangeConsultant } from "./ManageStudents/ChangeConsultant/Index";
 import { UseUser } from "./Common/UseUser";
 function App() {
-  const { isUserLoggedIn, username } = UseUser();
+  const { isUserLoggedIn, username , signOut } = UseUser();
   return (
     <>
 
@@ -39,7 +39,7 @@ function App() {
                 <Nav.Item><NavLink className={"nav-link"} to={"/RelatedStudents"}>دانش آموز ها</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/Lessons"}>درس های تعریف شده</NavLink></Nav.Item>
                 <Nav.Item><NavLink className={"nav-link"} to={"/ManageStudents"}>مدیریت دانش آموزان</NavLink></Nav.Item>
-                {isUserLoggedIn && <Nav.Item><NavLink className={"nav-link text-danger"} to={"/SignOut"}>خروج</NavLink></Nav.Item>}
+                {isUserLoggedIn && <Nav.Item className="text-danger nav-item nav-link" id="signOutBtn" onClick={signOut}>خروج</Nav.Item>}
               </Nav>
             </Container>
           </Navbar>
