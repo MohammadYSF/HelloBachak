@@ -1,37 +1,25 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import {yupResolver} from "@hookform/resolvers/yup"
-import { DutyReplyHelper } from "./Helper";
-import {useNavigate} from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup"
+import { DutyReplyHelper, LessonHelper } from "./Helper";
+import { useNavigate } from 'react-router-dom';
 
 export const UseLessons = () => {
     const navigate = useNavigate();
-    
-    const [data , setData] = useState([
-        {
-            Id:1,
-            Title:"فیزیک"
-        },
-        {
-            Id:2,
-            Title:"شیمی"
-        },
-        {
-            Id:1,
-            Title:"زیست"
 
-        },
-        {
-            Id:1,
-            Title:"جغرافیا"
-
-        },
-    ]);
-
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        new LessonHelper().getLessons().then(async d => {
+            if (d.status === 200) {
+                const j = await d.json();
+                setData(j);
+            }
+        })
+    }, []);
     const onClickEditLesson = (id) => {
         navigate(`/Lessons/${id}`);
     }
-   return(
-        {data , onClickEditLesson}
+    return (
+        { data, onClickEditLesson }
     );
 }

@@ -56,7 +56,7 @@ public class lessonRepository : ILessonRepository
 
     public IQueryable<Func_Report_Lesson> Func_Report_Lesson()
     {
-        var data = _db.Func_Report_Lesson.FromSqlRaw("SELECT * from func_report_lesson()");
+        var data = _db.Func_Report_Lesson.FromSqlRaw("SELECT * from func_report_lessons()");
         return data;
     }
 

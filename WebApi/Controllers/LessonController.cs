@@ -43,6 +43,16 @@ public class LessonController : ControllerBase
         var result = _lessonBusiness.GetAllLessons();
         return Ok(result);
     }
+    [HttpGet]
+    [Route("FindLesson")]
+    [Authorize(Roles = "admin,consultant")]
+    public ActionResult<LessonDto> FindLesson(int lessonId)
+    {
+        int httpCode = 200;
+        var result = _lessonBusiness.FindLesson(lessonId , ref httpCode);
+        return StatusCode(httpCode, result);
+        
+    } 
     [HttpPost("UpdateLesson")]
     [Authorize(Roles ="admin")]
     public ActionResult<UpdateLessonResult> UpdateLesson(LessonDto lessonDto)

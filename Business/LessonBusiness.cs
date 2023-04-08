@@ -56,11 +56,34 @@ public class LessonBusiness
         }
         else
         {
-            return new UpdateLessonResult(Language.Persian,success,lessonIdErrorMessage,lessonTitleErrorMessage);
+            return new UpdateLessonResult(Language.Persian, success, lessonIdErrorMessage, lessonTitleErrorMessage);
         }
     }
 
+    public FindLessonResult FindLesson(int lessonId, ref int httpCode)
+    {
+        string lessonIdErrorMessage = "";
+        LessonDto result = null;
+        bool success = true;
+        var lesson = _lessonRepository.Find(lessonId);
+        if (lesson == null)
+        {
+            httpCode = 400;
+            success = false;
+            lessonIdErrorMessage = "invalid-lessonid";
+        }
+        else
+        {
+            result = new LessonDto
+            {
+                Id = lesson.Id,
+                Title = lesson.Title
+            };
+        }
+        return new FindLessonResult(Language.Persian, success, lessonIdErrorMessage, result);
 
+
+    }
 
 
 }

@@ -22,11 +22,11 @@ export const Lessons = () => {
                             {data.map((item, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td>{item.Title}</td>
+                                        <td>{item.title}</td>
                                         <td>
                                             <button className="btn btn-danger btn-sm rounded-0">X</button>                                            
                                                 <button className="btn btn-warning btn-sm rounded-0 ms-2"
-                                                onClick={()=>{onClickEditLesson(item.Id)}}>ویرایش</button>
+                                                onClick={()=>{onClickEditLesson(item.id)}}>ویرایش</button>
                                         </td>
                                     </tr>
                                 );

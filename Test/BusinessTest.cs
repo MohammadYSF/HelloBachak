@@ -1143,4 +1143,22 @@ public class BusinessTest
         }
 
     }
+    [Theory]
+    [InlineData(1)]
+    public void Should_Find_Lesson(int lessonId)
+    {
+        int testHttpCode = 200;
+        var result = _lessonBusiness.FindLesson(lessonId , ref testHttpCode);
+        result.IsSuccess.Should().BeTrue();
+        result.LessonIdErrorMessage.Should().Be("");
+    }
+    [Theory]
+    [InlineData(300)]
+    public void Should_Not_Find_Lesson(int lessonId)
+    {
+        int testHttpCode = 200;
+        var result = _lessonBusiness.FindLesson(lessonId, ref testHttpCode);
+        result.IsSuccess.Should().BeFalse();
+        result.LessonIdErrorMessage.Should().NotBe("");
+    }
 }
