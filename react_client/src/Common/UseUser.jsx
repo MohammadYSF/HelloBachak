@@ -10,7 +10,8 @@ export const UseUser = () => {
                 const j = await d.json();
                 window.localStorage.setItem("username", "");
                 window.localStorage.setItem("token", "");
-                window.localStorage.setItem("refreshtoken", "");
+                window.localStorage.setItem("refreshToken", "");
+                window.localStorage.setItem("roles", "");
                 window.location.pathname != "/" && window.location.replace("/");
                 window.location.reload();
             }
@@ -20,5 +21,7 @@ export const UseUser = () => {
         }).catch(e => console.log(e));
 
     }
-    return { isUserLoggedIn, username, signOut };
+    //should dynamic this
+    const userRole = window.localStorage.getItem("roles") == null ? "" : window.localStorage.getItem("roles");
+    return { isUserLoggedIn, username, signOut , userRole };
 }

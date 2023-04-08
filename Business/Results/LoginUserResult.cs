@@ -2,8 +2,9 @@
 
 public class LoginUserResult
 {
-    public LoginUserResult(LoginUserDtoValidationResult validationResult, Language lang , string token , string refreshToken , string username)
+    public LoginUserResult(LoginUserDtoValidationResult validationResult, Language lang , string token , string refreshToken , string username , string roleTitle)
     {
+        this.RoleTitle = roleTitle;
         this.Username = username;
         this.Success = validationResult.Success;
         this.Token = token;
@@ -57,5 +58,6 @@ public class LoginUserResult
     public string Token { get; set; }
     public string RefreshToken { get; set; }
     public string Username { get; set; }
+    public string RoleTitle { get; set; }
 }
 

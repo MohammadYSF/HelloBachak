@@ -34,7 +34,8 @@ export const UseLogin = () => {
             else{
                 window.localStorage.setItem("username",j.username);
                 window.localStorage.setItem("token",j.token);
-                window.localStorage.setItem("refreshtoken",j.refreshtoken);
+                window.localStorage.setItem("refreshToken",j.refreshToken);
+                window.localStorage.setItem("roles" , j.roleTitle);
                 reset({Email:"" ,Password:"" });
                 navigate("/");
                 window.location.reload();
