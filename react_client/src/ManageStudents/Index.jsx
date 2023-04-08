@@ -4,9 +4,10 @@ import { UseManageStudents } from "./Hook";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { Student } from "../Student/Index";
+import { StudentDetail } from "../Student/StudentDetail/Index";
 export const ManageStudents = () => {
     const { data, modalShowState, onClickCloseModal
-        , studentModalTitle, onClickDetailStudent , onClickStudentDuties } = UseManageStudents();
+        , studentModalTitle, onClickDetailStudent , onClickStudentDuties , studentData } = UseManageStudents();
     return (
         <>
             <div className="">
@@ -27,17 +28,17 @@ export const ManageStudents = () => {
                             {data.map((item, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td>{item.Username}</td>
-                                        <td>{item.GradeTitle}</td>
-                                        <td>{item.PhoneNumber}</td>
-                                        <td>{item.ConsultantTitle}</td>
-                                        <td>{item.Age}</td>
+                                        <td>{item.username}</td>
+                                        <td>{item.gradeTitle}</td>
+                                        <td>{item.phoneNumber}</td>
+                                        <td>{item.consultantTitle}</td>
+                                        <td>{item.age}</td>
                                         <td>
                                             <button className="btn btn-danger btn-sm rounded-0">X</button>
                                             <button className="btn btn-info btn-sm rounded-0 ms-2"
-                                                onClick={onClickDetailStudent}>جزئیات</button>
+                                                onClick={() => {onClickDetailStudent(item.id)}}>جزئیات</button>
                                                 <button className="btn btn-warning btn-sm rounded-0 ms-2"
-                                                onClick={()=>{onClickStudentDuties(item.Id)}}>تغییر مشاور</button>
+                                                onClick={()=>{onClickStudentDuties(item.id)}}>تغییر مشاور</button>
                                         </td>
                                     </tr>
                                 );
@@ -51,7 +52,7 @@ export const ManageStudents = () => {
                         </Modal.Header>
 
                         <Modal.Body className="bg-dark text-light">
-                            <Student/>
+                            <StudentDetail studentData={studentData}/>
                         </Modal.Body>
 
                         <Modal.Footer className="bg-dark text-light">

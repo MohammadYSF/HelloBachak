@@ -99,12 +99,19 @@ public class UserController : ControllerBase
 
     }
     [HttpGet("ChangeConsultant")]
-    [Authorize("student")]
+    [Authorize(Roles = "student")]
     public ActionResult<string> ChangeConsultant(int studentId , int newConsultantId)
     {
         int httpCode = 200;
         var result = _userBusiness.ChangeConsultant(studentId, newConsultantId, ref httpCode);
         return StatusCode(httpCode, result);
     }
-    
+    [HttpGet("GetStudentDetail")]
+    [Authorize(Roles = "admin")]
+    public ActionResult<SingleStudentDetailDto> GetStudentDetail(int studentId)
+    {
+        int httpCode = 200;
+        var result = _userBusiness.GetStudentDetail(studentId , ref httpCode);
+        return StatusCode(httpCode, result);
+    }
 }

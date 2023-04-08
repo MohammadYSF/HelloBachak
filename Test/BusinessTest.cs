@@ -1000,8 +1000,9 @@ public class BusinessTest
     [Fact]
     public void Should_Get_Student_Detail()
     {
+        int testHttpCode = 200;
         int studentId = 2;
-        SingleStudentDetailDto result = _userBusiness.GetStudentDetail(studentId);
+        SingleStudentDetailDto result = _userBusiness.GetStudentDetail(studentId , ref testHttpCode);
         User expected = _users.First(a => a.Id == studentId);
         result.Id.Should().Be(expected.Id);
         result.PhoneNumber.Should().Be(expected.PhoneNumber);

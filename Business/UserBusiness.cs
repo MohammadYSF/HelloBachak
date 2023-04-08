@@ -43,9 +43,9 @@ public class UserBusiness
             httpCode = 400;
         return validationResult;
     }
-    public Tuple<LoginUserDtoValidationResult, string, string , string , string> LoginUser(LoginUserDto loginUserDto, ref int httpCode)
+    public Tuple<LoginUserDtoValidationResult, string, string, string, string> LoginUser(LoginUserDto loginUserDto, ref int httpCode)
     {
-        string token = "", refreshToken = "",username ="" , roleTitle ="";
+        string token = "", refreshToken = "", username = "", roleTitle = "";
         var loginUserDtoValidator = new LoginUserDtoValidator(_userRepository.Get());
         ValidationResult result = loginUserDtoValidator.Validate(loginUserDto);
         var validationResult = new LoginUserDtoValidationResult(result);
@@ -74,7 +74,7 @@ public class UserBusiness
         }
         else
             httpCode = 400;
-        return new Tuple<LoginUserDtoValidationResult, string, string, string , string>(validationResult, token, refreshToken , username, roleTitle);
+        return new Tuple<LoginUserDtoValidationResult, string, string, string, string>(validationResult, token, refreshToken, username, roleTitle);
 
     }
     public RegisterUserDtoValidationResult RegisterUser(RegisterUserDto userDto, ref int httpCode)
@@ -149,13 +149,16 @@ public class UserBusiness
             httpCode = 400;
         return validationResult;
     }
-    public SingleStudentDetailDto GetStudentDetail(int userId)
+    public SingleStudentDetailDto GetStudentDetail(int userId, ref int httpCode)
     {
         var result = _userRepository.Find(userId);
         var gradeTitle = _userRepository.FindGrade(result.GradeId).Title;
         var sexTitle = _userRepository.FindSex(result.SexId).Title;
         if (result == null)
+        {
+            httpCode = 400;
             return null;
+        }
         var answer = new SingleStudentDetailDto
         {
             Id = result.Id,
@@ -214,7 +217,7 @@ public class UserBusiness
         }
         else
         {
-            result = new ChangeConsultantResult(Language.Persian,false, studentIdError, consultantIdError);
+            result = new ChangeConsultantResult(Language.Persian, false, studentIdError, consultantIdError);
         }
         return result;
     }
