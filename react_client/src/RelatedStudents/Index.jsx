@@ -36,7 +36,7 @@ export const RelatedStudents = () => {
                                             <button className="btn btn-info btn-sm rounded-0 ms-2"
                                                 onClick={() => {onClickDetailStudent(item.id)}}>جزئیات</button>
                                                 <button className="btn btn-warning btn-sm rounded-0 ms-2"
-                                                onClick={()=>{onClickStudentDuties(item.Id)}}>وظایف</button>
+                                                onClick={()=>{onClickStudentDuties(item.id)}}>وظایف</button>
                                         </td>
                                     </tr>
                                 );

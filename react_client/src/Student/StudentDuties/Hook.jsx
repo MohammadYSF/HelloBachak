@@ -1,44 +1,38 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {yupResolver} from "@hookform/resolvers/yup"
 import { StudentDutiesHelper } from "./Helper";
 import { useNavigate } from "react-router";
 
-export const UseStudentDuties = ({id}) => {
+export const UseStudentDuties = (id) => {
+    useEffect(() => {
+        StudentDutiesHelper.FindStudentName(id).then(async d=> {
+            if (d.status === 200){
+                let j = await d.json();
+                setStudentName(j.result);                
+            }
+            else{
+                let j = await d.json();
+                alert(j.studentIdErrorMessage);
+            }
+        }).catch(e=> console.log(e));
+        StudentDutiesHelper.GetRelatedStudentDuties(id).then(async d=> {
+            if (d.status === 200){
+                let j = await d.json();
+                setData(j);
+            }
+            else{
+                alert("error");
+            }
+        }).catch(e=> console.log(e));
+    },[]);
     const navigate = useNavigate();
-    const [dutyDescription , setDutyDescription] = useState('');
-    const [studentName , setStudentName] = useState(StudentDutiesHelper.FindStudentName(id));
-    const [data , setData] = useState([
-        {
-            Id:1,
-            Title : "وظیفه 1",
-            ArrangedDate:"1401/05/04",
-            IsSucceedTitle:"آره"
-        },
-        {
-            Id:2,
-            Title : "وظیفه 2",
-            ArrangedDate:"1401/05/04",
-            IsSucceedTitle:"نه"
-        },
-        {
-            Id:1,
-            Title :"وظیفه 3",
-            ArrangedDate:"1401/05/04",
-            IsSucceedTitle:"نه"
-
-        },
-        {
-            Id:1,
-            Title : "وظیفه 4",
-            ArrangedDate:"1401/05/04",
-            IsSucceedTitle:"آره"
-        }
-    ]);
+    const [studentName , setStudentName] = useState("");
+    const [data , setData] = useState([]);
     const onClickDetailDuty = (id) => {
         navigate(`/Duties/${id}`);
     }
    return(
-        {data ,onClickDetailDuty , studentName , dutyDescription}
+        {data ,onClickDetailDuty , studentName}
     );
 }

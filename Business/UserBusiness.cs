@@ -186,6 +186,28 @@ public class UserBusiness
         var data = _userRepository.Func_Report_Related_Students(consultantId);
         return data.ToList();
     }
+    public FindStudentTitleResult FindStudentName(int studentId , ref int httpCode)
+    {
+        string studentIdError = "";
+        bool success = true;
+        FindStudentTitleResult result;
+        var student = _userRepository.Find(studentId);
+        if (student == null)
+        {
+            success = false;
+            httpCode = 400;
+            studentIdError = "invalid-studentid";
+        }
+        if (success)
+        {
+            result = new FindStudentTitleResult(Language.Persian, true, "", student.Username);
+        }
+        else
+        {
+            result = new FindStudentTitleResult(Language.Persian, false, studentIdError, "");
+        }
+        return result;
+    }
     public ChangeConsultantResult ChangeConsultant(int studentId, int newConsultantId, ref int httpCode)
     {
         bool success = true;

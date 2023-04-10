@@ -1162,4 +1162,23 @@ public class BusinessTest
         result.IsSuccess.Should().BeFalse();
         result.LessonIdErrorMessage.Should().NotBe("");
     }
+    [Theory]
+    [InlineData(3)]
+    public void Should_Find_Student_Name(int studentId)
+    {
+        int testHttpCode = 200;
+        var result = _userBusiness.FindStudentName(studentId , ref testHttpCode);
+        result.Success.Should().BeTrue();
+        result.StudentIdErrorMessage.Should().Be("");
+    }
+    [Theory]
+    [InlineData(300)]
+    public void Should_Not_Find_Student_Name(int studentId)
+    {
+        int testHttpCode = 200;
+        var result = _userBusiness.FindStudentName(studentId, ref testHttpCode);
+        result.Success.Should().BeFalse();
+        result.StudentIdErrorMessage.Should().NotBe("");
+    }
+
 }

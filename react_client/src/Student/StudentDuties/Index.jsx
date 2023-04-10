@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 export const StudentDuties = () => {
     const { id } = useParams();
     const { data,
-         onClickDetailDuty, studentName ,} = UseStudentDuties(id);
+         onClickDetailDuty, studentName} = UseStudentDuties(id);
     return (
 
         <>
@@ -28,13 +28,13 @@ export const StudentDuties = () => {
                         {data.map((item, index) => {
                             return (
                                 <tr key={index}>
-                                    <td>{item.Title}</td>
-                                    <td>{item.ArrangedDate}</td>
-                                    <td>{item.IsSucceedTitle}</td>
+                                    <td>{item.title}</td>
+                                    <td>{item.arrangedDateString}</td>
+                                    <td>{item.isSucceedTitle}</td>
                                     <td>
                                         <button className="btn btn-danger btn-sm rounded-0">X</button>
                                             <button className="btn btn-light btn-sm rounded-0 ms-2"
-                                            onClick={() => onClickDetailDuty(item.Id)}>مشاهده</button>
+                                            onClick={() => onClickDetailDuty(item.id)}>مشاهده</button>
                                     </td>
                                 </tr>
                             );

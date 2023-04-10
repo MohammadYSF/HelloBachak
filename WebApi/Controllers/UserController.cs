@@ -115,4 +115,12 @@ public class UserController : ControllerBase
         var result = _userBusiness.GetStudentDetail(studentId , ref httpCode);
         return StatusCode(httpCode, result);
     }
+    [HttpGet("FindStudentName")]
+    [Authorize(Roles = "admin,consultant")]
+    public ActionResult<FindStudentTitleResult> FindStudentName(int studentId)
+    {
+        int httpCode = 200;
+        var result = _userBusiness.FindStudentName(studentId , ref httpCode);
+        return StatusCode(httpCode , result);
+    }
 }
