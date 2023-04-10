@@ -14,6 +14,6 @@ public class DutyDto
     public int ConsultantId { get; set; }
     public int StudentId { get; set; }
     public int? OlderDutyId { get; set; }
-
+    public string ArrangedDateString { get; set; }
 
 }

@@ -124,4 +124,50 @@ public class DutyBusiness
         var data = _dutyRepository.Func_Get_Previous_Duty(dutyId);
         return data.ToList();
     }
+    public ShowDutyDetailResult ShowDutyDetail(int dutyId,int userId , string role , ref int httpCode)
+    {
+        bool success = true;
+        string dutyIdErrorMessage = "";
+        string userIdErrorMessage = "";
+
+        var duty=_dutyRepository.Find(dutyId);
+        if (duty == null)
+        {
+            success = false;
+            httpCode = 400;
+            dutyIdErrorMessage = "invalid-dutyid";
+        }
+        var user = _userRepository.Find(userId);
+        if (user == null)
+        {
+            success = false;
+            httpCode = 400;
+            userIdErrorMessage = "invalid-userid";
+        }
+        if (success)
+        {
+            if (!((duty.StudentId == userId && role == "student") || (duty.ConsultantId == userId && role=="consultant")))
+            {
+                success = false;
+                httpCode = 400;
+                userIdErrorMessage = "no-access";
+            }            
+        }
+
+        if (success)
+        {
+            var dto = new DutyDto
+            {
+                Id = duty.Id,
+                Description = duty.Description,
+                ArrangedDateString = Helper.ToPersianDateString(duty.ArrangedDate)
+            };
+            return new ShowDutyDetailResult(Language.Persian, true, "", "", dto);
+
+        }
+        else
+            return new ShowDutyDetailResult(Language.Persian, false, dutyIdErrorMessage, userIdErrorMessage, null);
+
+
+    }
 }

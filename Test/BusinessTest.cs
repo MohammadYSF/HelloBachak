@@ -604,8 +604,8 @@ public class BusinessTest
                 Description = "some des",
                 ArrangedDate = DateTime.Today,
                 CreationDate = DateTime.Now,
-                ConsultantId = 1,
-                StudentId = 1,
+                ConsultantId = 2,
+                StudentId = 3,
                 OlderDutyId = null,
                 IsActive = true,
                 LessonId = 1
@@ -613,8 +613,10 @@ public class BusinessTest
             new Duty{
                 Id =2,
                 Title ="continue duty 1",
+                OlderDutyId = 1,
+                ArrangedDate = DateTime.Today,
                 StudentId = 3,
-                OlderDutyId = 1
+                ConsultantId = 2
             }
         };
 
@@ -1002,7 +1004,7 @@ public class BusinessTest
     {
         int testHttpCode = 200;
         int studentId = 2;
-        SingleStudentDetailDto result = _userBusiness.GetStudentDetail(studentId , ref testHttpCode);
+        SingleStudentDetailDto result = _userBusiness.GetStudentDetail(studentId, ref testHttpCode);
         User expected = _users.First(a => a.Id == studentId);
         result.Id.Should().Be(expected.Id);
         result.PhoneNumber.Should().Be(expected.PhoneNumber);
@@ -1093,11 +1095,11 @@ public class BusinessTest
 
     }
     [Theory]
-    [InlineData(300,"some title","invalid-lessonid" , "")]
-    [InlineData(1, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "","invalid-title")]
-    [InlineData(300, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "invalid-lessonid","invalid-title")]
+    [InlineData(300, "some title", "invalid-lessonid", "")]
+    [InlineData(1, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "", "invalid-title")]
+    [InlineData(300, "abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345abcde12345", "invalid-lessonid", "invalid-title")]
 
-    public void Should_Not_Update_Lesson(int id , string title, string idReason,string titleReason)
+    public void Should_Not_Update_Lesson(int id, string title, string idReason, string titleReason)
     {
         int testHttpCode = 200;
         var input = new LessonDto
@@ -1114,7 +1116,7 @@ public class BusinessTest
         if (titleReason == "invalid-title")
         {
             result.LessonTitleErrorMessage.Should().NotBe("");
-        }        
+        }
     }
     [Fact]
     public void Should_Change_Consultant()
@@ -1122,17 +1124,17 @@ public class BusinessTest
         int studentId = 3;
         int consultantId = 2;
         int testHttpCode = 200;
-        var result = _userBusiness.ChangeConsultant(studentId, consultantId , ref testHttpCode);
+        var result = _userBusiness.ChangeConsultant(studentId, consultantId, ref testHttpCode);
         result.IsSuccess.Should().BeTrue();
     }
     [Theory]
-    [InlineData(3,300 , "","invalid-consultantid")]
-    [InlineData(300,2 , "invalid-studentid","")]
-    [InlineData(300,301 , "invalid-studentid" , "invalid-consultantid")]
-    public void Should_Not_Change_Consultant(int studentId , int newConsultantId , string reasonStudentId , string reasonConsultantId)
+    [InlineData(3, 300, "", "invalid-consultantid")]
+    [InlineData(300, 2, "invalid-studentid", "")]
+    [InlineData(300, 301, "invalid-studentid", "invalid-consultantid")]
+    public void Should_Not_Change_Consultant(int studentId, int newConsultantId, string reasonStudentId, string reasonConsultantId)
     {
         int testHttpCode = 200;
-        var result = _userBusiness.ChangeConsultant(studentId , newConsultantId , ref testHttpCode);
+        var result = _userBusiness.ChangeConsultant(studentId, newConsultantId, ref testHttpCode);
         result.IsSuccess.Should().BeFalse();
         if (reasonStudentId == "invalid-studentid")
         {
@@ -1149,7 +1151,7 @@ public class BusinessTest
     public void Should_Find_Lesson(int lessonId)
     {
         int testHttpCode = 200;
-        var result = _lessonBusiness.FindLesson(lessonId , ref testHttpCode);
+        var result = _lessonBusiness.FindLesson(lessonId, ref testHttpCode);
         result.IsSuccess.Should().BeTrue();
         result.LessonIdErrorMessage.Should().Be("");
     }
@@ -1167,7 +1169,7 @@ public class BusinessTest
     public void Should_Find_Student_Name(int studentId)
     {
         int testHttpCode = 200;
-        var result = _userBusiness.FindStudentName(studentId , ref testHttpCode);
+        var result = _userBusiness.FindStudentName(studentId, ref testHttpCode);
         result.Success.Should().BeTrue();
         result.StudentIdErrorMessage.Should().Be("");
     }
@@ -1179,6 +1181,44 @@ public class BusinessTest
         var result = _userBusiness.FindStudentName(studentId, ref testHttpCode);
         result.Success.Should().BeFalse();
         result.StudentIdErrorMessage.Should().NotBe("");
+    }
+    [Theory]
+    [InlineData(1, 3, "student")]
+    [InlineData(2, 3, "student")]
+    [InlineData(1, 2, "consultant")]
+    [InlineData(2, 2, "consultant")]
+
+    public void Should_Show_Duty_Detail(int dutyId, int userId, string role)
+    {
+        int testHttpCode = 200;
+        var result = _dutyBusiness.ShowDutyDetail(dutyId, userId, role, ref testHttpCode);
+        result.Success.Should().BeTrue();
+        result.UserIdErrorMessage.Item1.Should().Be("");
+        result.DutyIdErrorMessage.Item1.Should().Be("");
+    }
+    [Theory]
+    [InlineData(1,1,"admin","no-access")]
+    [InlineData(300,1,"admin","invalid-dutyid")]
+    [InlineData(1,300,"admin","invalid-userid")]
+    public void Should_Not_Show_Duty_Detail(int dutyId , int userId , string role , string reason)
+    {
+        int testHttpCode = 200;
+        var result = _dutyBusiness.ShowDutyDetail(dutyId, userId, role, ref testHttpCode);
+        result.Success.Should().BeFalse();
+        switch (reason)
+        {
+            case "no-access":
+                result.UserIdErrorMessage.Item1.Should().Be("no-access");
+                break;
+            case "invalid-userid":
+                result.UserIdErrorMessage.Item1.Should().Be("invalid-userid");
+                break;
+            case "invalid-dutyId":
+                result.DutyIdErrorMessage.Item1.Should().Be("invalid-dutyid");
+                break;
+            default:
+                break;
+        }
     }
 
 }

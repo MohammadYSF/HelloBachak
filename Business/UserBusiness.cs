@@ -60,7 +60,8 @@ public class UserBusiness
             {
         new Claim(ClaimTypes.Name, user.Username),
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Role, string.Join(',',roles.Select(a=> a.Title)))
+        new Claim(ClaimTypes.Role, string.Join(',',roles.Select(a=> a.Title))),
+        new Claim("userId",user.Id.ToString()),
             };
             username = user.Username;
             roleTitle = string.Join(',', roles.Select(a => a.Title));
