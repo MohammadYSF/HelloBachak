@@ -160,6 +160,7 @@ public class UserBusiness
             httpCode = 400;
             return null;
         }
+        
         var answer = new SingleStudentDetailDto
         {
             Id = result.Id,

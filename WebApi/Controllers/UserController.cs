@@ -107,10 +107,11 @@ public class UserController : ControllerBase
         return StatusCode(httpCode, result);
     }
     [HttpGet("GetStudentDetail")]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,consultant")]
+    //there is a potential security flaw here
     public ActionResult<SingleStudentDetailDto> GetStudentDetail(int studentId)
     {
-        int httpCode = 200;
+        int httpCode = 200;        
         var result = _userBusiness.GetStudentDetail(studentId , ref httpCode);
         return StatusCode(httpCode, result);
     }
